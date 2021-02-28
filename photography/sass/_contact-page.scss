@@ -1,0 +1,117 @@
+/*----------------
+   Contact Page
+ ----------------*/
+ .contact__map{
+    position: relative;
+    overflow: hidden;
+    iframe {
+        width: 100%;
+        height: 500px;
+        left: 0;
+        top: 0;
+    }
+
+    .map__info {
+        position: absolute;
+        left: calc(50% - 132px);
+        top: 45%;
+        width: 264px;
+        text-transform: uppercase;
+        padding: 23px 30px;
+        text-align: center;
+        font-size: 16px;
+        line-height: 2;
+        background: $white_color;
+        font-family: $font_1;
+        @include box-shadow(0 9px 62px rgba(0, 0, 0, 0.1));
+        
+        &:after {
+            position: absolute;
+            content: "";
+            width: 26px;
+            height: 26px;
+            left: calc(50% - 13px);
+            top: -12px;
+            background: $white_color;
+            transform: rotate(45deg);
+        }
+        i {
+            position: absolute;
+            left: calc(50% - 11px);
+            top: -55px;    
+            font-size: 36px;
+            color: $primary_color;
+        }
+    }
+}
+
+.contact__logo {
+    padding-top: 50px;
+    margin-bottom: 40px;
+    @media #{$tab_device, $large_mobile, $small_mobile} {
+        padding-top: 0;
+    }
+    img {
+        max-width: 180px;
+    }
+}
+
+.contact__info {
+    max-width: 300px;
+    margin-bottom: 30px;
+    h3 {
+        font-size: 18px;
+        text-transform: uppercase;
+        margin-bottom: 10px;
+    }
+    a {
+        display: inline-block;
+        font-family: $font_1;
+        color: $p_color;
+        text-transform: uppercase;
+        border-bottom: 1px solid $primary_color;
+    }
+}
+
+
+.contact__form__box {
+    padding: 50px;
+    @include box-shadow( 0 9px 62px rgba(0, 0, 0, 0.1));
+    @media #{ $small_mobile} {
+        padding: 30px;
+    }
+    @media #{$tab_device, $large_mobile, $small_mobile} {
+        margin-top: 50px;
+    }
+    h2 {
+        text-transform: uppercase;
+        margin-bottom: 45px;
+        @media #{$large_mobile, $small_mobile} {
+            font-size: 24px;
+        }
+    }
+    input,
+    textarea {
+        width: 100%;
+        border: none;
+        font-size: 14px;
+        padding-bottom: 15px;
+        margin-bottom: 20px;
+        border-bottom: 1px solid rgb(0, 0, 0, 0.1);
+        @include transition(0.4s);
+        &:focus {
+            border-bottom-color: $primary_color;
+            color: $heading_color;
+            padding-bottom: 25px;
+        }
+    }
+
+    textarea {
+        height: 91px;
+        resize: none;
+        margin-bottom: 40px;
+        &:focus {
+            height: 114px;
+        }
+    }
+}

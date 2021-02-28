@@ -1,0 +1,43 @@
+/*
+==============
+--------------
+    Pages
+------------*/
+
+ .page__banner {
+    background-image: url("../img/page-banner.jpg");
+    background-repeat: no-repeat;
+    background-size: cover;
+    height: 300px;
+    width: calc(100% - 148px);
+    margin: 0 auto;
+    display: flex;
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+    @media #{$small_mobile} {
+        width: calc(100% - 30px);
+    }
+}
+.banner__text {
+    h2 {
+        font-size: 54px;
+        color: $white_color;
+        text-transform: uppercase;
+        margin-bottom: 15px;
+        @media #{$small_mobile} {
+            font-size: 34px;
+        }
+    }
+}
+.site__breadcrumb {
+    a {
+        display: inline-block;
+        color: $white_color;
+        font-family: $font_2;
+    }
+    span {
+        color: $primary_color;
+        font-family: $font_2;
+    }
+}

@@ -1,0 +1,65 @@
+/*------------------
+   Albums Page
+ ------------------*/
+ .albums__section {
+     padding: 0 74px;
+     @media #{$small_mobile} {
+        padding: 0 15px;
+    }
+     .albam__grid {
+         padding-left: 25px;
+         padding-right: 25px;
+         @media #{$medium_device} {
+            padding-left: 10px;
+            padding-right: 10px;
+         }
+     }
+     .albam_row {
+         margin-left: -25px;
+         margin-right: -25px;
+        @media #{$medium_device} {
+            margin-left: -10px;
+            margin-right: -10px;
+        }
+     }
+ }
+
+.album__item {
+    margin-bottom: 40px;
+}
+
+.album__thumb  {
+    height: 360px;
+    margin-bottom: 20px;
+}
+.album__link {
+    text-transform: uppercase;
+    font-family: $font_1;
+    font-size: 22px;
+    color: $heading_color;
+    position: relative;
+    display: inline-block;
+    padding: 0;
+    @include transition(0.3s);
+    @media #{$medium_device} {
+        font-size: 16px;
+    }
+    &:after {
+        position: absolute;
+        content: "";
+        width: 0;
+        height: 6px;
+        left: 0;
+        bottom: 8px;
+        background: $primary_color;
+        z-index: -1;
+        @include transition(0.3s);
+    }
+    &:hover {
+        color: $heading_color;
+        padding: 0 8px;
+        &:after {
+            width: 100%;
+        }
+    }
+}

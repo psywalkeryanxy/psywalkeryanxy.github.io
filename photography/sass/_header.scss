@@ -1,0 +1,40 @@
+/*---------------------
+   Header section
+ -----------------------*/
+.header {
+  padding: 28px 78px;
+  z-index: 999;
+  top: -50px;
+  @include transition( all 0.4s);
+  @media #{$small_mobile} {
+    padding: 28px 15px;
+  }
+  &.sticky {
+    position: fixed;
+    width: 100%;
+    top: 0;
+    left: 0;
+    top: 0;
+    background: #ffffff;
+    @include transition( all 0.4s ease 0.3s);
+    @include box-shadow (0 10px 50px rgba(0, 0, 0, 0.1));
+  }
+}
+
+.site-logo {
+  display: inline-block;
+}
+
+.header__right {
+  float: right;
+}
+
+.header__switches {
+  display: inline-block;
+  a {
+    color: $heading_color;
+    margin-left: 25px;
+    font-size: 18px;
+  }
+}
+

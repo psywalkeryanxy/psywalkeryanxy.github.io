@@ -1,0 +1,49 @@
+/*---------------------
+   Footer section
+ -----------------------*/
+ .footer__section {
+   padding: 25px 40px 15px;
+  background: #222222;
+  @media #{$tab_device, $large_mobile, $small_mobile} {
+    text-align: center;
+    padding: 25px 15px 15px;
+  }
+ }
+
+
+ .footer__copyright__text {
+  @media #{$tab_device, $large_mobile, $small_mobile} {
+   padding-top: 20px;
+  }
+  p {
+    text-align: center;
+    font-size: 16px;
+    font-family: $font_2;
+    color: $sub_color;
+    margin-bottom: 10px;
+  }
+  a {
+    
+    color: $white_color; 
+    &:hover{
+      color: $primary_color;
+    }
+  }
+  i {
+    color: #b91b1b;
+  }
+ }
+
+ .footer__social {
+   text-align: right;
+   @media #{$tab_device, $large_mobile, $small_mobile} {
+    text-align: center;
+    padding-top: 15px;
+  }
+   a {
+     display: inline-block;
+     margin-left: 25px;
+     font-size: 16px;
+     color: $white_color;
+   }
+ }

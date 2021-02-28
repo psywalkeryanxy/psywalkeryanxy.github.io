@@ -1,0 +1,82 @@
+/*----------------------
+   Albums Details Page
+ ----------------------*/
+.album__slider {
+    margin-bottom: 20px;
+    overflow: hidden;
+    .owl-nav {
+        button.owl-prev,
+        button.owl-next {
+            position: absolute;
+            left: 40px;
+            top: calc(50% - 23px);
+            width: 46px;
+            height: 46px;
+            color: $white_color;
+            border-radius: 3px;
+            font-size: 18px;
+            background: rgb(255, 255, 255, 0.3);
+            @include transition(0.4s);
+            &:hover {
+                color: $heading_color;
+                background: $white_color;
+            }
+        }
+        button.owl-next {
+            left: auto;
+            right: 40px;
+        }
+    }
+}
+.album__slide {
+    height: 800px;
+    position: relative;
+    @media #{$small_mobile, $large_mobile} {
+        height: 600px;
+    }
+}
+
+.album__slide__text {
+    position: absolute;
+    width: 100%;
+    bottom: 100px;
+    left: 0;
+
+    .slide__cata {
+        font-size: 18px;
+        color: $white_color;
+        text-transform: uppercase;
+        text-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+    }
+    h2 {
+        font-size: 50px;
+        color: $white_color;
+        text-transform: uppercase;
+        text-shadow: 0 0 30px rgba(0, 0, 0, 0.3);
+        @media #{$small_mobile} {
+            font-size: 34px;
+        }
+    }
+}
+
+
+.album_thumb_slider {
+    margin-bottom: 20px;
+    .current {
+        position: relative;
+        &::before {
+            position: absolute;
+            content: "";
+            width: 100%;
+            height: 100%;
+            left: 0;
+            top: 0;
+            border: 5px solid $primary_color;
+        }
+    }
+}
+
+
+.album__slide_thumb {
+    cursor: pointer;
+}

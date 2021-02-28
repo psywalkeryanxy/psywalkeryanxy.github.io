@@ -1,0 +1,56 @@
+/* =================================
+------------------------------------
+  SUNZINE | Photography HTML Template
+  Version: 1.0
+  Copyright By: ColorLib
+ ------------------------------------
+ ====================================*/
+ @import 'varriable';
+ @import '_mixins';
+
+
+// default
+@import 'default';
+
+//loader
+@import 'loader';
+
+// helper
+@import 'helper';
+
+// Header
+@import 'header';
+
+// Menu
+@import 'menu';
+ 
+//hero
+@import 'hero';
+
+//Galllery Page
+@import 'gallery';
+
+//About Page
+@import 'footer';
+
+//pages
+@import 'pages';
+
+//About Page
+@import 'about-page';
+
+//Albums Page
+@import 'albums';
+
+//Albums Page
+@import 'albums-details';
+
+//Blog Page
+@import 'blog-page';
+ 
+//Blog single Page
+@import 'blog-single';
+ 
+//Contact Page
+@import 'contact-page';
+ 
