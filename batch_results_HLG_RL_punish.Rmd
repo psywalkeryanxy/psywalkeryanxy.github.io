@@ -1,0 +1,131 @@
+---
+title: "HLG RL punishment, model2, results, MDD vs. HEA"
+output: html_notebook
+# xinyuanyan
+# April, 2021
+---
+
+### nb is created by xinyuan
+### xinyuanyan2016@gmail.com
+
+**April, 2021**
+
+**Main reference** 
+
+1. Fontanesi, L., Gluth, S., Spektor, M. S., & Rieskamp, J. (2019). A reinforcement learning diffusion decision model for value-based decisions. Psychonomic bulletin & review, 26(4), 1099-1121.
+2. Wiehler, A., & Peters, J. (2020). Diffusion modeling reveals reinforcement learning impairments in gambling disorder that are linked to attenuated ventromedial prefrontal cortex value representations. bioRxiv.
+
+
+
+Code is created and adapted by Xinyuan Yan, will be shared at her github website:
+https://github.com/psywalkeryanxy
+
+If you have any further questions, please email to me(xinyuanyan2016@gmail.com), I will provide help as much as I can ^_^
+
+
+
+
+### Xinyuan, please first load the data from rstan you've saved
+```{r}
+rm(list = ls())
+setwd("/Users/xinyuanyan/Documents/10_HLG_RL/")
+fitmdd<- readRDS(file = "RL_MDD_PU_model_02.rds")
+fithea<- readRDS(file = "RL_HEA_PU_model_02.rds")
+```
+## transform to matrix format
+```{r}
+mat_fitmdd = as.matrix(fitmdd)
+mat_fithea = as.matrix(fithea)
+```
+## extract the parameters you will estimate
+```{r}
+learning_rate_pos0 = mat_fitmdd[grep("^alpha_pos_sb",colnames(mat_fitmdd))]
+learning_rate_neg0 = mat_fitmdd[grep("^alpha_neg_sb",colnames(mat_fitmdd))]
+
+drift_scaling0 = mat_fitmdd[grep("^drift_scaling_sbj",colnames(mat_fitmdd))]###
+
+threshold0 = mat_fitmdd[grep("^threshold_sbj",colnames(mat_fitmdd))]###
+
+ndt0 = mat_fitmdd[grep("^ndt_sbj",colnames(mat_fitmdd))]###
+```
+collect them and then write into excel
+```{r}
+model2_MDD = cbind(learning_rate_pos0,learning_rate_neg0, drift_scaling0, threshold0, ndt0)
+View(model2_MDD)
+
+#write.csv(model2_MDD,"model2_MDD.csv")
+```
+
+## healthy
+```{r}
+learning_rate_pos1 = mat_fithea[grep("^alpha_pos_sb",colnames(mat_fithea))]
+learning_rate_neg1 = mat_fithea[grep("^alpha_neg_sb",colnames(mat_fithea))]
+
+drift_scaling1 = mat_fithea[grep("^drift_scaling_sbj",colnames(mat_fithea))]###
+
+threshold1 = mat_fithea[grep("^threshold_sbj",colnames(mat_fithea))]###
+
+ndt1 = mat_fithea[grep("^ndt_sbj",colnames(mat_fithea))]###
+
+model2_HEA = cbind(learning_rate_pos1,learning_rate_neg1, drift_scaling1, threshold1, ndt1)
+View(model2_HEA)
+```
+## stats
+```{r}
+t.test(model2_HEA[,5],model2_MDD[,5],var.equal = FALSE)
+```
+## plotting plotting
+```{r}
+library(ggpubr)
+```
+```{r}
+#combined the data
+grpMDD = rep('MDD',  length(model2_MDD[,1]))
+grpHEA = rep('HEA', length(model2_HEA[,1]))
+grp = cbind(t(grpHEA),t(grpMDD))
+grp = t(grp)
+all_data = rbind(model2_HEA,model2_MDD)
+
+all_grp_data = cbind(grp,all_data)
+colnames(all_grp_data)[1]='group'
+
+
+
+```
+
+```{r}
+#plotting
+df = data.frame(all_grp_data)
+p<-ggboxplot(df, x = "group", y = "learning_rate_pos1",
+          color = "group",title = "learning_rate + ",
+add = c("jitter"))           
+p
+```
+
+
+```{r}
+#plotting
+df = data.frame(all_grp_data)
+p<-ggboxplot(df, x = "group", y = "learning_rate_neg1",
+          color = "group",title = "learning_rate - ",
+add = c("jitter"))           
+p
+```
+```{r}
+#plotting
+df = data.frame(all_grp_data)
+p<-ggboxplot(df, x = "group", y = "drift_scaling1",
+          color = "group",title = "drift scaling ",
+add = c("jitter"))           
+p
+```
+
+
+```{r}
+p<-ggboxplot(df, x = "group", y = "ndt1",
+          color = "group",title = "ndt ",
+add = c("jitter"))           
+p
+```
+
+
