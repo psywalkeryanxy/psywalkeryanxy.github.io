@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cognitive Tasks Battery</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const TaskCard = ({ title, description, duration, image, onClick }) => (
+            <div 
+                className="cursor-pointer hover:shadow-lg transition-shadow bg-white rounded-lg shadow-md overflow-hidden"
+                onClick={onClick}
+            >
+                <div className="p-4">
+                    <h3 className="text-lg font-semibold mb-2">{title}</h3>
+                    <div className="h-32 bg-slate-100 rounded flex items-center justify-center mb-2">
+                        {image}
+                    </div>
+                    <p className="text-sm text-slate-600 mb-2">{description}</p>
+                    <div className="text-sm font-medium">Duration: {duration}</div>
+                </div>
+            </div>
+        );
+
+        const CognitiveTasksHub = () => {
+            const [currentTask, setCurrentTask] = React.useState(null);
+
+            const tasks = [
+                {
+                    id: 'whack-a-mole',
+                    title: 'Whack-a-Mole',
+                    description: 'Hit the red angry moles while avoiding the friendly green ones.',
+                    duration: '~2 minutes',
+                    path: 'tasks/whack-a-mole.html',
+                    image: (
+                        <svg viewBox="0 0 100 100" className="w-20 h-20">
+                            <circle cx="50" cy="50" r="45" fill="#FFB6C1"/>
+                            <path d="M 30 35 L 40 45 M 30 45 L 40 35" stroke="black" strokeWidth="3"/>
+                            <path d="M 60 35 L 70 45 M 60 45 L 70 35" stroke="black" strokeWidth="3"/>
+                            <path d="M 35 65 Q 50 55 65 65" stroke="black" fill="none" strokeWidth="3"/>
+                        </svg>
+                    )
+                },
+                // Add other tasks here
+            ];
+
+            const navigateToTask = (task) => {
+                window.location.href = task.path;
+            };
+
+            return (
+                <div className="container mx-auto p-6 max-w-7xl">
+                    <div className="text-center mb-8">
+                        <h1 className="text-3xl font-bold mb-2">Cognitive Tasks Battery</h1>
+                        <p className="text-slate-600">
+                            Explore different aspects of cognition, decision-making, and social behavior
+                        </p>
+                        <a 
+                            href="../index.html" 
+                            className="inline-block mt-4 px-4 py-2 bg-slate-200 rounded hover:bg-slate-300"
+                        >
+                            ← Back to Homepage
+                        </a>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        {tasks.map(task => (
+                            <TaskCard
+                                key={task.id}
+                                {...task}
+                                onClick={() => navigateToTask(task)}
+                            />
+                        ))}
+                    </div>
+
+                    <div className="mt-8 text-center text-sm text-slate-600">
+                        <p>Total estimated duration: ~30 minutes</p>
+                        <p>All tasks save data automatically and can be completed in any order</p>
+                    </div>
+                </div>
+            );
+        };
+
+        ReactDOM.render(<CognitiveTasksHub />, document.getElementById('root'));
+    </script>
+</body>
+</html>
