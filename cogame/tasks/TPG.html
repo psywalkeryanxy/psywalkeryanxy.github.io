@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>正义使者任务</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .info-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .proposal-card {
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .custom-slider {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 8px;
+            border-radius: 4px;
+            background: #e2e8f0;
+            outline: none;
+        }
+
+        .custom-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: #3b82f6;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 4px;
+            background-color: #e2e8f0;
+            border-radius: 2px;
+            margin: 10px 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background-color: #3b82f6;
+            border-radius: 2px;
+            transition: width 0.3s ease;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen p-8">
+    <!-- Introduction Screen -->
+    <div id="intro-screen" class="max-w-3xl mx-auto">
+        <div class="info-card p-8">
+            <h1 class="text-2xl font-bold mb-6 text-gray-800 text-center">正义使者任务 ⚖️</h1>
+            
+            <div class="space-y-4 text-gray-600">
+                <div class="bg-blue-50 p-6 rounded-lg">
+                    <h2 class="font-semibold text-blue-800 mb-4 text-xl">任务说明：</h2>
+                    <p class="text-blue-900 leading-relaxed mb-4">
+                        在这项任务中，您将观察5个不同的资源分配情况。在每种情况下：
+                    </p>
+                    <ul class="list-disc list-inside space-y-2 text-blue-900">
+                        <li>两名参与者共同完成工作获得了10个金币</li>
+                        <li>分配者已经对这些金币进行了分配</li>
+                        <li>作为观察者，您可以决定是否惩罚分配者</li>
+                        <li>每使用1个金币，可以让分配者失去2个金币</li>
+                    </ul>
+                </div>
+
+                <div class="bg-yellow-50 p-4 rounded-lg">
+                    <h2 class="font-semibold text-yellow-800 mb-2">您的资源：</h2>
+                    <p class="text-yellow-900">您拥有10个金币可以用于惩罚。</p>
+                </div>
+            </div>
+
+            <button id="start-button" 
+                    class="mt-8 bg-blue-600 text-white px-8 py-3 rounded-lg font-medium hover:bg-blue-700 transition-colors w-full">
+                开始任务
+            </button>
+        </div>
+    </div>
+
+    <!-- Trial Screen -->
+    <div id="trial-screen" class="max-w-3xl mx-auto hidden">
+        <div class="info-card p-8">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-xl font-bold text-gray-800">场景 <span id="trial-number">1</span>/5</h2>
+                <div class="text-gray-600">
+                    剩余金币：<span id="current-money" class="font-bold text-blue-600">10</span>
+                </div>
+            </div>
+            
+            <div class="progress-bar">
+                <div id="progress-fill" class="progress-fill" style="width: 20%"></div>
+            </div>
+            
+            <div class="proposal-card my-8">
+                <div class="text-center space-y-4">
+                    <h3 class="text-xl font-bold text-gray-700">当前分配方案</h3>
+                    <div class="flex justify-center gap-8 text-lg">
+                        <div class="text-blue-600">
+                            分配者获得：<span id="proposer-amount" class="font-bold">9</span> 金币
+                        </div>
+                        <div class="text-green-600">
+                            接收者获得：<span id="receiver-amount" class="font-bold">1</span> 金币
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-gray-50 p-6 rounded-lg mb-6">
+                <label class="block text-center text-gray-700 text-lg font-medium mb-4">
+                    选择惩罚金额：
+                </label>
+                <input type="range" min="0" max="10" value="0" class="custom-slider" id="punishment-slider">
+                <div class="flex justify-between text-sm text-gray-600 mt-2">
+                    <span>0金币</span>
+                    <span>10金币</span>
+                </div>
+                <div class="text-center mt-4 space-y-2">
+                    <p class="text-gray-700">
+                        您将消耗 <span id="punishment-cost" class="font-bold text-red-600">0</span> 个金币
+                    </p>
+                    <p class="text-gray-700">
+                        分配者将失去 <span id="punishment-amount" class="font-bold text-blue-600">0</span> 个金币
+                    </p>
+                </div>
+            </div>
+
+            <button id="confirm-button" 
+                    class="bg-blue-600 text-white px-8 py-3 rounded-lg font-medium hover:bg-blue-700 transition-colors w-full">
+                确认决定
+            </button>
+        </div>
+    </div>
+
+    <!-- Results Screen -->
+    <div id="results-screen" class="max-w-3xl mx-auto hidden">
+        <div class="info-card p-8">
+            <h2 class="text-2xl font-bold mb-6 text-gray-800 text-center">任务完成 📊</h2>
+            
+            <div id="decisions-summary" class="bg-gray-50 p-6 rounded-lg mb-6">
+                <!-- Summary will be inserted here -->
+            </div>
+
+            <div class="bg-blue-50 p-4 rounded-lg mb-6">
+                <p class="text-blue-800">
+                    剩余金币：<span id="final-money" class="font-bold"></span>
+                </p>
+            </div>
+
+            <button id="download-button" 
+                    class="bg-green-600 text-white px-8 py-3 rounded-lg font-medium hover:bg-green-700 transition-colors w-full">
+                下载数据
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // 游戏数据
+        const gameData = {
+            participantId: Math.floor(100000 + Math.random() * 900000),
+            startTime: null,
+            currentTrialIndex: 0,
+            initialMoney: 10,
+            currentMoney: 10,
+            punishmentMultiplier: 2, // 惩罚倍数：2倍
+            trials: [],
+            responses: [],
+    
+            // 初始化试次
+            initializeTrials() {
+                const baseTrials = [
+                    { proposerAmount: 9, receiverAmount: 1, unfairness: 0.8 },
+                    { proposerAmount: 8, receiverAmount: 2, unfairness: 0.6 },
+                    { proposerAmount: 7, receiverAmount: 3, unfairness: 0.4 },
+                    { proposerAmount: 6, receiverAmount: 4, unfairness: 0.2 },
+                    { proposerAmount: 5, receiverAmount: 5, unfairness: 0 }
+                ];
+    
+                // Fisher-Yates洗牌
+                for (let i = baseTrials.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [baseTrials[i], baseTrials[j]] = [baseTrials[j], baseTrials[i]];
+                }
+    
+                this.trials = baseTrials.map((trial, index) => ({
+                    ...trial,
+                    originalIndex: index,
+                    trialStartTime: null
+                }));
+            }
+        };
+    
+        // DOM元素引用
+        const screens = {
+            intro: document.getElementById('intro-screen'),
+            trial: document.getElementById('trial-screen'),
+            results: document.getElementById('results-screen')
+        };
+    
+        const elements = {
+            trialNumber: document.getElementById('trial-number'),
+            currentMoney: document.getElementById('current-money'),
+            proposerAmount: document.getElementById('proposer-amount'),
+            receiverAmount: document.getElementById('receiver-amount'),
+            progressFill: document.getElementById('progress-fill'),
+            punishmentSlider: document.getElementById('punishment-slider'),
+            punishmentCost: document.getElementById('punishment-cost'),
+            punishmentAmount: document.getElementById('punishment-amount'),
+            confirmButton: document.getElementById('confirm-button')
+        };
+    
+        // 显示当前试次
+        function showTrial() {
+            const trial = gameData.trials[gameData.currentTrialIndex];
+            const progress = ((gameData.currentTrialIndex + 1) / gameData.trials.length) * 100;
+    
+            elements.trialNumber.textContent = gameData.currentTrialIndex + 1;
+            elements.currentMoney.textContent = gameData.currentMoney;
+            elements.proposerAmount.textContent = trial.proposerAmount;
+            elements.receiverAmount.textContent = trial.receiverAmount;
+            elements.progressFill.style.width = `${progress}%`;
+            elements.punishmentSlider.value = 0;
+            elements.punishmentCost.textContent = '0';
+            elements.punishmentAmount.textContent = '0';
+    
+            trial.trialStartTime = new Date().toISOString();
+        }
+    
+        // 处理惩罚滑块变化
+        elements.punishmentSlider.addEventListener('input', function() {
+            const costAmount = parseInt(this.value);
+            const punishmentAmount = costAmount * gameData.punishmentMultiplier;
+    
+            elements.punishmentCost.textContent = costAmount;
+            elements.punishmentAmount.textContent = punishmentAmount;
+    
+            // 检查是否超出可用金币
+            elements.confirmButton.disabled = costAmount > gameData.currentMoney;
+            if (costAmount > gameData.currentMoney) {
+                elements.confirmButton.classList.add('bg-gray-400');
+                elements.confirmButton.classList.remove('bg-blue-600', 'hover:bg-blue-700');
+            } else {
+                elements.confirmButton.classList.remove('bg-gray-400');
+                elements.confirmButton.classList.add('bg-blue-600', 'hover:bg-blue-700');
+            }
+        });
+    
+        // 记录决策
+        function makeDecision() {
+            const trial = gameData.trials[gameData.currentTrialIndex];
+            const punishmentCost = parseInt(elements.punishmentSlider.value);
+            const punishmentAmount = punishmentCost * gameData.punishmentMultiplier;
+    
+            const response = {
+                trialNumber: gameData.currentTrialIndex + 1,
+                originalIndex: trial.originalIndex,
+                proposerAmount: trial.proposerAmount,
+                receiverAmount: trial.receiverAmount,
+                unfairness: trial.unfairness,
+                punishmentCost: punishmentCost,
+                punishmentAmount: punishmentAmount,
+                trialStartTime: trial.trialStartTime,
+                decisionTime: new Date().toISOString(),
+                RT: new Date() - new Date(trial.trialStartTime)
+            };
+    
+            gameData.responses.push(response);
+            gameData.currentMoney -= punishmentCost;
+    
+            if (gameData.currentTrialIndex < gameData.trials.length - 1) {
+                gameData.currentTrialIndex++;
+                showTrial();
+            } else {
+                showResults();
+            }
+        }
+    
+        // 显示结果
+        function showResults() {
+            screens.trial.classList.add('hidden');
+            screens.results.classList.remove('hidden');
+    
+            // 按原始顺序排序显示决策
+            const sortedResponses = [...gameData.responses].sort((a, b) => 
+                a.proposerAmount - b.proposerAmount);
+    
+            const summary = document.getElementById('decisions-summary');
+            summary.innerHTML = '<h3 class="font-semibold text-gray-800 mb-3">决策记录：</h3>';
+            
+            sortedResponses.forEach((response) => {
+                summary.innerHTML += `
+                    <div class="mb-3 p-3 ${response.punishmentAmount > 0 ? 'bg-blue-50' : 'bg-gray-50'} rounded-lg">
+                        <div class="flex justify-between items-center">
+                            <span>分配方案 ${response.proposerAmount}:${response.receiverAmount}</span>
+                            <span class="font-medium ${response.punishmentAmount > 0 ? 'text-blue-600' : 'text-gray-600'}">
+                                惩罚：${response.punishmentAmount}
+                            </span>
+                        </div>
+                        <div class="text-sm text-gray-500 mt-1">
+                            消耗金币：${response.punishmentCost}
+                        </div>
+                    </div>
+                `;
+            });
+    
+            document.getElementById('final-money').textContent = gameData.currentMoney;
+        }
+    
+        // 下载数据
+        document.getElementById('download-button').addEventListener('click', () => {
+            const headers = [
+                'participantId',
+                'trialNumber',
+                'originalIndex',
+                'proposerAmount',
+                'receiverAmount',
+                'unfairness',
+                'punishmentCost',
+                'punishmentAmount',
+                'trialStartTime',
+                'decisionTime',
+                'RT'
+            ];
+    
+            const csvRows = [headers.join(',')];
+            gameData.responses.forEach(response => {
+                const row = headers.map(header => response[header]);
+                csvRows.push(row.join(','));
+            });
+    
+            const csvContent = csvRows.join('\n');
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `third_party_punishment_P${gameData.participantId}_${new Date().getTime()}.csv`;
+            
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+    
+            const downloadButton = document.getElementById('download-button');
+            downloadButton.textContent = '数据已下载';
+            downloadButton.disabled = true;
+            downloadButton.classList.remove('hover:bg-green-700');
+        });
+    
+        // 初始化游戏
+        document.getElementById('start-button').addEventListener('click', () => {
+            gameData.initializeTrials();
+            screens.intro.classList.add('hidden');
+            screens.trial.classList.remove('hidden');
+            gameData.startTime = new Date().toISOString();
+            showTrial();
+        });
+    
+        // 确认按钮事件
+        elements.confirmButton.addEventListener('click', makeDecision);
+    </script>
+    </body>
+    </html>

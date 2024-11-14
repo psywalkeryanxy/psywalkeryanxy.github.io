@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>理想自我判断任务</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: black;
+            color: white;
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            cursor: default;
+        }
+
+        .screen {
+            display: none;
+            width: 100%;
+            max-width: 1200px;
+            text-align: center;
+        }
+
+        .screen.active {
+            display: block;
+        }
+
+        .trait-display {
+            font-size: 48px;
+            font-weight: bold;
+            margin: 50px 0;
+        }
+
+        .options-container {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 40px;
+        }
+
+        .option {
+            padding: 15px 30px;
+            border: 2px solid white;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .option:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .fixation {
+            font-size: 40px;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        button {
+            background-color: white;
+            color: black;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 5px;
+            font-size: 18px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+
+        button:hover {
+            background-color: #cccccc;
+        }
+
+        .results-container {
+            margin: 20px auto;
+            max-width: 600px;
+            text-align: left;
+            padding: 20px;
+        }
+
+        .feedback {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        #positivity-score {
+            font-size: 24px;
+            font-weight: bold;
+            color: #4CAF50;
+            margin: 10px 0;
+        }
+
+        #interpretation {
+            font-size: 16px;
+            line-height: 1.5;
+            color: #cccccc;
+        }
+    </style>
+</head>
+<body>
+    <!-- 指导语屏幕 -->
+    <div id="intro-screen" class="screen active">
+        <h1>理想自我判断任务</h1>
+        <div style="max-width: 800px; margin: 0 auto; text-align: left; line-height: 1.6;">
+            <p>这个是理想自我任务，这个任务是请您判断<strong>现在的您自己离这个词所描述的那样还有多远，也就是请您判断现在的您和理想的自己的距离。</strong></p>
+            <p>一共会有4个选项：</p>
+            <ul>
+                <li>非常近</li>
+                <li>有点近</li>
+                <li>有点远</li>
+                <li>非常远</li>
+            </ul>
+            <p>请您用鼠标来做判断。每个词只出现3秒，请您尽量快速地在十字注视点消失之前作出判断。</p>
+        </div>
+        <button id="start-button">开始实验</button>
+    </div>
+
+    <!-- 实验屏幕 -->
+    <div id="task-screen" class="screen">
+        <div id="trait-word" class="trait-display"></div>
+        <div class="options-container">
+            <div class="option" data-value="4">非常近</div>
+            <div class="option" data-value="3">有点近</div>
+            <div class="option" data-value="2">有点远</div>
+            <div class="option" data-value="1">非常远</div>
+        </div>
+        <div id="fixation" class="fixation" style="display: none">+</div>
+    </div>
+
+    <!-- 结果屏幕 -->
+    <div id="results-screen" class="screen">
+        <h1>实验完成</h1>
+        <div class="results-container">
+            <div class="feedback">
+                <h2>您的自我评价结果</h2>
+                <p id="positivity-score"></p>
+                <p id="interpretation"></p>
+            </div>
+        </div>
+        <button id="download-results">下载数据</button>
+    </div>
+
+    <script>
+        // 特质词数据
+        const traits = [
+            "自信", "真诚", "人品好", "言而有信", "乐观",
+            "刻苦", "坚强", "豁达", "积极向上", "有远见",
+            "守时", "独立", "有主见", "正直", "公正",
+            "进取", "镇定", "善始善终", "聪明", "沉着",
+            "负责", "稳重", "努力", "明智", "上进",
+            "友善", "能干", "思维敏捷", "不屈不挠", "朝气蓬勃",
+            "大度", "大方", "理智", "随和", "好学",
+            "讲理", "冷静", "勇敢", "处事周到", "讲秩序",
+            "务实", "自律", "精力充沛", "创新", "自强不息",
+            "知足", "称职", "勤奋"
+        ];
+
+        let currentTrial = 0;
+        const responses = [];
+        let trialTimeout;
+        let participantId = Math.floor(100000 + Math.random() * 900000);
+
+        // 显示屏幕切换函数
+        function showScreen(screenId) {
+            document.querySelectorAll('.screen').forEach(screen => {
+                screen.classList.remove('active');
+            });
+            document.getElementById(screenId).classList.add('active');
+
+            if (screenId === 'results-screen') {
+                showResults();
+            }
+        }
+
+        // 显示fixation
+        function showFixation() {
+            clearTimeout(trialTimeout);
+            document.getElementById('trait-word').style.display = 'none';
+            document.querySelector('.options-container').style.display = 'none';
+            document.getElementById('fixation').style.display = 'block';
+            
+            setTimeout(() => {
+                document.getElementById('fixation').style.display = 'none';
+                showTrial();
+            }, 500);
+        }
+
+        // 显示trial
+        function showTrial() {
+            if (currentTrial >= traits.length) {
+                showScreen('results-screen');
+                return;
+            }
+
+            const trait = traits[currentTrial];
+            document.getElementById('trait-word').textContent = trait;
+            document.getElementById('trait-word').style.display = 'block';
+            document.querySelector('.options-container').style.display = 'flex';
+
+            trialStartTime = Date.now();
+
+            // 3秒后自动进入下一个trial
+            trialTimeout = setTimeout(() => {
+                recordResponse(null); // 记录未响应
+            }, 3000);
+        }
+
+        // 计算积极程度
+        function calculatePositivity() {
+            const validResponses = responses.filter(r => r.response !== null);
+            if (validResponses.length === 0) return 0;
+
+            const totalScore = validResponses.reduce((sum, r) => sum + r.response, 0);
+            return (totalScore / validResponses.length / 4) * 100; // 转换为百分比
+        }
+
+        // 解释积极程度
+        function interpretPositivity(score) {
+            if (score >= 90) {
+                return "您对自己的现状非常有信心，认为自己已经非常接近理想的状态。保持这种积极的态度，继续追求更好的自己！";
+            } else if (score >= 75) {
+                return "您对自己的评价相当积极，认为自己在很多方面都接近理想状态。这种自信将帮助您在未来取得更大的进步。";
+            } else if (score >= 60) {
+                return "您对自己持有较为积极的评价，认识到了自己的优点，同时也意识到还有提升的空间。这种平衡的认知有助于自我提升。";
+            } else if (score >= 45) {
+                return "您对自己的评价较为谨慎，看到了与理想自我之间的差距。这种认知可以成为自我提升的动力。";
+            } else {
+                return "您对自己的现状要求较高，与理想自我相比看到了较大的差距。建议适当认可自己的进步，保持积极向上的心态。";
+            }
+        }
+
+        // 记录响应
+        function recordResponse(value) {
+            clearTimeout(trialTimeout);
+            const response = {
+                participantId: participantId,
+                trialNumber: currentTrial + 1,
+                trait: traits[currentTrial],
+                response: value,
+                rt: value !== null ? Date.now() - trialStartTime : null,
+                timestamp: new Date().toISOString()
+            };
+            
+            responses.push(response);
+            currentTrial++;
+            showFixation();
+        }
+
+        // 显示结果
+        function showResults() {
+            const positivityScore = calculatePositivity();
+            document.getElementById('positivity-score').textContent = 
+                `积极程度：${positivityScore.toFixed(1)}%`;
+            document.getElementById('interpretation').textContent = 
+                interpretPositivity(positivityScore);
+        }
+
+        // 实验初始化
+        let trialStartTime;
+
+        document.getElementById('start-button').addEventListener('click', () => {
+            showScreen('task-screen');
+            showTrial();
+        });
+
+        // 添加选项点击事件
+        document.querySelectorAll('.option').forEach(option => {
+            option.addEventListener('click', () => {
+                recordResponse(parseInt(option.dataset.value));
+            });
+        });
+
+        document.getElementById('download-results').addEventListener('click', () => {
+            const headers = [
+                'participantId',
+                'trialNumber',
+                'trait',
+                'response',
+                'rt',
+                'timestamp',
+                'positivityScore'
+            ];
+
+            const positivityScore = calculatePositivity();
+            const csv = [headers.join(',')];
+            
+            responses.forEach(r => {
+                const row = [
+                    r.participantId,
+                    r.trialNumber,
+                    r.trait,
+                    r.response,
+                    r.rt,
+                    r.timestamp,
+                    positivityScore.toFixed(1)
+                ];
+                csv.push(row.join(','));
+            });
+
+            const csvContent = csv.join('\n');
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `ideal_self_P${participantId}.csv`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        });
+    </script>
+</body>
+</html>

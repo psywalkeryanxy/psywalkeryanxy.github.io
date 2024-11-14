@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Working Memory Assessment</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .letter-display {
+            font-size: 72px;
+            font-weight: bold;
+            width: 150px;
+            height: 150px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 3px dashed #ffffff;
+            border-radius: 10px;
+            transition: border-color 0.3s ease;
+        }
+
+        .fixation {
+            font-size: 72px;
+            font-weight: bold;
+            color: white;
+        }
+
+        .letter-correct { border-color: #4CAF50; }
+        .letter-incorrect { border-color: #FF5252; }
+
+        .instruction {
+            max-width: 900px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        .example-container {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .sequence-display {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin: 15px 0;
+        }
+
+        .example-letter {
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            border-radius: 8px;
+            font-size: 24px;
+            font-weight: bold;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .current-letter {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: white;
+        }
+
+        .click-area {
+            cursor: pointer;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            margin-top: 20px;
+            text-align: center;
+            transition: background-color 0.3s ease;
+        }
+
+        .click-area:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .performance-card {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 20px;
+            margin: 15px 0;
+        }
+
+        .performance-level {
+            font-size: 24px;
+            font-weight: bold;
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 8px;
+        }
+
+        .excellent { background: #4CAF50; color: white; }
+        .good { background: #2196F3; color: white; }
+        .average { background: #FF9800; color: white; }
+        .needsPractice { background: #F44336; color: white; }
+    </style>
+</head>
+
+
+<body class="bg-gray-900 min-h-screen flex items-center justify-center text-white p-8">
+    <!-- 1-Back Instructions -->
+    <div id="instruction-1back" class="instruction">
+        <h1 class="text-3xl font-bold mb-6 text-center">Working Memory Assessment: 1-Back Task</h1>
+        
+        <div class="space-y-6 mb-8">
+            <p class="text-xl">This is a test of your working memory. Here's what you'll do:</p>
+
+            <div class="example-container">
+                <p class="text-green-500 font-bold mb-2">1-Back Rule:</p>
+                <p>Click when the current letter matches the previous letter. The border will turn green for correct responses and red for incorrect ones.</p>
+                
+                <div class="sequence-display">
+                    <div class="sequence-letters flex items-center gap-4">
+                        <div class="example-letter">T</div>
+                        <div class="example-letter current-letter">T</div>
+                    </div>
+                    <div class="text-green-500 text-2xl">← Click (Match!)</div>
+                </div>
+
+                <div class="sequence-display">
+                    <div class="sequence-letters flex items-center gap-4">
+                        <div class="example-letter">T</div>
+                        <div class="example-letter current-letter">K</div>
+                    </div>
+                    <div class="text-red-500 text-2xl">← Don't Click (Different)</div>
+                </div>
+            </div>
+
+            <div class="bg-blue-900 p-4 rounded-lg">
+                <p class="font-bold">Important:</p>
+                <ul class="list-disc list-inside space-y-2">
+                    <li>Each trial starts with a "+" for 200ms</li>
+                    <li>Each letter appears for 1 second</li>
+                    <li>You need 80% accuracy in practice to continue</li>
+                    <li>The practice has 10 trials</li>
+                </ul>
+            </div>
+        </div>
+
+        <button id="start-practice-1back" class="bg-green-500 text-white px-8 py-4 text-xl rounded-lg mx-auto block hover:bg-green-600 transition-colors">
+            Start 1-Back Practice
+        </button>
+    </div>
+
+    <!-- Task Screen -->
+    <div id="task-screen" class="hidden text-center">
+        <div class="fixed top-4 left-4 text-lg">
+            Block: <span id="current-block">Practice</span>
+        </div>
+        
+        <div id="letter-display" class="letter-display mx-auto"></div>
+        <div class="click-area mt-8" id="click-area">Click here when letters match</div>
+    </div>
+
+    <!-- Practice Results -->
+    <div id="practice-results" class="instruction hidden">
+        <h2 class="text-2xl font-bold mb-6 text-center">Practice Results</h2>
+        <div id="practice-feedback" class="text-xl text-center mb-8"></div>
+        <div id="practice-buttons" class="flex justify-center gap-4"></div>
+    </div>
+
+    <!-- Task Complete -->
+    <div id="task-complete" class="instruction hidden">
+        <h2 class="text-2xl font-bold mb-6 text-center">Assessment Complete!</h2>
+        <div id="performance-summary" class="performance-card">
+            <h3 class="text-xl font-bold mb-4">Your Working Memory Performance:</h3>
+            <div id="performance-details"></div>
+            <div id="performance-level" class="performance-level"></div>
+        </div>
+        <div class="mt-8">
+            <button id="download-results" class="bg-purple-500 text-white px-6 py-3 rounded-lg mx-auto block hover:bg-purple-600 transition-colors">
+                Download Results
+            </button>
+        </div>
+    </div>
+
+
+    <script>
+        // Game State
+        const gameState = {
+            currentBlock: '1-back',
+            isPractice: true,
+            trialCount: 0,
+            mainTrials: 30,
+            practiceTrials: 10,
+            currentLetter: '',
+            previousLetters: [],
+            trialData: [],
+            startTime: null,
+            hasResponded: false,
+            practiceCorrect: 0,
+            participantId: Math.floor(100000000 + Math.random() * 900000000).toString(),
+            blockResults: {
+                '1-back': { accuracy: 0, reactionTime: 0 }
+            }
+        };
+    
+        const letters = ['B', 'C', 'D', 'F', 'G', 'H', 'J', 'K', 'L', 'M', 'N', 'P', 'Q', 'R', 'S', 'T'];
+        
+        const screens = {
+            instruction1Back: document.getElementById('instruction-1back'),
+            practiceResults: document.getElementById('practice-results'),
+            task: document.getElementById('task-screen'),
+            complete: document.getElementById('task-complete'),
+            letterDisplay: document.getElementById('letter-display'),
+            currentBlock: document.getElementById('current-block')
+        };
+    
+        function getRandomLetter() {
+            return letters[Math.floor(Math.random() * letters.length)];
+        }
+    
+        function shouldBeMatch() {
+            return Math.random() < 0.3;
+        }
+    
+        function generateNextLetter() {
+            if (gameState.previousLetters.length < 1) {
+                return getRandomLetter();
+            }
+        
+            const shouldMatch = shouldBeMatch();
+            
+            if (shouldMatch) {
+                return gameState.previousLetters[0];
+            }
+        
+            let newLetter;
+            do {
+                newLetter = getRandomLetter();
+            } while (newLetter === gameState.previousLetters[0]);
+            
+            return newLetter;
+        }
+    
+        function showFeedback(isCorrect) {
+            screens.letterDisplay.classList.remove('letter-correct', 'letter-incorrect');
+            screens.letterDisplay.classList.add(isCorrect ? 'letter-correct' : 'letter-incorrect');
+        }
+    
+        function calculateAccuracy(trials) {
+            if (!trials.length) return 0;
+            return (trials.filter(t => t.isCorrect).length / trials.length) * 100;
+        }
+    
+        function recordTrial(letter, response, isMatch, isCorrect, rt) {
+            const trial = {
+                participantId: gameState.participantId,
+                block: gameState.currentBlock,
+                phase: gameState.isPractice ? 'practice' : 'main',
+                trialNumber: gameState.trialCount + 1,
+                letter: letter,
+                response: response,
+                isMatch: isMatch,
+                isCorrect: isCorrect,
+                reactionTime: rt,
+                previousLetters: [...gameState.previousLetters],
+                timestamp: new Date().toISOString()
+            };
+        
+            gameState.trialData.push(trial);
+            
+            if (gameState.isPractice && isCorrect) {
+                gameState.practiceCorrect++;
+            }
+        }
+    
+        function showPracticeResults() {
+            const practiceTrials = gameState.trialData.filter(t => t.phase === 'practice');
+            const accuracy = calculateAccuracy(practiceTrials);
+            const passedPractice = accuracy >= 80;
+        
+            const feedbackDiv = document.getElementById('practice-feedback');
+            const buttonsDiv = document.getElementById('practice-buttons');
+            
+            feedbackDiv.innerHTML = `
+                <p>Practice Accuracy: ${accuracy.toFixed(1)}%</p>
+                <p class="mt-4">${passedPractice ? 
+                    'Great job! You can now proceed to the main task.' : 
+                    'You need 80% accuracy to proceed. Let\'s try the practice again.'}</p>
+            `;
+        
+            buttonsDiv.innerHTML = '';
+            if (passedPractice) {
+                const startMainButton = document.createElement('button');
+                startMainButton.className = 'bg-blue-500 text-white px-6 py-3 rounded-lg hover:bg-blue-600 transition-colors';
+                startMainButton.textContent = 'Start Main Task';
+                startMainButton.onclick = () => startBlock(false);
+                buttonsDiv.appendChild(startMainButton);
+            } else {
+                const retryButton = document.createElement('button');
+                retryButton.className = 'bg-yellow-500 text-white px-6 py-3 rounded-lg hover:bg-yellow-600 transition-colors';
+                retryButton.textContent = 'Retry Practice';
+                retryButton.onclick = () => startBlock(true);
+                buttonsDiv.appendChild(retryButton);
+            }
+        }
+    </script>
+
+
+<script>
+    function handleResponse(isResponse) {
+        if (!gameState.startTime || gameState.hasResponded) return;
+    
+        const rt = Date.now() - gameState.startTime;
+        const isMatch = gameState.previousLetters.length > 0 && 
+                       gameState.currentLetter === gameState.previousLetters[0];
+        
+        const isCorrect = (isResponse && isMatch) || (!isResponse && !isMatch);
+        gameState.hasResponded = true;
+    
+        showFeedback(isCorrect);
+        recordTrial(gameState.currentLetter, isResponse ? 'response' : 'no-response', 
+                    isMatch, isCorrect, isResponse ? rt : null);
+    
+        if (gameState.previousLetters.length >= 1) {
+            gameState.previousLetters.pop();
+        }
+        gameState.previousLetters.unshift(gameState.currentLetter);
+        gameState.trialCount++;
+    
+        const maxTrials = gameState.isPractice ? gameState.practiceTrials : gameState.mainTrials;
+        if (gameState.trialCount >= maxTrials) {
+            setTimeout(() => {
+                if (gameState.isPractice) {
+                    screens.task.classList.add('hidden');
+                    screens.practiceResults.classList.remove('hidden');
+                    showPracticeResults();
+                } else {
+                    screens.task.classList.add('hidden');
+                    screens.complete.classList.remove('hidden');
+                    showPerformanceSummary();
+                }
+            }, 500);  // 改为500ms反馈
+        } else {
+            setTimeout(() => {
+                gameState.hasResponded = false;
+                startTrial();
+            }, 500);  // 改为500ms反馈
+        }
+    }
+
+    function startTrial() {
+        screens.letterDisplay.classList.remove('letter-correct', 'letter-incorrect');
+        screens.letterDisplay.textContent = '+';  // 显示注视点
+        screens.letterDisplay.classList.add('fixation');
+
+        // 200ms后显示字母
+        setTimeout(() => {
+            screens.letterDisplay.classList.remove('fixation');
+            screens.letterDisplay.textContent = '';
+            
+            gameState.currentLetter = generateNextLetter();
+            screens.letterDisplay.textContent = gameState.currentLetter;
+            gameState.startTime = Date.now();
+            gameState.hasResponded = false;
+            
+            // 1000ms后如果没有响应，则处理为未响应
+            setTimeout(() => {
+                if (!gameState.hasResponded) {
+                    handleResponse(false);
+                }
+            }, 1000);
+        }, 200);
+    }
+
+    function startBlock(isPractice) {
+        gameState.isPractice = isPractice;
+        gameState.trialCount = 0;
+        gameState.previousLetters = [];
+        gameState.practiceCorrect = 0;
+        gameState.hasResponded = false;
+        
+        screens.instruction1Back.classList.add('hidden');
+        screens.practiceResults.classList.add('hidden');
+        screens.task.classList.remove('hidden');
+        
+        screens.currentBlock.textContent = 
+            `${gameState.currentBlock} ${isPractice ? 'Practice' : 'Main'}`;
+        
+        startTrial();
+    }
+
+    function calculatePerformanceLevel(accuracy) {
+        if (accuracy >= 90) return { level: 'Excellent', color: '#4CAF50' };
+        if (accuracy >= 80) return { level: 'Good', color: '#2196F3' };
+        if (accuracy >= 70) return { level: 'Average', color: '#FF9800' };
+        return { level: 'Needs Practice', color: '#F44336' };
+    }
+
+    function showPerformanceSummary() {
+        const mainTrials = gameState.trialData.filter(t => t.phase === 'main');
+        const accuracy = calculateAccuracy(mainTrials);
+        const performance = calculatePerformanceLevel(accuracy);
+        
+        const detailsDiv = document.getElementById('performance-details');
+        const levelDiv = document.getElementById('performance-level');
+    
+        detailsDiv.innerHTML = `
+            <p class="mb-2">Overall Accuracy: ${accuracy.toFixed(1)}%</p>
+        `;
+    
+        levelDiv.textContent = `Performance Level: ${performance.level}`;
+        levelDiv.style.backgroundColor = performance.color;
+        levelDiv.className = `performance-level ${performance.level.toLowerCase().replace(' ', '')}`;
+    }
+
+    function downloadData() {
+        const headers = [
+            'participantId',
+            'block',
+            'phase',
+            'trialNumber',
+            'letter',
+            'response',
+            'isMatch',
+            'isCorrect',
+            'reactionTime',
+            'previousLetters',
+            'timestamp'
+        ];
+    
+        const csvContent = [
+            headers.join(','),
+            ...gameState.trialData.map(trial => 
+                headers.map(header => {
+                    const value = trial[header];
+                    return typeof value === 'string' && value.includes(',') ?
+                        `"${value}"` : value;
+                }).join(',')
+            )
+        ].join('\n');
+    
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `nback_task_${gameState.participantId}.csv`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+    }
+
+    // Event Listeners
+    document.getElementById('start-practice-1back').addEventListener('click', () => {
+        startBlock(true);
+    });
+
+    document.getElementById('click-area').addEventListener('click', () => {
+        handleResponse(true);
+    });
+
+    document.getElementById('download-results').addEventListener('click', downloadData);
+</script>
+</body>
+</html>

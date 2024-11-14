@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Investment Trust Study</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .amount-option {
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .amount-option:hover {
+            border-color: #3b82f6;
+            transform: translateY(-2px);
+        }
+
+        .amount-option.selected {
+            background: #3b82f6;
+            color: white;
+            border-color: #2563eb;
+        }
+
+        .info-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen p-8">
+    <!-- Introduction Screen -->
+    <div id="intro-screen" class="max-w-2xl mx-auto">
+        <div class="info-card p-8 mb-8">
+            <h1 class="text-2xl font-bold mb-6 text-gray-800">投资决策研究</h1>
+            
+            <div class="space-y-4 text-gray-600">
+                <div class="bg-blue-50 p-4 rounded-lg">
+                    <h2 class="font-semibold text-blue-800 mb-2">研究说明：</h2>
+                    <ul class="list-disc list-inside space-y-2 text-blue-900">
+                        <li>您将获得9个代币作为初始资金</li>
+                        <li>您可以选择将其中一部分投资给另一位参与者</li>
+                        <li>投资的金额将被增加为原来的3倍</li>
+                        <li>投资对象将决定从增加后的金额中返还给您多少</li>
+                    </ul>
+                </div>
+
+                <div class="bg-yellow-50 p-4 rounded-lg">
+                    <h2 class="font-semibold text-yellow-800">注意：</h2>
+                    <p class="text-yellow-900">投资对象完全可以自由决定返还金额。</p>
+                </div>
+            </div>
+
+            <button id="start-button" 
+                    class="mt-8 bg-blue-600 text-white px-8 py-3 rounded-lg font-medium hover:bg-blue-700 transition-colors w-full">
+                开始研究
+            </button>
+        </div>
+    </div>
+
+    <!-- Investment Screen -->
+    <div id="investment-screen" class="max-w-2xl mx-auto hidden">
+        <div class="info-card p-8">
+            <h2 class="text-2xl font-bold mb-6 text-gray-800">投资决策</h2>
+            
+            <div class="bg-gray-50 p-4 rounded-lg mb-6">
+                <h3 class="font-semibold text-gray-700 mb-2">您的初始资金：9代币</h3>
+                <p class="text-gray-600">请选择您要投资的金额：</p>
+            </div>
+
+            <div class="grid grid-cols-5 gap-4 mb-8">
+                <div class="amount-option text-center" data-value="0">0</div>
+                <div class="amount-option text-center" data-value="1">1</div>
+                <div class="amount-option text-center" data-value="2">2</div>
+                <div class="amount-option text-center" data-value="3">3</div>
+                <div class="amount-option text-center" data-value="4">4</div>
+                <div class="amount-option text-center" data-value="5">5</div>
+                <div class="amount-option text-center" data-value="6">6</div>
+                <div class="amount-option text-center" data-value="7">7</div>
+                <div class="amount-option text-center" data-value="8">8</div>
+                <div class="amount-option text-center" data-value="9">9</div>
+            </div>
+
+            <div class="bg-gray-50 p-4 rounded-lg mb-6 hidden" id="selection-summary">
+                <p class="text-gray-700">您选择投资 <span id="invested-amount" class="font-bold text-blue-600">0</span> 代币</p>
+                <p class="text-gray-700">保留 <span id="kept-amount" class="font-bold text-green-600">9</span> 代币</p>
+            </div>
+
+            <button id="confirm-button" 
+                    disabled
+                    class="bg-gray-400 text-white px-8 py-3 rounded-lg font-medium transition-colors w-full cursor-not-allowed">
+                确认投资
+            </button>
+        </div>
+    </div>
+
+    <!-- Completion Screen -->
+    <div id="completion-screen" class="max-w-2xl mx-auto hidden">
+        <div class="info-card p-8">
+            <h2 class="text-2xl font-bold mb-6 text-gray-800">研究完成</h2>
+            <p class="text-gray-600 mb-6">感谢您的参与。</p>
+            <button id="download-button" 
+                    class="bg-green-600 text-white px-8 py-3 rounded-lg font-medium hover:bg-green-700 transition-colors w-full">
+                下载数据
+            </button>
+        </div>
+    </div>
+
+
+    <script>
+        // 游戏数据记录
+        const gameData = {
+            participantId: Math.floor(100000 + Math.random() * 900000),
+            trial: {
+                startTime: null,
+                decisionTime: null,
+                RT: null,
+                initialAmount: 9,
+                investedAmount: null
+            }
+        };
+    
+        // DOM元素
+        const screens = {
+            intro: document.getElementById('intro-screen'),
+            investment: document.getElementById('investment-screen'),
+            completion: document.getElementById('completion-screen')
+        };
+    
+        const elements = {
+            confirmButton: document.getElementById('confirm-button'),
+            selectionSummary: document.getElementById('selection-summary'),
+            investedAmount: document.getElementById('invested-amount'),
+            keptAmount: document.getElementById('kept-amount')
+        };
+    
+        let selectedAmount = null;
+    
+        // 开始按钮事件处理
+        document.getElementById('start-button').addEventListener('click', () => {
+            screens.intro.classList.add('hidden');
+            screens.investment.classList.remove('hidden');
+            gameData.trial.startTime = new Date().toISOString();
+        });
+    
+        // 金额选项点击处理
+        document.querySelectorAll('.amount-option').forEach(option => {
+            option.addEventListener('click', () => {
+                // 移除其他选项的选中状态
+                document.querySelectorAll('.amount-option').forEach(opt => 
+                    opt.classList.remove('selected'));
+                
+                // 添加当前选项的选中状态
+                option.classList.add('selected');
+                selectedAmount = parseInt(option.dataset.value);
+                
+                // 更新显示
+                elements.investedAmount.textContent = selectedAmount;
+                elements.keptAmount.textContent = gameData.trial.initialAmount - selectedAmount;
+                elements.selectionSummary.classList.remove('hidden');
+                
+                // 启用确认按钮
+                elements.confirmButton.disabled = false;
+                elements.confirmButton.classList.remove('bg-gray-400', 'cursor-not-allowed');
+                elements.confirmButton.classList.add('bg-blue-600', 'hover:bg-blue-700');
+            });
+        });
+    
+        // 确认按钮事件处理
+        elements.confirmButton.addEventListener('click', () => {
+            if (selectedAmount !== null) {
+                // 记录决策时间和RT
+                gameData.trial.decisionTime = new Date().toISOString();
+                gameData.trial.RT = new Date(gameData.trial.decisionTime) - new Date(gameData.trial.startTime);
+                
+                // 记录投资决策
+                gameData.trial.investedAmount = selectedAmount;
+    
+                // 直接进入完成界面
+                screens.investment.classList.add('hidden');
+                screens.completion.classList.remove('hidden');
+    
+                // 打印数据到控制台（用于调试）
+                console.log('Trial Data:', gameData);
+            }
+        });
+    
+        // 下载数据按钮事件处理
+        document.getElementById('download-button').addEventListener('click', () => {
+            // 准备CSV数据
+            const headers = [
+                'participantId',
+                'trialStartTime',
+                'decisionTime',
+                'RT',
+                'initialAmount',
+                'investedAmount'
+            ];
+    
+            const values = [
+                gameData.participantId,
+                gameData.trial.startTime,
+                gameData.trial.decisionTime,
+                gameData.trial.RT,
+                gameData.trial.initialAmount,
+                gameData.trial.investedAmount
+            ];
+    
+            // 创建CSV内容
+            const csvContent = [
+                headers.join(','),
+                values.join(',')
+            ].join('\n');
+    
+            // 创建并触发下载
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `trust_game_P${gameData.participantId}_${new Date().getTime()}.csv`;
+            
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+    
+            // 更新下载按钮文本
+            const downloadButton = document.getElementById('download-button');
+            downloadButton.textContent = '数据已下载';
+            downloadButton.disabled = true;
+            downloadButton.classList.remove('hover:bg-green-700');
+        });
+    </script>
+    </body>
+    </html>

@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Balloon Game</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Container Styles */
+        .game-container {
+            width: 1000px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        /* Balloon Base Styles */
+        .balloon {
+            transition: all 0.3s ease;
+            transform-origin: bottom center;
+        }
+
+        /* Coin Styles */
+        .coin {
+            width: 40px;
+            height: 40px;
+            background: gold;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #B8860B;
+            font-weight: bold;
+            border: 2px solid #B8860B;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            transition: transform 0.2s ease;
+        }
+
+        .coin:hover {
+            transform: scale(1.1);
+        }
+
+        /* Animation Keyframes */
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px) rotate(-5deg); }
+            75% { transform: translateX(5px) rotate(5deg); }
+        }
+
+        @keyframes pop {
+            0% { transform: scale(1); opacity: 1; }
+            25% { transform: scale(1.2); opacity: 0.8; }
+            50% { transform: scale(1.4); opacity: 0.5; }
+            75% { transform: scale(1.6); opacity: 0.2; }
+            100% { transform: scale(2); opacity: 0; }
+        }
+
+        @keyframes particleAnimation {
+            0% { transform: translate(0, 0) scale(1); opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { transform: translate(var(--tx), var(--ty)) scale(0); opacity: 0; }
+        }
+
+        @keyframes coinCollect {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+
+        /* Animation Classes */
+        .shake {
+            animation: shake 0.5s ease-in-out;
+        }
+
+        .pop {
+            animation: pop 0.5s ease-out forwards;
+        }
+
+        .particle {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            animation: particleAnimation 0.5s ease-out forwards;
+        }
+
+        .balloon-grow {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        @keyframes warningShake {
+            0%, 100% { transform: rotate(0deg); }
+            25% { transform: rotate(-1deg); }
+            75% { transform: rotate(1deg); }
+        }
+
+        .warning {
+            animation: warningShake 0.5s ease-in-out infinite;
+        }
+
+        /* Button States */
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        button:not(:disabled):hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .game-container {
+                width: 95%;
+                padding: 4px;
+            }
+        }
+    </style>
+</head>
+<body class="bg-blue-50 min-h-screen py-8">
+    <div class="game-container bg-white rounded-2xl shadow-lg p-8">
+        <!-- Header -->
+        <div class="text-center mb-8">
+            <h1 class="text-4xl font-bold mb-2 text-blue-600">🎈 Balloon Game 🎈</h1>
+            <p class="text-lg text-gray-600" id="participant-id"></p>
+        </div>
+
+        <!-- Score Display -->
+        <div class="text-center mb-6 space-y-4">
+            <div class="text-2xl font-bold">
+                <span class="text-yellow-500">Coins: <span id="total-coins">0</span></span>
+                <span class="mx-4">|</span>
+                <span class="text-purple-500">Balloon: <span id="current-trial">0</span>/20</span>
+            </div>
+            <div class="text-xl text-blue-500" id="current-coins">
+                Current Balloon Coins: 0
+            </div>
+        </div>
+
+        <!-- Game Area -->
+        <div class="flex justify-center items-center space-x-12">
+            <!-- Balloon and Coins -->
+            <div class="flex flex-col items-center space-y-4">
+                <div id="balloon-container" class="relative" style="width: 200px; height: 250px;">
+                    <svg id="balloon" class="balloon" width="200" height="250" viewBox="0 0 200 250">
+                        <!-- Balloon string -->
+                        <path id="balloon-string" 
+                              d="M100 200 Q 110 220 100 240" 
+                              stroke="#666" 
+                              fill="none" 
+                              stroke-width="2"/>
+                        
+                        <!-- Balloon body -->
+                        <ellipse id="balloon-body" 
+                                cx="100" cy="100" 
+                                rx="30" ry="40" 
+                                fill="#FF6B6B"/>
+                        
+                        <!-- Balloon highlight -->
+                        <ellipse id="balloon-highlight" 
+                                cx="80" cy="60" 
+                                rx="8" ry="10" 
+                                fill="#FFE2E2" 
+                                opacity="0.6"/>
+                    </svg>
+                </div>
+
+                <div id="coin-container" class="flex flex-wrap gap-2 justify-center max-w-xs">
+                </div>
+            </div>
+
+            <!-- Game Controls -->
+            <div class="flex flex-col space-y-6">
+                <button id="pump-button"
+                        class="px-8 py-4 bg-green-500 text-white text-xl rounded-xl 
+                               hover:bg-green-600 transition-colors transform hover:scale-105">
+                    Pump! 💨
+                </button>
+                <button id="collect-button"
+                        class="px-8 py-4 bg-yellow-500 text-white text-xl rounded-xl 
+                               hover:bg-yellow-600 transition-colors transform hover:scale-105">
+                    Collect Coins! 🪙
+                </button>
+            </div>
+        </div>
+
+        <!-- Game Controls -->
+        <div class="mt-8 text-center">
+            <button id="start-button"
+                    class="px-8 py-4 bg-blue-500 text-white text-xl rounded-xl 
+                           hover:bg-blue-600 transition-colors">
+                Start New Game! 🎮
+            </button>
+            <button id="download-button"
+                    class="px-8 py-4 bg-purple-500 text-white text-xl rounded-xl 
+                           hover:bg-purple-600 transition-colors hidden ml-4">
+                Download Results 📊
+            </button>
+        </div>
+
+        <!-- Instructions -->
+        <div class="mt-6 text-center text-lg text-gray-600">
+            <p>Pump the balloon to collect coins! 🎈</p>
+            <p>But be careful - if it pops, you'll lose the coins from this balloon! 💥</p>
+        </div>
+    </div>
+
+
+    <script>
+        // Game State and Configuration
+        const gameState = {
+            active: false,
+            currentTrial: 0,
+            maxTrials: 20,
+            currentPumps: 0,
+            totalCoins: 0,
+            currentCoins: 0,
+            participantId: Math.floor(100000000 + Math.random() * 900000000).toString(),
+            trialData: [],
+            balloonType: [],
+            popThreshold: null,
+            initialBalloonSize: {
+                rx: 30,
+                ry: 40
+            },
+            pumpGrowth: {
+                rx: 4,
+                ry: 5
+            },
+            startTime: null,
+            lastPumpTime: null,
+            config: {
+                easyRange: { min: 1, max: 8 },
+                hardRange: { min: 1, max: 16 },
+                pumpInterval: 200,
+                popAnimationDuration: 500,
+                particleCount: 20
+            }
+        };
+        
+        // Balloon Types Configuration
+        const balloonTypes = {
+            easy: {
+                color: '#FF6B6B',
+                highlightColor: '#FFE2E2',
+                particleColors: ['#FF6B6B', '#FFE2E2', '#FF8888'],
+                maxPumps: 8
+            },
+            hard: {
+                color: '#FF4444',
+                highlightColor: '#FFD5D5',
+                particleColors: ['#FF4444', '#FFD5D5', '#FF6666'],
+                maxPumps: 16
+            }
+        };
+        
+        // Initialization Functions
+        function initializeBalloonTypes() {
+            let types = Array(10).fill('easy').concat(Array(10).fill('hard'));
+            for (let i = types.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [types[i], types[j]] = [types[j], types[i]];
+            }
+            return types;
+        }
+        
+        function generatePopThreshold(type) {
+            const range = type === 'easy' ? 
+                gameState.config.easyRange : 
+                gameState.config.hardRange;
+            return Math.floor(Math.random() * (range.max - range.min + 1)) + range.min;
+        }
+        
+        // Balloon Visual Functions
+        function updateBalloonSize() {
+            const balloon = document.getElementById('balloon-body');
+            const highlight = document.getElementById('balloon-highlight');
+            
+            const currentRx = gameState.initialBalloonSize.rx + 
+                (gameState.pumpGrowth.rx * gameState.currentPumps);
+            const currentRy = gameState.initialBalloonSize.ry + 
+                (gameState.pumpGrowth.ry * gameState.currentPumps);
+            
+            balloon.classList.add('balloon-grow');
+            highlight.classList.add('balloon-grow');
+            
+            balloon.setAttribute('rx', currentRx);
+            balloon.setAttribute('ry', currentRy);
+            
+            highlight.setAttribute('rx', currentRx * 0.25);
+            highlight.setAttribute('ry', currentRy * 0.25);
+            
+            const popRisk = gameState.currentPumps / gameState.popThreshold;
+            if (popRisk > 0.8) {
+                balloon.parentElement.classList.add('warning');
+            } else {
+                balloon.parentElement.classList.remove('warning');
+            }
+        }
+        
+        function resetBalloonSize() {
+            const balloon = document.getElementById('balloon-body');
+            const highlight = document.getElementById('balloon-highlight');
+            
+            balloon.classList.remove('balloon-grow');
+            highlight.classList.remove('balloon-grow');
+            
+            balloon.setAttribute('rx', gameState.initialBalloonSize.rx);
+            balloon.setAttribute('ry', gameState.initialBalloonSize.ry);
+            highlight.setAttribute('rx', gameState.initialBalloonSize.rx * 0.25);
+            highlight.setAttribute('ry', gameState.initialBalloonSize.ry * 0.25);
+            
+            balloon.parentElement.classList.remove('warning');
+        }
+        
+        function createParticles(x, y) {
+            const container = document.getElementById('balloon-container');
+            const currentType = gameState.balloonType[gameState.currentTrial - 1];
+            const colors = balloonTypes[currentType].particleColors;
+            
+            for (let i = 0; i < gameState.config.particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                
+                particle.style.left = x + 'px';
+                particle.style.top = y + 'px';
+                
+                const angle = (Math.random() * Math.PI * 2);
+                const distance = 50 + Math.random() * 100;
+                const tx = Math.cos(angle) * distance;
+                const ty = Math.sin(angle) * distance;
+                
+                particle.style.setProperty('--tx', `${tx}px`);
+                particle.style.setProperty('--ty', `${ty}px`);
+                
+                container.appendChild(particle);
+                setTimeout(() => particle.remove(), 500);
+            }
+        }
+        
+        function popBalloon() {
+            const balloon = document.getElementById('balloon');
+            const balloonBody = document.getElementById('balloon-body');
+            const balloonString = document.getElementById('balloon-string');
+            const balloonHighlight = document.getElementById('balloon-highlight');
+            
+            const rect = balloon.getBoundingClientRect();
+            const centerX = rect.width / 2;
+            const centerY = rect.height / 2;
+            createParticles(centerX, centerY);
+            
+            [balloonBody, balloonString, balloonHighlight].forEach(element => {
+                element.style.opacity = '0';
+            });
+            
+            balloon.classList.add('pop');
+            
+            setTimeout(() => {
+                [balloonBody, balloonString, balloonHighlight].forEach(element => {
+                    element.style.opacity = '1';
+                });
+                balloon.classList.remove('pop');
+                resetBalloonSize();
+            }, gameState.config.popAnimationDuration);
+        }
+        
+        function updateDisplays() {
+            document.getElementById('total-coins').textContent = gameState.totalCoins;
+            document.getElementById('current-coins').textContent = 
+                `Current Balloon Coins: ${gameState.currentCoins}`;
+            document.getElementById('current-trial').textContent = 
+                `${gameState.currentTrial}/${gameState.maxTrials}`;
+            
+            const coinContainer = document.getElementById('coin-container');
+            coinContainer.innerHTML = '';
+            for (let i = 0; i < gameState.currentCoins; i++) {
+                const coin = document.createElement('div');
+                coin.className = 'coin';
+                coin.textContent = '🪙';
+                coin.style.animationDelay = `${i * 50}ms`;
+                coinContainer.appendChild(coin);
+            }
+        }
+        
+        function updateBalloonColor() {
+            const balloonBody = document.getElementById('balloon-body');
+            const balloonHighlight = document.getElementById('balloon-highlight');
+            const currentType = gameState.balloonType[gameState.currentTrial - 1];
+            
+            balloonBody.setAttribute('fill', balloonTypes[currentType].color);
+            balloonHighlight.setAttribute('fill', balloonTypes[currentType].highlightColor);
+        }
+        
+        // Game Control Functions
+        function startNewTrial() {
+            if (gameState.currentTrial >= gameState.maxTrials) {
+                endGame();
+                return;
+            }
+        
+            gameState.currentTrial++;
+            gameState.currentPumps = 0;
+            gameState.currentCoins = 0;
+            gameState.startTime = new Date();
+            gameState.lastPumpTime = null;
+        
+            const balloonType = gameState.balloonType[gameState.currentTrial - 1];
+            gameState.popThreshold = generatePopThreshold(balloonType);
+        
+            resetBalloonSize();
+            updateBalloonColor();
+            updateDisplays();
+        
+            document.getElementById('pump-button').disabled = false;
+            document.getElementById('collect-button').disabled = false;
+        }
+        
+        function handlePump() {
+            if (!gameState.active || 
+                (gameState.lastPumpTime && 
+                 Date.now() - gameState.lastPumpTime < gameState.config.pumpInterval)) {
+                return;
+            }
+        
+            gameState.currentPumps++;
+            gameState.currentCoins++;
+            gameState.lastPumpTime = Date.now();
+        
+            updateBalloonSize();
+            updateDisplays();
+        
+            const balloon = document.getElementById('balloon');
+            balloon.classList.add('shake');
+            setTimeout(() => balloon.classList.remove('shake'), 200);
+        
+            if (gameState.currentPumps >= gameState.popThreshold) {
+                gameState.currentCoins = 0;
+                popBalloon();
+                recordTrialData(true);
+                setTimeout(startNewTrial, gameState.config.popAnimationDuration);
+            }
+        }
+        
+        function handleCollect() {
+            if (!gameState.active) return;
+        
+            gameState.totalCoins += gameState.currentCoins;
+            recordTrialData(false);
+            startNewTrial();
+        }
+        
+        function startGame() {
+            // Hide completion message if it exists
+            const existingMessage = document.querySelector('.completion-message');
+            if (existingMessage) {
+                existingMessage.remove();
+            }
+            
+            gameState.active = true;
+            gameState.currentTrial = 0;
+            gameState.totalCoins = 0;
+            gameState.trialData = [];
+            gameState.balloonType = initializeBalloonTypes();
+            
+            document.getElementById('start-button').disabled = true;
+            document.getElementById('download-button').classList.add('hidden');
+            
+            startNewTrial();
+        }
+        
+        function endGame() {
+            gameState.active = false;
+            
+            // Disable game buttons
+            document.getElementById('pump-button').disabled = true;
+            document.getElementById('collect-button').disabled = true;
+            
+            // Enable start button and show download button
+            document.getElementById('start-button').disabled = false;
+            document.getElementById('download-button').classList.remove('hidden');
+            
+            // Show completion message
+            const message = document.createElement('div');
+            message.className = 'text-xl text-green-600 font-bold mt-4 text-center';
+            message.textContent = `Game Complete! You collected ${gameState.totalCoins} coins! 🎉`;
+            
+            // Remove any existing message
+            const existingMessage = document.querySelector('.completion-message');
+            if (existingMessage) {
+                existingMessage.remove();
+            }
+            
+            // Add completion message class for easy removal
+            message.classList.add('completion-message');
+            
+            // Insert message before the instructions
+            const instructions = document.querySelector('.mt-6.text-center');
+            instructions.parentNode.insertBefore(message, instructions);
+        }
+        
+        function recordTrialData(popped) {
+            const currentTime = new Date();
+            const trialDuration = gameState.startTime ? 
+                currentTime - gameState.startTime : null;
+        
+            gameState.trialData.push({
+                participantId: gameState.participantId,
+                trialNumber: gameState.currentTrial,
+                balloonType: gameState.balloonType[gameState.currentTrial - 1],
+                popThreshold: gameState.popThreshold,
+                numPumps: gameState.currentPumps,
+                earned: popped ? 0 : gameState.currentCoins,
+                popped: popped,
+                trialDuration: trialDuration,
+                timestamp: currentTime.toISOString()
+            });
+        }
+        
+        function downloadData() {
+            const headers = [
+                'participantId',
+                'trialNumber',
+                'balloonType',
+                'popThreshold',
+                'numPumps',
+                'earned',
+                'popped',
+                'trialDuration',
+                'timestamp'
+            ];
+        
+            const csvContent = [
+                headers.join(','),
+                ...gameState.trialData.map(trial => 
+                    headers.map(header => {
+                        const value = trial[header];
+                        return typeof value === 'string' && value.includes(',') ?
+                            `"${value}"` : value;
+                    }).join(',')
+                )
+            ].join('\n');
+        
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `balloon_task_${gameState.participantId}.csv`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+        
+            // Show download feedback
+            const downloadButton = document.getElementById('download-button');
+            const originalText = downloadButton.textContent;
+            downloadButton.textContent = 'Downloaded! 📥';
+            setTimeout(() => {
+                downloadButton.textContent = originalText;
+            }, 2000);
+        }
+        
+        // Event Listeners
+        document.addEventListener('DOMContentLoaded', () => {
+            // Set participant ID display
+            document.getElementById('participant-id').textContent = 
+                `Player ID: ${gameState.participantId}`;
+        
+            // Button event listeners
+            document.getElementById('start-button').addEventListener('click', startGame);
+            document.getElementById('pump-button').addEventListener('click', handlePump);
+            document.getElementById('collect-button').addEventListener('click', handleCollect);
+            document.getElementById('download-button').addEventListener('click', downloadData);
+        
+            // Keyboard controls
+            document.addEventListener('keydown', (event) => {
+                if (!gameState.active) return;
+        
+                switch(event.key) {
+                    case ' ': // Spacebar
+                    case 'ArrowUp':
+                        event.preventDefault();
+                        handlePump();
+                        break;
+                    case 'Enter':
+                    case 'ArrowDown':
+                        event.preventDefault();
+                        handleCollect();
+                        break;
+                }
+            });
+        
+            // Prevent context menu on game area
+            document.getElementById('balloon-container').addEventListener('contextmenu', 
+                (e) => e.preventDefault()
+            );
+        
+            // Window focus handling
+            window.addEventListener('blur', () => {
+                if (gameState.active) {
+                    document.getElementById('pump-button').disabled = true;
+                    document.getElementById('collect-button').disabled = true;
+                }
+            });
+        
+            window.addEventListener('focus', () => {
+                if (gameState.active) {
+                    document.getElementById('pump-button').disabled = false;
+                    document.getElementById('collect-button').disabled = false;
+                }
+            });
+        });
+        </script>
+
+</body>
+</html>

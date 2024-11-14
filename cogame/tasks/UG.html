@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>收益分配决策研究</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .proposal-card {
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .decision-button {
+            transition: all 0.3s ease;
+        }
+
+        .decision-button:hover {
+            transform: translateY(-2px);
+        }
+
+        .info-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .selected-accept {
+            border-color: #22c55e;
+            background-color: #f0fdf4;
+        }
+
+        .selected-reject {
+            border-color: #ef4444;
+            background-color: #fef2f2;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 4px;
+            background-color: #e2e8f0;
+            border-radius: 2px;
+            margin: 10px 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background-color: #3b82f6;
+            border-radius: 2px;
+            transition: width 0.3s ease;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen p-8">
+    <!-- Introduction Screen -->
+    <div id="intro-screen" class="max-w-3xl mx-auto">
+        <div class="info-card p-8 mb-8">
+            <h1 class="text-2xl font-bold mb-6 text-gray-800">分配决策</h1>
+            
+            <div class="space-y-4 text-gray-600">
+                <div class="bg-blue-50 p-6 rounded-lg">
+                    <h2 class="font-semibold text-blue-800 mb-4 text-xl">情境说明：</h2>
+                    <p class="text-blue-900 leading-relaxed mb-4">
+                        您和另一位参与者通过共同完成一项工作任务，赚取了10个金币。
+                    </p>
+                    <p class="text-blue-900 leading-relaxed mb-4">
+                        对方作为分配者提出了一系列分配方案，您需要决定是否接受每个方案：
+                    </p>
+                    <ul class="list-disc list-inside space-y-2 text-blue-900">
+                        <li>如果您接受方案，双方按照方案金额分配收益</li>
+                        <li>如果您拒绝方案，双方都得0个金币</li>
+                    </ul>
+                </div>
+
+                <div class="bg-yellow-50 p-4 rounded-lg">
+                    <h2 class="font-semibold text-yellow-800">重要提示：</h2>
+                    <p class="text-yellow-900">每个方案都需要您独立决策，您的选择将影响双方的最终收益。</p>
+                </div>
+            </div>
+
+            <button id="start-button" 
+                    class="mt-8 bg-blue-600 text-white px-8 py-3 rounded-lg font-medium hover:bg-blue-700 transition-colors w-full">
+                开始决策
+            </button>
+        </div>
+    </div>
+
+    <!-- Trial Screen -->
+    <div id="trial-screen" class="max-w-3xl mx-auto hidden">
+        <div class="info-card p-8">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-2xl font-bold text-gray-800">方案 <span id="trial-number">1</span>/5</h2>
+            </div>
+            
+            <div class="progress-bar">
+                <div id="progress-fill" class="progress-fill" style="width: 20%"></div>
+            </div>
+            
+            <div class="proposal-card my-8">
+                <div class="text-center space-y-4">
+                    <h3 class="text-xl font-bold text-gray-700">当前分配方案</h3>
+                    <div class="flex justify-center gap-8 text-lg">
+                        <div class="text-blue-600">
+                            对方获得：<span id="proposer-amount" class="font-bold">900</span>金币
+                        </div>
+                        <div class="text-green-600">
+                            您获得：<span id="responder-amount" class="font-bold">100</span>金币
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex justify-center gap-4">
+                <button class="decision-button bg-red-500 text-white px-8 py-4 rounded-lg font-medium hover:bg-red-600 transition-colors" 
+                        onclick="makeDecision(false)">
+                    拒绝方案
+                </button>
+                <button class="decision-button bg-green-500 text-white px-8 py-4 rounded-lg font-medium hover:bg-green-600 transition-colors"
+                        onclick="makeDecision(true)">
+                    接受方案
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Results Screen -->
+    <div id="results-screen" class="max-w-3xl mx-auto hidden">
+        <div class="info-card p-8">
+            <h2 class="text-2xl font-bold mb-6 text-gray-800">研究结果</h2>
+            
+            <div id="sensitivity-results" class="bg-blue-50 p-6 rounded-lg mb-6">
+                <!-- Results will be inserted here -->
+            </div>
+
+            <div id="decisions-summary" class="bg-gray-50 p-6 rounded-lg mb-6">
+                <!-- Summary will be inserted here -->
+            </div>
+
+            <button id="download-button" 
+                    class="bg-green-600 text-white px-8 py-3 rounded-lg font-medium hover:bg-green-700 transition-colors w-full">
+                下载数据
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // 游戏设置和数据记录
+        const gameData = {
+            participantId: Math.floor(100000 + Math.random() * 900000),
+            totalAmount: 1000,
+            currentTrialIndex: 0,
+            startTime: null,
+            trials: [],
+            responses: [],
+            
+            initializeTrials() {
+                const baseTrials = [
+                    { proposerAmount: 9, responderAmount: 1, unfairness: 0.8 },
+                    { proposerAmount: 8, responderAmount: 2, unfairness: 0.6 },
+                    { proposerAmount: 7, responderAmount: 3, unfairness: 0.4 },
+                    { proposerAmount: 6, responderAmount: 4, unfairness: 0.2 },
+                    { proposerAmount: 5, responderAmount: 5, unfairness: 0 }
+                ];
+                
+                // Fisher-Yates洗牌算法
+                for (let i = baseTrials.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [baseTrials[i], baseTrials[j]] = [baseTrials[j], baseTrials[i]];
+                }
+                
+                this.trials = baseTrials.map((trial, index) => ({
+                    ...trial,
+                    originalIndex: index,
+                    trialStartTime: null
+                }));
+            }
+        };
+    
+        // DOM元素
+        const screens = {
+            intro: document.getElementById('intro-screen'),
+            trial: document.getElementById('trial-screen'),
+            results: document.getElementById('results-screen')
+        };
+    
+        // 开始游戏
+        document.getElementById('start-button').addEventListener('click', () => {
+            gameData.initializeTrials();
+            screens.intro.classList.add('hidden');
+            screens.trial.classList.remove('hidden');
+            gameData.startTime = new Date().toISOString();
+            showTrial();
+        });
+    
+        // 更新进度条
+        function updateProgress() {
+            const progress = ((gameData.currentTrialIndex + 1) / gameData.trials.length) * 100;
+            document.getElementById('progress-fill').style.width = `${progress}%`;
+        }
+    
+        // 显示当前试次
+        function showTrial() {
+            const trial = gameData.trials[gameData.currentTrialIndex];
+            document.getElementById('trial-number').textContent = gameData.currentTrialIndex + 1;
+            document.getElementById('proposer-amount').textContent = trial.proposerAmount;
+            document.getElementById('responder-amount').textContent = trial.responderAmount;
+            updateProgress();
+            trial.trialStartTime = new Date().toISOString();
+        }
+    
+        // 处理决策
+        function makeDecision(accepted) {
+            const trial = gameData.trials[gameData.currentTrialIndex];
+            const response = {
+                trialNumber: gameData.currentTrialIndex + 1,
+                originalIndex: trial.originalIndex,
+                proposerAmount: trial.proposerAmount,
+                responderAmount: trial.responderAmount,
+                unfairness: trial.unfairness,
+                accepted: accepted,
+                trialStartTime: trial.trialStartTime,
+                decisionTime: new Date().toISOString(),
+                RT: new Date() - new Date(trial.trialStartTime)
+            };
+            
+            gameData.responses.push(response);
+            
+            if (gameData.currentTrialIndex < gameData.trials.length - 1) {
+                gameData.currentTrialIndex++;
+                showTrial();
+            } else {
+                showResults();
+            }
+        }
+    
+        // 计算不公平敏感度
+        function calculateUnfairSensitivity() {
+            let totalWeightedRejections = 0;
+            
+            gameData.responses.forEach(response => {
+                if (!response.accepted) {
+                    totalWeightedRejections += response.unfairness;
+                }
+            });
+            
+            return (totalWeightedRejections / gameData.responses.length) * 100;
+        }
+    
+        // 生成敏感度反馈
+        function generateSensitivityFeedback(sensitivity) {
+            if (sensitivity >= 80) {
+                return "您对不公平分配非常敏感，倾向于坚持公平原则，即使可能损失自己的利益。";
+            } else if (sensitivity >= 60) {
+                return "您对不公平分配比较敏感，愿意为了维护公平而承担一定代价。";
+            } else if (sensitivity >= 40) {
+                return "您对不公平分配的敏感度适中，会在公平和实际利益之间寻求平衡。";
+            } else if (sensitivity >= 20) {
+                return "您对不公平分配的容忍度较高，更倾向于关注实际收益。";
+            } else {
+                return "您对不公平分配的容忍度很高，更注重实际利益而非分配的公平性。";
+            }
+        }
+    
+        // 显示结果
+        function showResults() {
+            screens.trial.classList.add('hidden');
+            screens.results.classList.remove('hidden');
+    
+            const sensitivity = calculateUnfairSensitivity();
+            const feedback = generateSensitivityFeedback(sensitivity);
+    
+            // 显示敏感度结果
+            document.getElementById('sensitivity-results').innerHTML = `
+                <h3 class="font-semibold text-blue-800 mb-3">您的不公平敏感度分析</h3>
+                <p class="text-blue-900 mb-4">敏感度指数：${sensitivity.toFixed(1)}%</p>
+                <p class="text-blue-900">${feedback}</p>
+            `;
+    
+            // 显示决策总结（按原始顺序排序）
+            const sortedResponses = [...gameData.responses].sort((a, b) => 
+                a.proposerAmount - b.proposerAmount);
+            
+            const summary = document.getElementById('decisions-summary');
+            summary.innerHTML = '<h3 class="font-semibold text-gray-800 mb-3">您的决策总结（从最不公平到最公平）：</h3>';
+            
+            sortedResponses.forEach((response) => {
+                summary.innerHTML += `
+                    <div class="mb-2 ${response.accepted ? 'text-green-600' : 'text-red-600'}">
+                        分配方案 ${response.proposerAmount}:${response.responderAmount} - 
+                        ${response.accepted ? '接受' : '拒绝'}
+                        (决策用时: ${(response.RT/1000).toFixed(2)}秒)
+                    </div>
+                `;
+            });
+        }
+    
+        // 下载数据
+        document.getElementById('download-button').addEventListener('click', () => {
+            const headers = [
+                'participantId',
+                'trialNumber',
+                'originalIndex',
+                'proposerAmount',
+                'responderAmount',
+                'unfairness',
+                'accepted',
+                'trialStartTime',
+                'decisionTime',
+                'RT'
+            ];
+    
+            const csvRows = [headers.join(',')];
+            
+            gameData.responses.forEach(response => {
+                const row = [
+                    gameData.participantId,
+                    response.trialNumber,
+                    response.originalIndex,
+                    response.proposerAmount,
+                    response.responderAmount,
+                    response.unfairness,
+                    response.accepted ? 1 : 0,
+                    response.trialStartTime,
+                    response.decisionTime,
+                    response.RT
+                ];
+                csvRows.push(row.join(','));
+            });
+    
+            const csvContent = csvRows.join('\n');
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `ultimatum_game_P${gameData.participantId}_${new Date().getTime()}.csv`;
+            
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+    
+            const downloadButton = document.getElementById('download-button');
+            downloadButton.textContent = '数据已下载';
+            downloadButton.disabled = true;
+            downloadButton.classList.remove('hover:bg-green-700');
+        });
+    </script>
+    </body>
+    </html>

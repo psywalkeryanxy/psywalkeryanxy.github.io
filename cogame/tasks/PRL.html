@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reversal Learning Task</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .square {
+            width: 150px;
+            height: 150px;
+            cursor: pointer;
+            transition: transform 0.2s;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .square:hover {
+            transform: scale(1.05);
+        }
+
+        .square .bars {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: space-evenly;
+            align-items: center;
+        }
+
+        .bar {
+            width: 30px;
+            height: 120px;
+        }
+
+        .yellow-bar {
+            background-color: #FFD700;
+        }
+
+        .blue-bar {
+            background-color: #00BFFF;
+        }
+
+        .fixation {
+            font-size: 2rem;
+            color: white;
+        }
+
+/* 更新硬币样式 */
+.outcome-circle {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: outcomeAppear 0.5s ease-out;
+}
+
+.coin {
+    background: #C0C0C0;
+    position: relative;
+    box-shadow: inset -2px -2px 6px rgba(0,0,0,0.2),
+                inset 2px 2px 6px rgba(255,255,255,0.2);
+}
+
+.coin::before {
+    content: "¥1";
+    font-family: "Arial", sans-serif;
+    font-size: 32px;
+    font-weight: bold;
+    color: #666;
+}
+
+.coin::after {
+    content: "";
+    position: absolute;
+    top: 4px;
+    left: 4px;
+    right: 4px;
+    bottom: 4px;
+    border: 2px solid #A0A0A0;
+    border-radius: 50%;
+}
+
+.no-reward {
+    border: 4px solid #FF0000;
+}
+
+@keyframes outcomeAppear {
+    0% { transform: scale(0); opacity: 0; }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+
+        @keyframes outcomeAppear {
+            0% {
+                transform: scale(0);
+                opacity: 0;
+            }
+
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .instruction {
+            max-width: 800px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        .dashed-border {
+            border: 2px dashed white;
+            padding: 10px;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-900 min-h-screen flex items-center justify-center">
+    <!-- Instructions Screen -->
+    <div id="instruction-screen" class="text-white instruction">
+        <h1 class="text-3xl font-bold mb-6 text-center">Welcome to the Learning Game!</h1>
+
+        <div class="space-y-4 mb-8">
+            <p>In this game, you will:</p>
+            <ul class="list-disc list-inside space-y-2">
+                <li>See two squares with colored bars (yellow and blue)</li>
+                <li>Choose one of them by clicking</li>
+                <li>You'll see either a gold coin (reward) or a red circle (no reward)</li>
+                <li>Try to learn which color gives you more rewards!</li>
+            </ul>
+
+            <p class="font-bold">First, let's practice with 5 trials!</p>
+        </div>
+
+        <button id="start-practice" class="bg-green-500 text-white px-6 py-3 rounded-lg mx-auto block
+                       hover:bg-green-600 transition-colors">
+            Start Practice
+        </button>
+    </div>
+
+    <!-- Practice Complete Screen -->
+    <div id="practice-complete" class="text-white instruction hidden">
+        <h2 class="text-2xl font-bold mb-6 text-center">Practice Complete!</h2>
+
+        <div class="space-y-4 mb-8">
+            <p>Great job! Now you're ready for the main game.</p>
+            <p>Remember:</p>
+            <ul class="list-disc list-inside space-y-2">
+                <li>Choose the square that you think is more likely to give you rewards</li>
+                <li>The better choice might change during the game</li>
+                <li>Pay attention to the outcomes!</li>
+            </ul>
+        </div>
+
+        <button id="start-main" class="bg-blue-500 text-white px-6 py-3 rounded-lg mx-auto block
+                       hover:bg-blue-600 transition-colors">
+            Start Main Game
+        </button>
+    </div>
+
+    <!-- Game Screen -->
+    <div id="game-screen" class="hidden">
+        <!-- Fixation -->
+        <div id="fixation" class="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 fixation">
+            +
+        </div>
+
+        <!-- Choice Display -->
+        <div id="choice-display" class="hidden">
+            <div class="flex justify-center items-center space-x-40">
+                <!-- Squares will be inserted here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Completion Screen -->
+    <div id="completion-screen" class="text-white instruction hidden">
+        <h2 class="text-2xl font-bold mb-6 text-center">Game Complete!</h2>
+        <p class="text-xl mb-4">Thank you for participating!</p>
+        <button id="download-results" class="bg-purple-500 text-white px-6 py-3 rounded-lg mx-auto block
+                       hover:bg-purple-600 transition-colors">
+            Download Results
+        </button>
+    </div>
+
+    <script>
+        // Game State
+        const gameState = {
+            isPractice: true,
+            currentTrial: 0,
+            totalTrials: 125,
+            practiceTrials: 5,
+            trialData: [],
+            participantId: Math.floor(100000000 + Math.random() * 900000000).toString(),
+            startTime: null,
+            phases: [
+                { start: 0, end: 49, yellowProb: 0.3, blueProb: 0.7 },
+                { start: 50, end: 74, yellowProb: 0.7, blueProb: 0.3 },
+                { start: 75, end: 99, yellowProb: 0.3, blueProb: 0.7 },
+                { start: 100, end: 124, yellowProb: 0.7, blueProb: 0.3 }
+            ],
+            practiceProbability: { yellowProb: 0.3, blueProb: 0.7 }
+        };
+
+        // Screen Elements
+        const screens = {
+            instruction: document.getElementById('instruction-screen'),
+            practiceComplete: document.getElementById('practice-complete'),
+            game: document.getElementById('game-screen'),
+            completion: document.getElementById('completion-screen'),
+            fixation: document.getElementById('fixation'),
+            choiceDisplay: document.getElementById('choice-display')
+        };
+
+        // Create square elements
+        function createSquare(color) {
+            const square = document.createElement('div');
+            square.className = `square dashed-border`;
+            square.setAttribute('data-color', color);
+
+            const bars = document.createElement('div');
+            bars.className = 'bars';
+
+            for (let i = 0; i < 3; i++) {
+                const bar = document.createElement('div');
+                bar.className = `bar ${color}-bar`;
+                bars.appendChild(bar);
+            }
+
+            square.appendChild(bars);
+            return square;
+        }
+
+        // Get current probability based on trial number
+        function getCurrentProbability(trialNum) {
+            if (gameState.isPractice) {
+                return gameState.practiceProbability;
+            }
+
+            const phase = gameState.phases.find(p =>
+                trialNum >= p.start && trialNum <= p.end
+            );
+            return phase;
+        }
+
+        // Randomize square positions
+        function randomizePositions() {
+            const leftIsYellow = Math.random() < 0.5;
+            return {
+                left: leftIsYellow ? 'yellow' : 'blue',
+                right: leftIsYellow ? 'blue' : 'yellow'
+            };
+        }
+
+        // Check if reward should be given based on probability
+        function shouldGiveReward(color, probabilities) {
+            const prob = color === 'yellow' ? probabilities.yellowProb : probabilities.blueProb;
+            return Math.random() < prob;
+        }
+
+        // Show outcome
+        function showOutcome(reward) {
+            const outcomeContainer = document.createElement('div');
+            outcomeContainer.className = 'fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2';
+
+            const outcomeCircle = document.createElement('div');
+            outcomeCircle.className = `outcome-circle ${reward ? 'coin' : 'no-reward'}`;
+            outcomeContainer.appendChild(outcomeCircle);
+
+            document.body.appendChild(outcomeContainer);
+            return outcomeContainer;
+        }
+
+        // Record trial data
+        function recordTrial(position, color, reward, reactionTime) {
+            const trialNum = gameState.isPractice ?
+                `P${gameState.currentTrial + 1}` :
+                gameState.currentTrial + 1;
+
+            const data = {
+                participantId: gameState.participantId,
+                trialNumber: trialNum,
+                phase: gameState.isPractice ? 'practice' :
+                    gameState.phases.findIndex(p =>
+                        gameState.currentTrial >= p.start && gameState.currentTrial <= p.end
+                    ) + 1,
+                chosenPosition: position,
+                chosenColor: color,
+                reward: reward,
+                reactionTime: reactionTime,
+                timestamp: new Date().toISOString()
+            };
+
+            gameState.trialData.push(data);
+        }
+
+        // Handle choice selection
+        async function handleChoice(position, color) {
+            const choiceTime = Date.now();
+            const reactionTime = choiceTime - gameState.startTime;
+
+            screens.choiceDisplay.classList.add('hidden');
+
+            const probs = getCurrentProbability(gameState.currentTrial);
+            const reward = shouldGiveReward(color, probs);
+
+            recordTrial(position, color, reward, reactionTime);
+
+            const outcomeContainer = showOutcome(reward);
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            outcomeContainer.remove();
+
+            await showFixation();
+            gameState.currentTrial++;
+
+            if (gameState.isPractice && gameState.currentTrial >= gameState.practiceTrials) {
+                endPractice();
+            } else if (!gameState.isPractice && gameState.currentTrial >= gameState.totalTrials) {
+                endGame();
+            } else {
+                startTrial();
+            }
+        }
+
+        // Show fixation cross
+        async function showFixation() {
+            screens.fixation.classList.remove('hidden');
+            await new Promise(resolve => setTimeout(resolve, 200));
+            screens.fixation.classList.add('hidden');
+        }
+
+        // Start a new trial
+        async function startTrial() {
+            await showFixation();
+
+            screens.choiceDisplay.innerHTML = '';
+            screens.choiceDisplay.classList.remove('hidden');
+
+            const positions = randomizePositions();
+            const leftSquare = createSquare(positions.left);
+            const rightSquare = createSquare(positions.right);
+
+            const squareContainer = document.createElement('div');
+            squareContainer.className = 'flex justify-center items-center space-x-40';
+            squareContainer.appendChild(leftSquare);
+            squareContainer.appendChild(rightSquare);
+
+            screens.choiceDisplay.appendChild(squareContainer);
+
+            leftSquare.addEventListener('click', () =>
+                handleChoice('left', positions.left));
+            rightSquare.addEventListener('click', () =>
+                handleChoice('right', positions.right));
+
+            gameState.startTime = Date.now();
+        }
+
+        // End practice phase
+        function endPractice() {
+            screens.game.classList.add('hidden');
+            screens.practiceComplete.classList.remove('hidden');
+        }
+
+        // Start main game
+        function startMainGame() {
+            gameState.isPractice = false;
+            gameState.currentTrial = 0;
+
+            screens.practiceComplete.classList.add('hidden');
+            screens.game.classList.remove('hidden');
+
+            startTrial();
+        }
+
+        // End game
+        function endGame() {
+            screens.game.classList.add('hidden');
+            screens.completion.classList.remove('hidden');
+        }
+
+        // Download data as CSV
+        function downloadData() {
+            const headers = [
+                'participantId',
+                'trialNumber',
+                'phase',
+                'chosenPosition',
+                'chosenColor',
+                'reward',
+                'reactionTime',
+                'timestamp'
+            ];
+
+            const csvContent = [
+                headers.join(','),
+                ...gameState.trialData.map(trial =>
+                    headers.map(header => {
+                        const value = trial[header];
+                        return typeof value === 'string' && value.includes(',') ?
+                            `"${value}"` : value;
+                    }).join(',')
+                )
+            ].join('\n');
+
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `reversal_learning_${gameState.participantId}.csv`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+
+            const downloadButton = document.getElementById('download-results');
+            const originalText = downloadButton.textContent;
+            downloadButton.textContent = 'Downloaded! 📥';
+            setTimeout(() => {
+                downloadButton.textContent = originalText;
+            }, 2000);
+        }
+
+        // Event Listeners
+        document.getElementById('start-practice').addEventListener('click', () => {
+            screens.instruction.classList.add('hidden');
+            screens.game.classList.remove('hidden');
+            startTrial();
+        });
+
+        document.getElementById('start-main').addEventListener('click', startMainGame);
+        document.getElementById('download-results').addEventListener('click', downloadData);
+
+        // Keyboard support
+        document.addEventListener('keydown', (event) => {
+            if (!screens.choiceDisplay.classList.contains('hidden')) {
+                const squares = screens.choiceDisplay.querySelectorAll('.square');
+                if (event.key === 'ArrowLeft') {
+                    squares[0].click();
+                } else if (event.key === 'ArrowRight') {
+                    squares[1].click();
+                }
+            }
+        });
+    </script>
+</body>
+
+</html>

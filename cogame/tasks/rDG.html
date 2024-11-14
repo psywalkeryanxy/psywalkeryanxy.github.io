@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>金钱分配决策实验</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .screen {
+            display: none;
+        }
+        
+        .screen.active {
+            display: block;
+        }
+
+        .page-dots {
+            display: flex;
+            justify-center;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+        
+        .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: #e5e7eb;
+            transition: all 0.3s ease;
+        }
+        
+        .dot.active {
+            background-color: #3b82f6;
+            transform: scale(1.2);
+        }
+
+        .task-input {
+            width: 100px;
+            text-align: center;
+            padding: 0.5rem;
+            border: 2px solid #e5e7eb;
+            border-radius: 0.375rem;
+            transition: all 0.2s ease;
+        }
+        
+        .task-input:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 4px;
+            background-color: #e2e8f0;
+            border-radius: 2px;
+            margin: 10px 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background-color: #3b82f6;
+            border-radius: 2px;
+            transition: width 0.3s ease;
+        }
+
+        .result-box {
+            transition: opacity 0.3s ease;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen p-4">
+    <!-- 介绍屏幕 -->
+    <div id="intro-screen" class="screen active max-w-4xl mx-auto">
+        <div class="bg-white rounded-lg shadow p-8">
+            <!-- 页面1：欢迎和基本介绍 -->
+            <div class="intro-page" id="page-1">
+                <h1 class="text-2xl font-bold mb-6 text-center">金钱分配决策实验</h1>
+                <div class="space-y-6 text-gray-600">
+                    <div class="bg-blue-50 p-6 rounded-lg">
+                        <h2 class="font-semibold text-blue-800 mb-4">欢迎参与</h2>
+                        <p class="text-blue-900 leading-relaxed">
+                            在这部分实验中，您将会进行一系列的金钱分配。您的决定将会影响您在本游戏中所获得的钱数，和另外一个游戏参与者获得的钱数。
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 页面2：游戏规则 -->
+            <div class="intro-page hidden" id="page-2">
+                <h2 class="text-xl font-bold mb-6">游戏规则</h2>
+                <div class="space-y-6 text-gray-600">
+                    <div class="bg-blue-50 p-6 rounded-lg">
+                        <p class="text-blue-900 mb-4">在这个实验中，您需要进行一系列决策，选择如何将代币分配给您自己和另外一个参与者。</p>
+                        <ul class="list-disc list-inside space-y-3 text-blue-900">
+                            <li>您和实验的另一个参与者是采用电脑随机抽取的方式组成实验双方的</li>
+                            <li class="font-medium">您不会知道他的信息，他也不会知道您的</li>
+                            <li>实验双方参与者的信息均会被保密</li>
+                            <li>分配的代币会以不同程度的翻倍方式进入到你们各自的账户中</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 页面3：示例说明 -->
+            <div class="intro-page hidden" id="page-3">
+                <h2 class="text-xl font-bold mb-6">示例说明</h2>
+                <div class="bg-yellow-50 p-6 rounded-lg">
+                    <h3 class="font-semibold text-yellow-800 mb-4">举个例子</h3>
+                    <div class="space-y-4 text-yellow-900">
+                        <div class="bg-white p-4 rounded-lg">
+                            <p class="mb-2">分配50个代币：</p>
+                            <p>• 留给自己 × 1代币</p>
+                            <p>• 给予另一参与者 × 2代币</p>
+                            <div class="mt-4 pt-4 border-t">
+                                <p class="font-medium">如果您这样分配：</p>
+                                <ul class="list-disc list-inside mt-2">
+                                    <li>留给自己29个代币 → 最终获得29个代币</li>
+                                    <li>给对方21个代币 → 最终获得42个代币</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 页面4：重要提示 -->
+            <div class="intro-page hidden" id="page-4">
+                <h2 class="text-xl font-bold mb-6">重要提示</h2>
+                <div class="space-y-6">
+                    <div class="bg-green-50 p-6 rounded-lg">
+                        <h3 class="font-semibold text-green-800 mb-4">被试费说明</h3>
+                        <ul class="list-disc list-inside space-y-2 text-green-900">
+                            <li>您一共需要进行20次决策</li>
+                            <li>实验结束时，我们会随机抽取其中一个题目</li>
+                            <li>按照这一题您的分配方案及翻倍规则来确定进入您和另一人的被试费账户</li>
+                            <li>同样的，游戏的另一参与者的决策也会影响您此部分的被试费</li>
+                            <li>我们同样会随机抽取他的决策中的一题</li>
+                            <li class="font-medium">您最终获得的代币 = 您保留的代币 + 对方分给您的代币</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 导航按钮 -->
+            <div class="flex justify-between mt-8">
+                <button id="prev-button" 
+                        class="bg-gray-200 text-gray-700 px-6 py-2 rounded-lg font-medium hover:bg-gray-300 transition-colors hidden">
+                    上一页
+                </button>
+                <button id="next-button" 
+                        class="bg-blue-600 text-white px-6 py-2 rounded-lg font-medium hover:bg-blue-700 transition-colors ml-auto">
+                    下一页
+                </button>
+                <button id="start-task-button" 
+                        class="bg-green-600 text-white px-8 py-2 rounded-lg font-medium hover:bg-green-700 transition-colors hidden">
+                    开始实验
+                </button>
+            </div>
+
+            <!-- 页面指示器 -->
+            <div class="page-dots mt-6">
+                <div class="dot active"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 任务屏幕 -->
+    <div id="task-screen" class="screen max-w-4xl mx-auto">
+        <div class="bg-white rounded-lg shadow p-8">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-xl font-bold text-gray-800">
+                    决策 <span id="task-number">1</span>/20
+                </h2>
+            </div>
+            
+            <div class="progress-bar">
+                <div id="progress-fill" class="progress-fill" style="width: 5%"></div>
+            </div>
+
+            <div class="mt-8">
+                <div id="current-task" class="space-y-6">
+                    <div class="bg-blue-50 p-6 rounded-lg">
+                        <h3 class="text-lg font-semibold text-blue-800 mb-4" id="task-description">
+                            <!-- 任务描述将由JavaScript填充 -->
+                        </h3>
+                        <div class="space-y-4">
+                            <div class="bg-white p-4 rounded-lg">
+                                <div class="flex items-center gap-2 mb-4">
+                                    <span class="text-blue-700 font-medium">您要分配给自己的金额</span>
+                                    <span class="multiplier font-medium" id="self-multiplier"></span>
+                                </div>
+                                <div class="flex items-center gap-4">
+                                    <input type="number" 
+                                           id="self-amount" 
+                                           class="task-input" 
+                                           placeholder="请输入金额" />
+                                    <div id="self-result" class="result-box opacity-0 text-blue-600">
+                                        最终获得：<span>0</span> 代币
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="bg-white p-4 rounded-lg">
+                                <div class="flex items-center gap-2 mb-4">
+                                    <span class="text-green-700 font-medium">自动分配给对方的金额</span>
+                                    <span class="multiplier font-medium" id="other-multiplier"></span>
+                                </div>
+                                <div class="flex items-center gap-4">
+                                    <div id="other-amount" class="text-lg font-medium text-green-600">0</div>
+                                    <div id="other-result" class="result-box opacity-0 text-green-600">
+                                        最终获得：<span>0</span> 代币
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mt-4 pt-4 border-t border-blue-200">
+                            <div id="total-amount" class="text-blue-800 font-medium">
+                                总金额：0/0 代币
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-yellow-50 p-4 rounded-lg hidden" id="error-message">
+                        <p class="text-yellow-800">
+                            请确保输入的金额不超过总金额。
+                        </p>
+                    </div>
+                </div>
+
+                <button id="confirm-button" 
+                        class="mt-6 bg-gray-400 text-white px-8 py-3 rounded-lg font-medium transition-colors w-full cursor-not-allowed"
+                        disabled>
+                    确认选择
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 结果屏幕 -->
+    <div id="results-screen" class="screen max-w-4xl mx-auto">
+        <div class="bg-white rounded-lg shadow p-8">
+            <h1 class="text-2xl font-bold mb-6 text-center">实验完成</h1>
+
+            <!-- 随机选择的决策结果 -->
+            <div class="bg-blue-50 p-6 rounded-lg mb-6">
+                <h2 class="text-lg font-semibold text-blue-800 mb-4">随机抽取的决策结果</h2>
+                <div id="selected-decision" class="bg-white p-4 rounded-lg">
+                    <p class="text-blue-900 font-medium mb-2">第 <span id="selected-trial-number">-</span> 个决策：</p>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <p class="text-sm text-gray-600">总金额</p>
+                            <p class="text-lg font-medium" id="selected-total">-</p>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-600">您的倍率</p>
+                            <p class="text-lg font-medium" id="selected-self-multiplier">-</p>
+                        </div>
+                    </div>
+                    <div class="mt-4 pt-4 border-t">
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <p class="text-blue-600">您分配给自己：</p>
+                                <p class="text-lg font-medium" id="selected-self-amount">-</p>
+                            </div>
+                            <div>
+                                <p class="text-green-600">分配给对方：</p>
+                                <p class="text-lg font-medium" id="selected-other-amount">-</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 最终结果计算 -->
+            <div class="bg-green-50 p-6 rounded-lg mb-6">
+                <h2 class="text-lg font-semibold text-green-800 mb-4">最终代币计算</h2>
+                <div class="bg-white p-4 rounded-lg">
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <p class="text-sm text-gray-600">您留给自己的代币</p>
+                            <p class="text-lg font-medium" id="final-self-tokens">-</p>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-600">对方分配给您的代币</p>
+                            <p class="text-lg font-medium text-gray-400">等待对方决策...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 数据导出按钮 -->
+            <div class="flex justify-between gap-4">
+                <button id="download-csv" 
+                        class="flex-1 bg-blue-600 text-white px-8 py-3 rounded-lg font-medium hover:bg-blue-700 transition-colors">
+                    导出数据 (CSV)
+                </button>
+                <button id="finish-experiment" 
+                        class="flex-1 bg-green-600 text-white px-8 py-3 rounded-lg font-medium hover:bg-green-700 transition-colors">
+                    完成实验
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 全局状态管理
+        const gameState = {
+            currentScreen: 'intro-screen',
+            introPage: 1,
+            currentTaskIndex: 0,
+            responses: [],
+            participantId: Math.floor(100000 + Math.random() * 900000)
+        };
+    
+        // 任务数据
+        const tasks = [
+            { total: 90, selfMultiplier: 1, otherMultiplier: 3 },
+            { total: 90, selfMultiplier: 3, otherMultiplier: 1 },
+            { total: 100, selfMultiplier: 1, otherMultiplier: 3 },
+            { total: 100, selfMultiplier: 3, otherMultiplier: 1 },
+            { total: 80, selfMultiplier: 3, otherMultiplier: 1 },
+            { total: 80, selfMultiplier: 1, otherMultiplier: 3 },
+            { total: 75, selfMultiplier: 2, otherMultiplier: 1 },
+            { total: 75, selfMultiplier: 1, otherMultiplier: 2 },
+            { total: 60, selfMultiplier: 1, otherMultiplier: 1 },
+            { total: 60, selfMultiplier: 2, otherMultiplier: 1 },
+            { total: 60, selfMultiplier: 1, otherMultiplier: 2 },
+            { total: 40, selfMultiplier: 3, otherMultiplier: 1 },
+            { total: 40, selfMultiplier: 1, otherMultiplier: 3 },
+            { total: 200, selfMultiplier: 1, otherMultiplier: 1 },
+            { total: 150, selfMultiplier: 2, otherMultiplier: 1 },
+            { total: 150, selfMultiplier: 1, otherMultiplier: 2 },
+            { total: 120, selfMultiplier: 1, otherMultiplier: 2 },
+            { total: 120, selfMultiplier: 1, otherMultiplier: 1 },
+            { total: 120, selfMultiplier: 2, otherMultiplier: 1 },
+            { total: 100, selfMultiplier: 1, otherMultiplier: 1 }
+        ];
+    
+        // 屏幕切换函数
+        function showScreen(screenId) {
+            document.querySelectorAll('.screen').forEach(screen => {
+                screen.classList.remove('active');
+            });
+            document.getElementById(screenId).classList.add('active');
+            gameState.currentScreen = screenId;
+    
+            if (screenId === 'task-screen') {
+                taskControl.init();
+            } else if (screenId === 'results-screen') {
+                resultsControl.init();
+            }
+        }
+    
+        // 介绍页面控制
+        const introControl = {
+            currentPage: 1,
+            totalPages: 4,
+    
+            init() {
+                this.setupEventListeners();
+                this.updatePageDisplay();
+            },
+    
+            setupEventListeners() {
+                document.getElementById('prev-button').addEventListener('click', () => this.prevPage());
+                document.getElementById('next-button').addEventListener('click', () => this.nextPage());
+                document.getElementById('start-task-button').addEventListener('click', () => {
+                    showScreen('task-screen');
+                });
+            },
+    
+            updatePageDisplay() {
+                document.querySelectorAll('.intro-page').forEach(page => {
+                    page.classList.add('hidden');
+                });
+                
+                document.getElementById(`page-${this.currentPage}`).classList.remove('hidden');
+                
+                const prevButton = document.getElementById('prev-button');
+                const nextButton = document.getElementById('next-button');
+                const startButton = document.getElementById('start-task-button');
+                
+                prevButton.classList.toggle('hidden', this.currentPage === 1);
+                
+                if (this.currentPage === this.totalPages) {
+                    nextButton.classList.add('hidden');
+                    startButton.classList.remove('hidden');
+                } else {
+                    nextButton.classList.remove('hidden');
+                    startButton.classList.add('hidden');
+                }
+                
+                document.querySelectorAll('.dot').forEach((dot, index) => {
+                    dot.classList.toggle('active', index + 1 === this.currentPage);
+                });
+            },
+    
+            nextPage() {
+                if (this.currentPage < this.totalPages) {
+                    this.currentPage++;
+                    this.updatePageDisplay();
+                }
+            },
+    
+            prevPage() {
+                if (this.currentPage > 1) {
+                    this.currentPage--;
+                    this.updatePageDisplay();
+                }
+            }
+        };
+    
+        // 任务控制
+        const taskControl = {
+            init() {
+                this.setupEventListeners();
+                this.showCurrentTask();
+            },
+    
+            setupEventListeners() {
+                const selfInput = document.getElementById('self-amount');
+                const confirmButton = document.getElementById('confirm-button');
+    
+                selfInput.addEventListener('input', (e) => {
+                    // 只允许输入数字
+                    e.target.value = e.target.value.replace(/[^\d]/g, '');
+                    this.updateDisplay();
+                });
+    
+                confirmButton.addEventListener('click', () => this.recordResponse());
+            },
+    
+            showCurrentTask() {
+                const task = tasks[gameState.currentTaskIndex];
+                const taskNumber = gameState.currentTaskIndex + 1;
+                
+                document.getElementById('task-number').textContent = taskNumber;
+                document.getElementById('progress-fill').style.width = 
+                    `${(taskNumber / tasks.length) * 100}%`;
+                
+                document.getElementById('task-description').textContent = 
+                    `您现在有${task.total}个代币需要分配：`;
+                
+                document.getElementById('self-multiplier').textContent = 
+                    `× ${task.selfMultiplier}`;
+                document.getElementById('other-multiplier').textContent = 
+                    `× ${task.otherMultiplier}`;
+                
+                document.getElementById('self-amount').value = '';
+                document.getElementById('other-amount').textContent = '0';
+                
+                this.updateDisplay();
+    
+                // 重置确认按钮
+                const confirmButton = document.getElementById('confirm-button');
+                confirmButton.disabled = true;
+                confirmButton.classList.add('bg-gray-400', 'cursor-not-allowed');
+                confirmButton.classList.remove('bg-blue-600', 'hover:bg-blue-700');
+            },
+    
+            updateDisplay() {
+                const task = tasks[gameState.currentTaskIndex];
+                const selfAmount = parseInt(document.getElementById('self-amount').value) || 0;
+                const otherAmount = task.total - selfAmount;
+                
+                // 更新分配给对方的金额显示
+                document.getElementById('other-amount').textContent = otherAmount;
+                
+                // 更新结果显示
+                if (selfAmount > 0) {
+                    const selfResult = selfAmount * task.selfMultiplier;
+                    const selfResultBox = document.getElementById('self-result');
+                    selfResultBox.classList.remove('opacity-0');
+                    selfResultBox.querySelector('span').textContent = selfResult;
+                }
+                
+                if (otherAmount > 0) {
+                    const otherResult = otherAmount * task.otherMultiplier;
+                    const otherResultBox = document.getElementById('other-result');
+                    otherResultBox.classList.remove('opacity-0');
+                    otherResultBox.querySelector('span').textContent = otherResult;
+                }
+                
+                // 更新总额显示
+                document.getElementById('total-amount').textContent = 
+                    `总金额：${selfAmount + otherAmount}/${task.total} 代币`;
+    
+                // 验证输入
+                const confirmButton = document.getElementById('confirm-button');
+                const errorMessage = document.getElementById('error-message');
+                
+                if (selfAmount <= task.total && selfAmount >= 0) {
+                    confirmButton.disabled = false;
+                    confirmButton.classList.remove('bg-gray-400', 'cursor-not-allowed');
+                    confirmButton.classList.add('bg-blue-600', 'hover:bg-blue-700');
+                    errorMessage.classList.add('hidden');
+                } else {
+                    confirmButton.disabled = true;
+                    confirmButton.classList.add('bg-gray-400', 'cursor-not-allowed');
+                    confirmButton.classList.remove('bg-blue-600', 'hover:bg-blue-700');
+                    errorMessage.classList.remove('hidden');
+                }
+            },
+    
+            recordResponse() {
+                const task = tasks[gameState.currentTaskIndex];
+                const selfAmount = parseInt(document.getElementById('self-amount').value);
+                const otherAmount = task.total - selfAmount;
+                
+                const response = {
+                    taskNumber: gameState.currentTaskIndex + 1,
+                    totalTokens: task.total,
+                    selfAmount: selfAmount,
+                    otherAmount: otherAmount,
+                    selfMultiplier: task.selfMultiplier,
+                    otherMultiplier: task.otherMultiplier,
+                    finalSelfAmount: selfAmount * task.selfMultiplier,
+                    finalOtherAmount: otherAmount * task.otherMultiplier,
+                    timestamp: new Date().toISOString()
+                };
+                
+                gameState.responses.push(response);
+                
+                if (gameState.currentTaskIndex < tasks.length - 1) {
+                    gameState.currentTaskIndex++;
+                    this.showCurrentTask();
+                } else {
+                    showScreen('results-screen');
+                }
+            }
+        };
+    
+        // 结果控制
+        const resultsControl = {
+            selectedTask: null,
+    
+            init() {
+                this.selectRandomTask();
+                this.displayResults();
+                this.setupEventListeners();
+            },
+    
+            selectRandomTask() {
+                const randomIndex = Math.floor(Math.random() * gameState.responses.length);
+                this.selectedTask = gameState.responses[randomIndex];
+            },
+    
+            displayResults() {
+                // 显示选中的决策
+                document.getElementById('selected-trial-number').textContent = 
+                    this.selectedTask.taskNumber;
+                document.getElementById('selected-total').textContent = 
+                    `${this.selectedTask.totalTokens} 代币`;
+                document.getElementById('selected-self-multiplier').textContent = 
+                    `× ${this.selectedTask.selfMultiplier}`;
+                document.getElementById('selected-self-amount').textContent = 
+                    `${this.selectedTask.selfAmount} → ${this.selectedTask.finalSelfAmount} 代币`;
+                document.getElementById('selected-other-amount').textContent = 
+                    `${this.selectedTask.otherAmount} → ${this.selectedTask.finalOtherAmount} 代币`;
+    
+                // 显示最终代币
+                document.getElementById('final-self-tokens').textContent = 
+                    `${this.selectedTask.finalSelfAmount} 代币`;
+            },
+    
+            setupEventListeners() {
+                document.getElementById('download-csv').addEventListener('click', () => this.downloadData());
+                document.getElementById('finish-experiment').addEventListener('click', () => {
+                    alert('实验已完成，感谢您的参与！');
+                });
+            },
+    
+            downloadData() {
+                const headers = [
+                    'participantId',
+                    'taskNumber',
+                    'totalTokens',
+                    'selfAmount',
+                    'otherAmount',
+                    'selfMultiplier',
+                    'otherMultiplier',
+                    'finalSelfAmount',
+                    'finalOtherAmount',
+                    'timestamp'
+                ];
+    
+                const csvRows = [headers.join(',')];
+                
+                gameState.responses.forEach(response => {
+                    const row = headers.map(header => {
+                        if (header === 'participantId') return gameState.participantId;
+                        return response[header] || '';
+                    });
+                    csvRows.push(row.join(','));
+                });
+    
+                const csvContent = csvRows.join('\n');
+                const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = `dictator_game_P${gameState.participantId}.csv`;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                URL.revokeObjectURL(url);
+            }
+        };
+    
+        // 初始化应用
+        document.addEventListener('DOMContentLoaded', function() {
+            introControl.init();
+        });
+    </script>
+    </body>
+    </html>
+

@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>认知任务平台</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const TaskCard = ({ title, description, duration, image, onClick }) => (
+            <div 
+                className="cursor-pointer hover:scale-105 transition-all bg-white rounded-lg shadow-md overflow-hidden"
+                onClick={onClick}
+            >
+                <div className="p-6">
+                    <h3 className="text-lg font-bold mb-3">{title}</h3>
+                    <div className="h-32 bg-gray-50 rounded-lg flex items-center justify-center mb-3">
+                        {image}
+                    </div>
+                    <p className="text-sm text-gray-600 mb-2">{description}</p>
+                    <div className="text-sm font-medium text-gray-500">预计时长: {duration}</div>
+                </div>
+            </div>
+        );
+
+        const CognitiveTasksHub = () => {
+            const [participantData, setParticipantData] = React.useState(null);
+            const [loading, setLoading] = React.useState(true);
+
+            React.useEffect(() => {
+                const checkAuth = () => {
+                    // 从 URL 获取参数
+                    const urlParams = new URLSearchParams(window.location.search);
+                    const urlData = {
+                        participantId: urlParams.get('participantId'),
+                        name: urlParams.get('name'),
+                        age: urlParams.get('age'),
+                        gender: urlParams.get('gender'),
+                        education: urlParams.get('education')
+                    };
+
+                    // 从 localStorage 获取数据
+                    const storedData = JSON.parse(localStorage.getItem('participantData'));
+
+                    // 使用 URL 参数或 localStorage 数据
+                    const data = urlData.participantId ? urlData : storedData;
+
+                    if (!data) {
+                        // 如果没有用户数据，重定向到登录页
+                        window.location.href = 'index.html';
+                        return;
+                    }
+
+                    setParticipantData(data);
+                    setLoading(false);
+                };
+
+                checkAuth();
+            }, []);
+
+            const tasks = [
+                {
+                    id: 'whack-a-mole',
+                    title: '打地鼠游戏',
+                    description: '打击红色生气的地鼠，但是保护绿色开心的地鼠.',
+                    duration: '~2分钟',
+                    path: 'tasks/whack-a-mole.html',
+                    image: (
+                        <svg viewBox="0 0 100 100" className="w-24 h-24">
+                            <circle cx="50" cy="50" r="40" fill="#90EE90"/>
+                            <circle cx="50" cy="45" r="15" fill="#654321"/>
+                            <circle cx="43" cy="40" r="3" fill="white"/>
+                            <circle cx="57" cy="40" r="3" fill="white"/>
+                            <path d="M 40 55 Q 50 65 60 55" stroke="#000" fill="none" strokeWidth="2"/>
+                        </svg>
+                    )
+                },
+                {
+                    id: 'stroop',
+                    title: 'Stroop任务',
+                    description: '根据字体的颜色做判断',
+                    duration: '~2分钟',
+                    path: 'tasks/stroop_googlesave.html',
+                    image: (
+                        <svg viewBox="0 0 100 100" className="w-24 h-24">
+                            <text x="25" y="45" fill="red" fontSize="20">蓝色</text>
+                            <text x="25" y="75" fill="blue" fontSize="20">红色</text>
+                            <text x="25" y="35" fill="green" fontSize="20">黄色</text>
+                        </svg>
+                    )
+                },
+                {
+                    id: 'ballon',
+                    title: '打气球任务',
+                    description: '气球越大奖励越大，但是当心气球爆炸！',
+                    duration: '~2分钟',
+                    path: 'tasks/ballonrisk.html',
+                    image: (
+                        <svg viewBox="0 0 100 100" className="w-24 h-24">
+                            <circle cx="50" cy="45" r="35" fill="#FF69B4"/>
+                            <path d="M 48 80 L 52 80 L 50 85 Z" fill="#666"/>
+                        </svg>
+                    )
+                },
+                {
+                    id: 'idealself',
+                    title: '理想中的你自己',
+                    description: '你是怎样认识自己的？',
+                    duration: '~2分钟',
+                    path: 'tasks/IdealSelf.html',
+                    image: (
+                        <svg viewBox="0 0 100 100" className="w-24 h-24">
+                            <circle cx="50" cy="35" r="20" fill="#FFD700"/>
+                            <path d="M 30 65 Q 50 85 70 65" fill="#FFD700"/>
+                            <circle cx="43" cy="30" r="3" fill="#000"/>
+                            <circle cx="57" cy="30" r="3" fill="#000"/>
+                        </svg>
+                    )
+                },
+                {
+                    id: 'delay_discounting',
+                    title: '愿意延迟奖励吗',
+                    description: '你是否是放长线钓大鱼的人',
+                    duration: '~2分钟',
+                    path: 'tasks/delay_discounting.html',
+                    image: (
+                        <svg viewBox="0 0 100 100" className="w-24 h-24">
+                            <circle cx="50" cy="50" r="40" fill="none" stroke="#000" strokeWidth="2"/>
+                            <line x1="50" y1="50" x2="50" y2="20" stroke="#000" strokeWidth="2"/>
+                            <line x1="50" y1="50" x2="70" y2="50" stroke="#000" strokeWidth="2"/>
+                        </svg>
+                    )
+                },
+                {
+                    id: 'importantothers',
+                    title: '重要他人排序',
+                    description: '谁对你更重要',
+                    duration: '~2分钟',
+                    path: 'tasks/importantothers.html',
+                    image: (
+                        <svg viewBox="0 0 100 100" className="w-24 h-24">
+                            <circle cx="30" cy="50" r="15" fill="#FFB6C1"/>
+                            <circle cx="50" cy="50" r="20" fill="#87CEEB"/>
+                            <circle cx="70" cy="50" r="15" fill="#98FB98"/>
+                        </svg>
+                    )
+                },
+                {
+                    id: 'LV',
+                    title: '抛硬币游戏',
+                    description: '赢钱或者输钱？还是不冒险',
+                    duration: '~2分钟',
+                    path: 'tasks/LV.html',
+                    image: (
+                        <svg viewBox="0 0 100 100" className="w-24 h-24">
+                            <circle cx="50" cy="50" r="30" fill="#FFD700"/>
+                            <text x="35" y="60" fontSize="20">¥</text>
+                        </svg>
+                    )
+                },
+                {
+                    id: 'nback',
+                    title: '工作记忆',
+                    description: '测一测你的工作记忆容量',
+                    duration: '~2分钟',
+                    path: 'tasks/nback12.html',
+                    image: (
+                        <svg viewBox="0 0 100 100" className="w-24 h-24">
+                            <rect x="20" y="20" width="20" height="20" fill="#4169E1"/>
+                            <rect x="60" y="20" width="20" height="20" fill="#4169E1"/>
+                            <rect x="20" y="60" width="20" height="20" fill="#4169E1"/>
+                            <rect x="60" y="60" width="20" height="20" fill="#4169E1"/>
+                        </svg>
+                    )
+                },
+                {
+                    id: 'OB',
+                    title: '乐观偏向',
+                    description: '评价和了解生活中坏事发生的概率',
+                    duration: '~8分钟',
+                    path: 'tasks/OB.html',
+                    image: (
+                        <svg viewBox="0 0 100 100" className="w-24 h-24">
+                            <circle cx="50" cy="50" r="35" fill="#FFD700"/>
+                            <circle cx="35" cy="40" r="5" fill="#000"/>
+                            <circle cx="65" cy="40" r="5" fill="#000"/>
+                            <path d="M 30 60 Q 50 80 70 60" fill="none" stroke="#000" strokeWidth="3"/>
+                        </svg>
+                    )
+                },
+                {
+                    id: 'PRL',
+                    title: '反转学习',
+                    description: '在不确定的环境下游刃有余',
+                    duration: '~8分钟',
+                    path: 'tasks/PRL.html',
+                    image: (
+                        <svg viewBox="0 0 100 100" className="w-24 h-24">
+                            <path d="M 20 50 C 40 20, 60 80, 80 50" stroke="#000" fill="none" strokeWidth="3"/>
+                            <path d="M 20 50 C 40 80, 60 20, 80 50" stroke="#000" fill="none" strokeWidth="3"/>
+                        </svg>
+                    )
+                },
+                {
+                    id: 'SES',
+                    title: '社会经济地位',
+                    description: '你觉得你处在社会的哪一层？',
+                    duration: '~1分钟',
+                    path: 'tasks/SES.html',
+                    image: (
+                        <svg viewBox="0 0 100 100" className="w-24 h-24">
+                            <rect x="30" y="20" width="40" height="60" fill="none" stroke="#000" strokeWidth="2"/>
+                            {[0,1,2,3,4].map(i => 
+                                <line x1="30" y1={32 + i * 12} x2="70" y2={32 + i * 12} stroke="#000" strokeWidth="2"/>
+                            )}
+                        </svg>
+                    )
+                },
+                {
+                    id: 'rDG',
+                    title: '独裁者游戏',
+                    description: '你会如何分配资源？',
+                    duration: '~1分钟',
+                    path: 'tasks/rDG.html',
+                    image: (
+                        <svg viewBox="0 0 100 100" className="w-24 h-24">
+                            <circle cx="30" cy="50" r="20" fill="#FFD700"/>
+                            <circle cx="70" cy="50" r="20" fill="#C0C0C0"/>
+                            <path d="M 40 50 L 60 50" stroke="#000" strokeWidth="3" markerEnd="url(#arrowhead)"/>
+                            <defs>
+                                <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+                                    <polygon points="0 0, 10 3.5, 0 7" fill="#000"/>
+                                </marker>
+                            </defs>
+                        </svg>
+                    )
+                },
+                {
+                    id: 'SVO',
+                    title: '社会价值取向',
+                    description: '测一测你的社会人格特质',
+                    duration: '~1分钟',
+                    path: 'tasks/SVO.html',
+                    image: (
+                        <svg viewBox="0 0 100 100" className="w-24 h-24">
+                            <circle cx="35" cy="35" r="15" fill="#4682B4"/>
+                            <circle cx="65" cy="65" r="15" fill="#4682B4"/>
+                            <path d="M 35 35 L 65 65" stroke="#000" strokeWidth="2" strokeDasharray="5,5"/>
+                        </svg>
+                    )
+                },
+                {
+                    id: 'TG',
+                    title: '信任游戏',
+                    description: '对一个陌生人的信任',
+                    duration: '~1分钟',
+                    path: 'tasks/TG.html',
+                    image: (
+                        <svg viewBox="0 0 100 100" className="w-24 h-24">
+                            <path d="M 50 20 L 80 40 L 50 60 L 20 40 Z" fill="#FFD700"/>
+                            <circle cx="50" cy="70" r="10" fill="#4682B4"/>
+                        </svg>
+                    )
+                },
+                {
+                    id: 'UG',
+                    title: '最后通牒者游戏',
+                    description: '是否要接收别人的分配',
+                    duration: '~1分钟',
+                    path: 'tasks/UG.html',
+                    image: (
+                        <svg viewBox="0 0 100 100" className="w-24 h-24">
+                            <rect x="20" y="30" width="60" height="40" fill="#FFD700"/>
+                            <path d="M 30 50 L 70 50" stroke="#000" strokeWidth="3"/>
+                            <text x="40" y="65" fontSize="15">¥</text>
+                        </svg>
+                    )
+                },
+                {
+                    id: 'TPG',
+                    title: '第三方惩罚游戏',
+                    description: '是否要惩罚别人的分配',
+                    duration: '~1分钟',
+                    path: 'tasks/TPG.html',
+                    image: (
+                        <svg viewBox="0 0 100 100" className="w-24 h-24">
+                            <circle cx="30" cy="50" r="15" fill="#FFD700"/>
+                            <circle cx="70" cy="50" r="15" fill="#FFD700"/>
+                            <path d="M 50 20 L 50 80" stroke="#FF0000" strokeWidth="3"/>
+                        </svg>
+                    )
+                },
+            ];
+
+            const navigateToTask = (task) => {
+                // 将参与者信息附加到任务URL
+                const queryParams = new URLSearchParams({
+                    participantId: participantData.participantId,
+                    name: participantData.name,
+                    age: participantData.age,
+                    gender: participantData.gender,
+                    education: participantData.education
+                }).toString();
+                window.location.href = `${task.path}?${queryParams}`;
+            };
+
+            if (loading) {
+                return (
+                    <div className="min-h-screen flex items-center justify-center">
+                        <div className="text-center">
+                            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto"></div>
+                            <p className="mt-4 text-gray-600">加载中...</p>
+                        </div>
+                    </div>
+                );
+            }
+
+            return (
+                <div className="container mx-auto p-6 bg-gray-50 min-h-screen">
+                    <header className="text-center mb-12">
+                        <div className="flex justify-between items-center mb-4">
+                            <h1 className="text-4xl font-bold">认知任务评估平台</h1>
+                            <div className="text-right">
+                                <p className="text-sm text-gray-600">欢迎, {participantData.name}</p>
+                                <button 
+                                    onClick={() => {
+                                        localStorage.removeItem('participantData');
+                                        window.location.href = 'start.html';
+                                    }}
+                                    className="text-sm text-red-500 hover:text-red-700"
+                                >
+                                    退出登录
+                                </button>
+                            </div>
+                        </div>
+                        <p className="text-gray-600 max-w-2xl mx-auto">
+                            探索人类认知、决策和社会行为的多个维度
+                        </p>
+                    </header>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
+                        {tasks.map(task => (
+                            <TaskCard
+                                key={task.id}
+                                {...task}
+                                onClick={() => navigateToTask(task)}
+                            />
+                        ))}
+                    </div>
+
+                    <footer className="mt-12 text-center text-gray-500">
+                        <p>总预计完成时间: ~30分钟</p>
+                        <p>所有任务数据将自动保存，您可以按任意顺序完成</p>
+                        <p className="mt-2 text-sm">
+                            实验编号: {participantData.participantId}
+                        </p>
+                    </footer>
+                </div>
+            );
+        };
+
+        ReactDOM.render(<CognitiveTasksHub />, document.getElementById('root'));
+    </script>
+</body>
+</html>

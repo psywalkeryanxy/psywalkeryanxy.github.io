@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>生活事件评估研究</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .fixation {
+            font-size: 48px;
+            font-weight: bold;
+            color: black;
+        }
+
+        .custom-slider {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 8px;
+            border-radius: 4px;
+            background: #e2e8f0;
+            outline: none;
+        }
+
+        .custom-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: #3b82f6;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .feedback-animation {
+            animation: fadeInOut 2s ease-in-out;
+        }
+
+        @keyframes fadeInOut {
+            0% { opacity: 0; transform: translateY(-10px); }
+            10% { opacity: 1; transform: translateY(0); }
+            90% { opacity: 1; transform: translateY(0); }
+            100% { opacity: 0; transform: translateY(10px); }
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 4px;
+            background-color: #e2e8f0;
+            border-radius: 2px;
+            margin: 10px 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background-color: #3b82f6;
+            border-radius: 2px;
+            transition: width 0.3s ease;
+        }
+
+        .info-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen p-8">
+    <!-- Introduction Screen -->
+    <div id="intro-screen" class="max-w-3xl mx-auto">
+        <div class="info-card p-8">
+            <h1 class="text-2xl font-bold mb-6 text-gray-800 text-center">生活事件评估研究</h1>
+            
+            <div class="space-y-4 text-gray-600">
+                <div class="bg-blue-50 p-6 rounded-lg">
+                    <h2 class="font-semibold text-blue-800 mb-4 text-xl">研究说明：</h2>
+                    <p class="text-blue-900 leading-relaxed mb-4">
+                        在这项研究中，您将看到一系列可能发生在生活中的事件。
+                    </p>
+                    <ul class="list-disc list-inside space-y-2 text-blue-900">
+                        <li>您需要评估这些事件在未来发生在您身上的可能性（1-99%）</li>
+                        <li>评估后，您将看到实际统计数据</li>
+                        <li>所有事件将进行两轮评估</li>
+                    </ul>
+                </div>
+
+                <div class="bg-yellow-50 p-4 rounded-lg">
+                    <h2 class="font-semibold text-yellow-800">注意事项：</h2>
+                    <p class="text-yellow-900">请根据您的真实判断进行评估，没有对错之分。</p>
+                </div>
+            </div>
+
+            <button id="start-button" 
+                    class="mt-8 bg-blue-600 text-white px-8 py-3 rounded-lg font-medium hover:bg-blue-700 transition-colors w-full">
+                开始评估
+            </button>
+        </div>
+    </div>
+
+    <!-- Fixation Screen -->
+    <div id="fixation-screen" class="hidden">
+        <div class="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+            <span class="fixation">+</span>
+        </div>
+    </div>
+
+    <!-- Trial Screen -->
+    <div id="trial-screen" class="max-w-3xl mx-auto hidden">
+        <div class="info-card p-8">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-xl font-bold text-gray-800">
+                    第<span id="round-number">1</span>轮：
+                    第<span id="trial-number">1</span>/<span id="total-trials">30</span>个事件
+                </h2>
+            </div>
+            
+            <div class="progress-bar">
+                <div id="progress-fill" class="progress-fill" style="width: 0%"></div>
+            </div>
+            
+            <div class="my-8 text-center">
+                <h3 id="event-text" class="text-2xl font-bold text-gray-700 mb-8"></h3>
+                
+                <div class="space-y-6">
+                    <p class="text-lg text-gray-600">
+                        您认为这件事在未来发生在您身上的可能性是多少？
+                    </p>
+                    
+                    <div class="w-full px-4">
+                        <input type="range" min="1" max="99" value="50" 
+                               class="custom-slider" id="probability-slider">
+                        <div class="flex justify-between text-sm text-gray-500 mt-2">
+                            <span>1%</span>
+                            <span>50%</span>
+                            <span>99%</span>
+                        </div>
+                        <div class="text-center mt-4">
+                            <span class="text-2xl font-bold text-blue-600" id="probability-value">50</span>%
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <button id="confirm-button" 
+                    class="bg-blue-600 text-white px-8 py-3 rounded-lg font-medium hover:bg-blue-700 transition-colors w-full">
+                确认
+            </button>
+        </div>
+    </div>
+
+    <!-- Feedback Screen -->
+    <div id="feedback-screen" class="max-w-3xl mx-auto hidden">
+        <div class="info-card p-8">
+            <div class="text-center">
+                <p class="text-lg text-gray-600 mb-4">
+                    根据统计数据，与您年龄和受教育程度相似的人群遇到这事情的概率为：
+                </p>
+                <p class="text-3xl font-bold text-blue-600">
+                    <span id="actual-probability">--</span>%
+                </p>
+                <p class="text-lg text-gray-600 mt-4">
+                   
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Completion Screen -->
+    <div id="completion-screen" class="max-w-3xl mx-auto hidden">
+        <div class="info-card p-8">
+            <h2 class="text-2xl font-bold mb-6 text-gray-800 text-center">研究完成</h2>
+            <p class="text-gray-600 mb-6 text-center">感谢您的参与！</p>
+            <button id="download-button" 
+                    class="bg-green-600 text-white px-8 py-3 rounded-lg font-medium hover:bg-green-700 transition-colors w-full">
+                下载数据
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // 事件数据
+        const events = [
+            { name: "住所发生意外", probability: 59 },
+            { name: "慢性/长期性耳鸣", probability: 11 },
+            { name: "疱疹", probability: 26 },
+            { name: "离异", probability: 50 },
+            { name: "严重的心律不齐", probability: 29 },
+            { name: "背疼", probability: 70 },
+            { name: "遭到朋友的背叛", probability: 49 },
+            { name: "中年丧偶", probability: 20 },
+            { name: "植物人", probability: 3 },
+            { name: "严重的心理问题", probability: 40 },
+            { name: "癫痫症", probability: 11 },
+            { name: "甲型或乙型肝炎", probability: 36 },
+            { name: "腰椎盘突出", probability: 20 },
+            { name: "因意外而导致严重受伤", probability: 17 },
+            { name: "信用卡受骗/欺诈/被盗", probability: 62 },
+            { name: "被熟悉的人施以暴力", probability: 28 },
+            { name: "房子里有老鼠", probability: 58 },
+            { name: "脊椎病", probability: 24 },
+            { name: "自行车被偷", probability: 54 },
+            { name: "肝脏疾病", probability: 10 },
+            { name: "II型糖尿病", probability: 27 },
+            { name: "急性心肌梗塞", probability: 9 },
+            { name: "心脏病", probability: 32 },
+            { name: "官司缠身", probability: 18 },
+            { name: "肥胖症/过度肥胖", probability: 31 },
+            { name: "猝死", probability: 6 },
+            { name: "严重的皮肤灼伤", probability: 10 },
+            { name: "死于80岁之前", probability: 41 },
+            { name: "暴力事件受害者", probability: 25 },
+            { name: "瘫痪", probability: 5 }
+        ];
+    
+        // 游戏状态
+        const gameData = {
+            participantId: Math.floor(100000 + Math.random() * 900000),
+            currentRound: 1,
+            currentTrialIndex: 0,
+            firstRoundOrder: [],
+            secondRoundOrder: [],
+            responses: [],
+            startTime: null,
+            trialStartTime: null
+        };
+    
+        // DOM引用
+        const screens = {
+            intro: document.getElementById('intro-screen'),
+            fixation: document.getElementById('fixation-screen'),
+            trial: document.getElementById('trial-screen'),
+            feedback: document.getElementById('feedback-screen'),
+            completion: document.getElementById('completion-screen')
+        };
+    
+        const elements = {
+            roundNumber: document.getElementById('round-number'),
+            trialNumber: document.getElementById('trial-number'),
+            totalTrials: document.getElementById('total-trials'),
+            eventText: document.getElementById('event-text'),
+            progressFill: document.getElementById('progress-fill'),
+            probabilitySlider: document.getElementById('probability-slider'),
+            probabilityValue: document.getElementById('probability-value'),
+            actualProbability: document.getElementById('actual-probability'),
+            confirmButton: document.getElementById('confirm-button')
+        };
+    
+        // 初始化游戏
+        function initializeGame() {
+            // 生成第一轮顺序
+            gameData.firstRoundOrder = [...Array(events.length).keys()];
+            shuffleArray(gameData.firstRoundOrder);
+    
+            // 生成不同的第二轮顺序
+            gameData.secondRoundOrder = [...Array(events.length).keys()];
+            shuffleArray(gameData.secondRoundOrder);
+    
+            elements.totalTrials.textContent = events.length;
+            gameData.startTime = new Date().toISOString();
+        }
+    
+        // Fisher-Yates洗牌算法
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+    
+        // 显示fixation
+        function showFixation() {
+            screens.trial.classList.add('hidden');
+            screens.feedback.classList.add('hidden');
+            screens.fixation.classList.remove('hidden');
+            
+            setTimeout(() => {
+                screens.fixation.classList.add('hidden');
+                showTrial();
+            }, 500);
+        }
+    
+        // 显示当前试次
+        function showTrial() {
+            const currentOrder = gameData.currentRound === 1 ? 
+                gameData.firstRoundOrder : gameData.secondRoundOrder;
+            const eventIndex = currentOrder[gameData.currentTrialIndex];
+            const event = events[eventIndex];
+    
+            screens.trial.classList.remove('hidden');
+            elements.roundNumber.textContent = gameData.currentRound;
+            elements.trialNumber.textContent = gameData.currentTrialIndex + 1;
+            elements.eventText.textContent = event.name;
+            elements.probabilitySlider.value = 50;
+            elements.probabilityValue.textContent = 50;
+            
+            const progress = ((gameData.currentTrialIndex + 1) / events.length) * 100;
+            elements.progressFill.style.width = `${progress}%`;
+    
+            gameData.trialStartTime = new Date().toISOString();
+        }
+    
+        // 显示反馈
+        function showFeedback(response) {
+            screens.trial.classList.add('hidden');
+            screens.feedback.classList.remove('hidden');
+            elements.actualProbability.textContent = response.actualProbability;
+    
+            setTimeout(() => {
+                if (gameData.currentTrialIndex < events.length - 1) {
+                    gameData.currentTrialIndex++;
+                    showFixation();
+                } else if (gameData.currentRound === 1) {
+                    gameData.currentRound = 2;
+                    gameData.currentTrialIndex = 0;
+                    showFixation();
+                } else {
+                    showCompletion();
+                }
+            }, 2000);
+        }
+    
+        // 记录响应
+        function recordResponse() {
+            const currentOrder = gameData.currentRound === 1 ? 
+                gameData.firstRoundOrder : gameData.secondRoundOrder;
+            const eventIndex = currentOrder[gameData.currentTrialIndex];
+            const event = events[eventIndex];
+            const choice = parseInt(elements.probabilitySlider.value);
+    
+            const response = {
+                participantId: gameData.participantId,
+                round: gameData.currentRound,
+                trialNumber: gameData.currentTrialIndex + 1,
+                eventName: event.name,
+                choice: choice,
+                actualProbability: event.probability,
+                RT: new Date() - new Date(gameData.trialStartTime),
+                trialStartTime: gameData.trialStartTime,
+                decisionTime: new Date().toISOString()
+            };
+    
+            gameData.responses.push(response);
+            showFeedback(response);
+        }
+    
+        // 下载数据
+        function downloadData() {
+            const headers = [
+                'participantId',
+                'round',
+                'trialNumber',
+                'eventName',
+                'choice',
+                'actualProbability',
+                'RT',
+                'trialStartTime',
+                'decisionTime'
+            ];
+    
+            const csvRows = [headers.join(',')];
+            
+            gameData.responses.forEach(response => {
+                const row = headers.map(header => response[header]);
+                csvRows.push(row.join(','));
+            });
+    
+            const csvContent = csvRows.join('\n');
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `optimistic_bias_P${gameData.participantId}_${new Date().getTime()}.csv`;
+            
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+    
+            const downloadButton = document.getElementById('download-button');
+            downloadButton.textContent = '数据已下载';
+            downloadButton.disabled = true;
+            downloadButton.classList.remove('hover:bg-green-700');
+        }
+    
+        // 显示完成屏幕
+        function showCompletion() {
+            screens.feedback.classList.add('hidden');
+            screens.completion.classList.remove('hidden');
+        }
+    
+        // 事件监听器
+        document.getElementById('start-button').addEventListener('click', () => {
+            screens.intro.classList.add('hidden');
+            initializeGame();
+            showFixation();
+        });
+    
+        elements.probabilitySlider.addEventListener('input', function() {
+            elements.probabilityValue.textContent = this.value;
+        });
+    
+        elements.confirmButton.addEventListener('click', recordResponse);
+    
+        document.getElementById('download-button').addEventListener('click', downloadData);
+    </script>
+    </body>
+    </html>

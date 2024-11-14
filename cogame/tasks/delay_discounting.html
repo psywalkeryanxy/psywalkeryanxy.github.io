@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>决策实验</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: black;
+            color: white;
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            cursor: default;
+        }
+
+        .screen {
+            display: none;
+            width: 100%;
+            max-width: 1200px;
+            text-align: center;
+        }
+
+        .screen.active {
+            display: block;
+        }
+
+        .option-container {
+            display: flex;
+            justify-content: center;
+            gap: 100px;
+            margin-top: 20px;
+        }
+
+        .option {
+            border: 2px solid white;
+            padding: 20px 40px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            width: 200px;
+            height: 100px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .option:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .fixation {
+            font-size: 40px;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .amount {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .time {
+            font-size: 18px;
+            color: #cccccc;
+        }
+
+        button {
+            background-color: white;
+            color: black;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 5px;
+            font-size: 18px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+
+        button:hover {
+            background-color: #cccccc;
+        }
+
+        .results-container {
+            margin: 20px auto;
+            max-width: 600px;
+            text-align: left;
+            padding: 20px;
+        }
+
+        .discount-rate {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        #k-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #4CAF50;
+            margin: 10px 0;
+        }
+
+        #interpretation {
+            font-size: 16px;
+            line-height: 1.5;
+            color: #cccccc;
+        }
+    </style>
+</head>
+<body>
+    <!-- 指导语屏幕 -->
+    <div id="intro-screen" class="screen active">
+        <h1>决策实验</h1>
+        <p>
+            在接下来的实验中，您需要在两个选项之间做出选择：<br>
+            一个选项是今天获得一定金额，另一个选项是在未来某一天获得一定金额。<br>
+            请根据您的真实偏好做出选择。
+        </p>
+        <button id="start-button">开始实验</button>
+    </div>
+
+    <!-- 实验屏幕 -->
+    <div id="task-screen" class="screen">
+        <div class="option-container">
+            <div id="option-left" class="option">
+                <div class="amount">¥10</div>
+                <div class="time">今天</div>
+            </div>
+            <div id="option-right" class="option">
+                <div class="amount">¥11</div>
+                <div class="time">1天后</div>
+            </div>
+        </div>
+        <div id="fixation" class="fixation" style="display: none">+</div>
+    </div>
+
+    <!-- 结果屏幕 -->
+    <div id="results-screen" class="screen">
+        <h1>实验完成</h1>
+        <div class="results-container">
+            <div class="discount-rate">
+                <h2>您的延迟折扣率</h2>
+                <p id="k-value"></p>
+                <p id="interpretation"></p>
+            </div>
+        </div>
+        <button id="download-results">下载数据</button>
+    </div>
+
+    <script>
+        // 实验数据
+        const trials = [
+            { leftAmount: 10, leftDelay: '今天', rightAmount: 11, rightDelay: '1天后' },
+            { leftAmount: 10, leftDelay: '今天', rightAmount: 29, rightDelay: '90天后' },
+            { leftAmount: 10, leftDelay: '今天', rightAmount: 14, rightDelay: '14天后' },
+            { leftAmount: 10, leftDelay: '今天', rightAmount: 11, rightDelay: '1天后' },
+            { leftAmount: 10, leftDelay: '今天', rightAmount: 20, rightDelay: '60天后' },
+            { leftAmount: 10, leftDelay: '今天', rightAmount: 17, rightDelay: '7天后' },
+            { leftAmount: 10, leftDelay: '今天', rightAmount: 26, rightDelay: '90天后' },
+            { leftAmount: 10, leftDelay: '今天', rightAmount: 26, rightDelay: '1天后' },
+            { leftAmount: 10, leftDelay: '今天', rightAmount: 20, rightDelay: '5天后' },
+            { leftAmount: 10, leftDelay: '今天', rightAmount: 14, rightDelay: '7天后' },
+            { leftAmount: 10, leftDelay: '今天', rightAmount: 26, rightDelay: '3天后' },
+            { leftAmount: 10, leftDelay: '今天', rightAmount: 17, rightDelay: '5天后' },
+            { leftAmount: 10, leftDelay: '今天', rightAmount: 20, rightDelay: '90天后' },
+            { leftAmount: 11, leftDelay: '7天后', rightAmount: 10, rightDelay: '今天' },
+            { leftAmount: 17, leftDelay: '60天后', rightAmount: 10, rightDelay: '今天' },
+            { leftAmount: 20, leftDelay: '1天后', rightAmount: 10, rightDelay: '今天' },
+            { leftAmount: 17, leftDelay: '1天后', rightAmount: 10, rightDelay: '今天' },
+            { leftAmount: 23, leftDelay: '7天后', rightAmount: 10, rightDelay: '今天' },
+            { leftAmount: 14, leftDelay: '1天后', rightAmount: 10, rightDelay: '今天' },
+            { leftAmount: 14, leftDelay: '90天后', rightAmount: 10, rightDelay: '今天' },
+            { leftAmount: 23, leftDelay: '60天后', rightAmount: 10, rightDelay: '今天' },
+            { leftAmount: 23, leftDelay: '14天后', rightAmount: 10, rightDelay: '今天' },
+            { leftAmount: 14, leftDelay: '60天后', rightAmount: 10, rightDelay: '今天' },
+            { leftAmount: 20, leftDelay: '7天后', rightAmount: 10, rightDelay: '今天' },
+            { leftAmount: 14, leftDelay: '3天后', rightAmount: 10, rightDelay: '今天' },
+            { leftAmount: 11, leftDelay: '90天后', rightAmount: 10, rightDelay: '今天' }
+        ];
+
+        let currentTrial = 0;
+        const responses = [];
+        let participantId = Math.floor(100000 + Math.random() * 900000);
+
+        // 显示屏幕切换函数
+        function showScreen(screenId) {
+            document.querySelectorAll('.screen').forEach(screen => {
+                screen.classList.remove('active');
+            });
+            document.getElementById(screenId).classList.add('active');
+
+            if (screenId === 'results-screen') {
+                showResults();
+            }
+        }
+
+        // 显示fixation
+        function showFixation() {
+            document.querySelector('.option-container').style.display = 'none';
+            document.getElementById('fixation').style.display = 'block';
+            
+            setTimeout(() => {
+                document.getElementById('fixation').style.display = 'none';
+                document.querySelector('.option-container').style.display = 'flex';
+                showTrial();
+                trialStartTime = Date.now();
+            }, 500);
+        }
+
+        // 显示trial
+        function showTrial() {
+            if (currentTrial >= trials.length) {
+                showScreen('results-screen');
+                return;
+            }
+
+            const trial = trials[currentTrial];
+
+            // 更新选项显示
+            const leftOption = document.getElementById('option-left');
+            const rightOption = document.getElementById('option-right');
+
+            leftOption.querySelector('.amount').textContent = `¥${trial.leftAmount}`;
+            leftOption.querySelector('.time').textContent = trial.leftDelay;
+            rightOption.querySelector('.amount').textContent = `¥${trial.rightAmount}`;
+            rightOption.querySelector('.time').textContent = trial.rightDelay;
+        }
+
+        // 计算延迟折扣率
+        function calculateDiscountRate() {
+            const presentValue = 10; // 即时奖励固定为10元
+            let kValues = [];
+
+            responses.forEach(response => {
+                let delay, amount;
+                if (response.choice === 'right' && response.rightDelay !== '今天') {
+                    delay = parseInt(response.rightDelay);
+                    amount = response.rightAmount;
+                } else if (response.choice === 'left' && response.leftDelay !== '今天') {
+                    delay = parseInt(response.leftDelay);
+                    amount = response.leftAmount;
+                }
+
+                if (delay > 0) {
+                    const k = (amount/presentValue - 1) / delay;
+                    kValues.push(k);
+                }
+            });
+
+            // 计算平均k值
+            const averageK = kValues.length > 0 ? 
+                kValues.reduce((a, b) => a + b, 0) / kValues.length : 0;
+
+            return averageK;
+        }
+
+        // 解释折扣率
+        function interpretDiscountRate(k) {
+            if (k < 0.001) {
+                return "您对未来奖励的耐心程度很高，更倾向于等待更大的收益。";
+            } else if (k < 0.01) {
+                return "您对未来奖励有较好的耐心，在即时和延迟奖励之间保持着平衡。";
+            } else if (k < 0.1) {
+                return "您对即时奖励的偏好较强，但仍会考虑未来收益。";
+            } else {
+                return "您强烈偏好即时奖励，相对不太愿意等待未来的更大收益。";
+            }
+        }
+
+        // 记录响应
+        function recordResponse(choice) {
+            const trial = trials[currentTrial];
+            const response = {
+                participantId: participantId,
+                trialNumber: currentTrial + 1,
+                leftAmount: trial.leftAmount,
+                leftDelay: trial.leftDelay,
+                rightAmount: trial.rightAmount,
+                rightDelay: trial.rightDelay,
+                choice: choice,
+                rt: Date.now() - trialStartTime,
+                timestamp: new Date().toISOString()
+            };
+            
+            responses.push(response);
+            currentTrial++;
+            showFixation();
+        }
+
+        // 显示结果
+        function showResults() {
+            const k = calculateDiscountRate();
+            document.getElementById('k-value').textContent = 
+                `k = ${k.toExponential(2)}`;
+            document.getElementById('interpretation').textContent = 
+                interpretDiscountRate(k);
+        }
+
+        // 实验初始化
+        let trialStartTime;
+
+        document.getElementById('start-button').addEventListener('click', () => {
+            showScreen('task-screen');
+            showTrial();
+            trialStartTime = Date.now();
+        });
+
+        document.getElementById('option-left').addEventListener('click', () => {
+            recordResponse('left');
+        });
+
+        document.getElementById('option-right').addEventListener('click', () => {
+            recordResponse('right');
+        });
+
+        document.getElementById('download-results').addEventListener('click', () => {
+            const k = calculateDiscountRate();
+            const headers = [
+                'participantId',
+                'trialNumber',
+                'leftAmount',
+                'leftDelay',
+                'rightAmount',
+                'rightDelay',
+                'choice',
+                'rt',
+                'timestamp',
+                'discountRate'
+            ];
+
+            const csv = [headers.join(',')];
+            
+            responses.forEach(r => {
+                const row = [...headers.slice(0, -1).map(header => r[header]), k];
+                csv.push(row.join(','));
+            });
+
+            const csvContent = csv.join('\n');
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `delay_discounting_P${participantId}.csv`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        });
+    </script>
+</body>
+</html>

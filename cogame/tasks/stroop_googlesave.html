@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stroop Task</title>
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+    <script src="https://apis.google.com/js/api.js"></script>
+    <script src="https://accounts.google.com/gsi/client"></script>
+    <style>
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .button {
+            padding: 10px 20px;
+            margin: 5px;
+            border: none;
+            border-radius: 5px;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+
+        .button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .stimulus-area {
+            height: 200px;
+            background-color: #f0f0f0;
+            margin: 20px 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            font-weight: bold;
+            border-radius: 10px;
+        }
+
+        .color-buttons {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        .trial-counter {
+            margin: 10px 0;
+            font-size: 18px;
+        }
+
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            max-width: 600px;
+            margin: 20px auto;
+        }
+
+        .result-card {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: left;
+        }
+
+        .fixation {
+            font-size: 40px;
+            font-weight: bold;
+        }
+
+        .instructions {
+            max-width: 600px;
+            margin: 20px auto;
+            text-align: left;
+            line-height: 1.6;
+        }
+
+        .save-status {
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        .save-status.success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .save-status.error {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #3498db;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 10px;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+</head>
+
+
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+
+
+
+        const COLORS = {
+            RED: { name: 'RED', hex: '#FF0000' },
+            BLUE: { name: 'BLUE', hex: '#0000FF' },
+            GREEN: { name: 'GREEN', hex: '#008000' },
+            YELLOW: { name: 'YELLOW', hex: '#FFD700' }
+        };
+
+        const CONFIG = {
+            API_KEY: 'AIzaSyDXX6BMGlLjYScokYaGuhrtR9nTM6AiO6c',
+            CLIENT_ID: '920162760915-2msiiljf9bad12l4b42u13qk3rp38k9p.apps.googleusercontent.com',
+            FOLDER_ID: '1NVDN7E4Z0EW4ipL11iEGhWNePJ9XEtx1',
+            SCOPES: 'https://www.googleapis.com/auth/drive.file',
+            DISCOVERY_DOCS: ['https://www.googleapis.com/discovery/v1/apis/drive/v3/rest']
+        };
+
+
+        function StroopTask() {
+
+
+            const [gameState, setGameState] = React.useState('start');
+            const [currentTrial, setCurrentTrial] = React.useState(0);
+            const [currentStimulus, setCurrentStimulus] = React.useState(null);
+            const [responses, setResponses] = React.useState([]);
+            const [showFixation, setShowFixation] = React.useState(false);
+            const [startTime, setStartTime] = React.useState(null);
+            const [participantId] = React.useState(() =>
+                Math.floor(100000000 + Math.random() * 900000000).toString()
+            );
+
+            ///////////////
+            const [isGoogleReady, setIsGoogleReady] = React.useState(false);
+            const [saveStatus, setSaveStatus] = React.useState({ status: '', message: '' });
+            const [isSaving, setIsSaving] = React.useState(false);
+            /////////////
+
+
+
+            const totalTrials = 20;
+
+
+            React.useEffect(() => {
+                const initializeGoogleApi = async () => {
+                    try {
+                        await new Promise((resolve, reject) => {
+                            gapi.load('client:auth2', resolve);
+                        });
+
+                        await gapi.client.init({
+                            apiKey: CONFIG.API_KEY,
+                            clientId: CONFIG.CLIENT_ID,
+                            scope: 'https://www.googleapis.com/auth/drive.file',
+                            discoveryDocs: ['https://www.googleapis.com/discovery/v1/apis/drive/v3/rest']
+                        });
+
+                        // Check if already signed in
+                        if (gapi.auth2.getAuthInstance().isSignedIn.get()) {
+                            console.log('User already signed in');
+                            setIsGoogleReady(true);
+                        } else {
+                            console.log('User needs to sign in');
+                            setIsGoogleReady(true);
+                        }
+
+                        // Listen for sign-in state changes
+                        gapi.auth2.getAuthInstance().isSignedIn.listen((isSignedIn) => {
+                            console.log('Sign in state changed:', isSignedIn);
+                            setIsGoogleReady(true);
+                        });
+
+                    } catch (error) {
+                        console.error('Detailed initialization error:', error);
+                        setSaveStatus({
+                            status: 'error',
+                            message: `Failed to initialize Google Drive integration: ${error.message}`
+                        });
+                    }
+                };
+
+                initializeGoogleApi();
+            }, []);
+
+
+
+
+            const generateStimulus = () => {
+                const colors = Object.values(COLORS);
+                const wordColor = colors[Math.floor(Math.random() * colors.length)];
+                let displayColor;
+
+                // 50% chance of congruent trials
+                if (Math.random() < 0.5) {
+                    displayColor = wordColor;
+                } else {
+                    do {
+                        displayColor = colors[Math.floor(Math.random() * colors.length)];
+                    } while (displayColor === wordColor);
+                }
+
+                return {
+                    word: wordColor.name,
+                    color: displayColor.hex,
+                    correctAnswer: displayColor.name,
+                    type: wordColor === displayColor ? 'congruent' : 'incongruent'
+                };
+            };
+
+
+
+
+            //////////////////////API google
+
+
+
+            // Save to Google Drive
+            const saveToGoogleDrive = async (data) => {
+                setIsSaving(true);
+                setSaveStatus({ status: 'saving', message: 'Saving to Google Drive...' });
+
+                try {
+                    await gapi.auth2.getAuthInstance().signIn();
+
+                    const csvContent = [
+                        // Header
+                        ['Participant ID', 'Trial', 'Stimulus', 'Display Color', 'Response', 'Correct', 'RT', 'Trial Type'].join(','),
+                        // Data rows
+                        ...data.map(r => [
+                            participantId,
+                            r.trial,
+                            r.stimulus,
+                            r.displayColor,
+                            r.response,
+                            r.correct ? 1 : 0,
+                            r.rt,
+                            r.type
+                        ].join(','))
+                    ].join('\n');
+
+                    const file = new Blob([csvContent], { type: 'text/csv' });
+                    const metadata = {
+                        name: `stroop_data_${participantId}_${new Date().toISOString().split('T')[0]}.csv`,
+                        mimeType: 'text/csv',
+                        parents: [CONFIG.FOLDER_ID]
+                    };
+
+                    const form = new FormData();
+                    form.append('metadata', new Blob([JSON.stringify(metadata)], { type: 'application/json' }));
+                    form.append('file', file);
+
+                    const accessToken = gapi.auth2.getAuthInstance().currentUser.get().getAuthResponse().access_token;
+
+                    const response = await fetch(
+                        'https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart',
+                        {
+                            method: 'POST',
+                            headers: new Headers({ 'Authorization': 'Bearer ' + accessToken }),
+                            body: form
+                        }
+                    );
+
+                    if (!response.ok) throw new Error('Failed to upload file');
+
+                    setSaveStatus({
+                        status: 'success',
+                        message: 'Data saved successfully to Google Drive'
+                    });
+                } catch (error) {
+                    console.error('Error saving to Google Drive:', error);
+                    setSaveStatus({
+                        status: 'error',
+                        message: 'Failed to save to Google Drive. Using local download as backup.'
+                    });
+                } finally {
+                    setIsSaving(false);
+                }
+            };
+
+
+            const startGame = () => {
+                setGameState('running');
+                setCurrentTrial(0);
+                setResponses([]);
+                showNextTrial();
+            };
+
+            const showNextTrial = () => {
+                setShowFixation(true);
+                setTimeout(() => {
+                    setShowFixation(false);
+                    const stimulus = generateStimulus();
+                    setCurrentStimulus(stimulus);
+                    setStartTime(Date.now());
+                }, 500);
+            };
+
+
+
+
+            //////////////////////////
+            const handleResponse = (response) => {
+                if (!startTime) return;
+
+                const endTime = Date.now();
+                const rt = endTime - startTime;
+
+                const responseData = {
+                    trial: currentTrial + 1,
+                    stimulus: currentStimulus.word,
+                    displayColor: currentStimulus.correctAnswer,
+                    response: response,
+                    correct: response === currentStimulus.correctAnswer,
+                    rt: rt,
+                    type: currentStimulus.type
+                };
+
+                setResponses([...responses, responseData]);
+
+                if (currentTrial < totalTrials - 1) {
+                    setCurrentTrial(currentTrial + 1);
+                    showNextTrial();
+                } else {
+                    setGameState('finished');
+                }
+            };
+
+            const calculateResults = () => {
+                const congruentTrials = responses.filter(r => r.type === 'congruent');
+                const incongruentTrials = responses.filter(r => r.type === 'incongruent');
+
+                return {
+                    accuracy: ((responses.filter(r => r.correct).length / responses.length) * 100).toFixed(1),
+                    meanRT: (responses.reduce((sum, r) => sum + r.rt, 0) / responses.length).toFixed(0),
+                    congruentRT: (congruentTrials.reduce((sum, r) => sum + r.rt, 0) / congruentTrials.length).toFixed(0),
+                    incongruentRT: (incongruentTrials.reduce((sum, r) => sum + r.rt, 0) / incongruentTrials.length).toFixed(0),
+                    stroopEffect: (
+                        incongruentTrials.reduce((sum, r) => sum + r.rt, 0) / incongruentTrials.length -
+                        congruentTrials.reduce((sum, r) => sum + r.rt, 0) / congruentTrials.length
+                    ).toFixed(0),
+                    congruentAccuracy: ((congruentTrials.filter(r => r.correct).length / congruentTrials.length) * 100).toFixed(1),
+                    incongruentAccuracy: ((incongruentTrials.filter(r => r.correct).length / incongruentTrials.length) * 100).toFixed(1)
+                };
+            };
+
+            const downloadData = () => {
+                const csvContent = [
+                    // Header
+                    ['Participant ID', 'Trial', 'Stimulus', 'Display Color', 'Response', 'Correct', 'RT', 'Trial Type'].join(','),
+                    // Data rows
+                    ...responses.map(r => [
+                        participantId,
+                        r.trial,
+                        r.stimulus,
+                        r.displayColor,
+                        r.response,
+                        r.correct ? 1 : 0,
+                        r.rt,
+                        r.type
+                    ].join(','))
+                ].join('\n');
+
+                const blob = new Blob([csvContent], { type: 'text/csv' });
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `stroop_data_${participantId}.csv`;
+                a.click();
+                window.URL.revokeObjectURL(url);
+            };
+
+            return (
+                <div className="container">
+                    <h1>Stroop Task</h1>
+                    <p>Participant ID: {participantId}</p>
+
+                    {gameState === 'start' && (
+                        <div>
+                            <div className="instructions">
+                                <h2>Instructions:</h2>
+                                <p>In this task, you will see color words (RED, BLUE, GREEN, YELLOW) displayed in different colors.</p>
+                                <p>Your job is to respond to the <strong>COLOR</strong> of the text, not the word itself.</p>
+                                <p>For example, if you see the word "RED" written in blue color, you should click BLUE.</p>
+                                <p>Try to respond as quickly and accurately as possible.</p>
+                                <p>There will be {totalTrials} trials in total.</p>
+                            </div>
+                            <button
+                                className="button"
+                                style={{ backgroundColor: '#4CAF50' }}
+                                onClick={startGame}
+                            >
+                                Start Test
+                            </button>
+                        </div>
+                    )}
+
+                    {gameState === 'running' && (
+                        <div>
+                            <div className="trial-counter">
+                                Trial: {currentTrial + 1} / {totalTrials}
+                            </div>
+                            <div className="stimulus-area">
+                                {showFixation ? (
+                                    <div className="fixation">+</div>
+                                ) : (
+                                        currentStimulus && (
+                                            <span style={{ color: currentStimulus.color }}>
+                                                {currentStimulus.word}
+                                            </span>
+                                        )
+                                    )}
+                            </div>
+                            <div className="color-buttons">
+                                {Object.values(COLORS).map((color) => (
+                                    <button
+                                        key={color.name}
+                                        className="button"
+                                        style={{ backgroundColor: color.hex }}
+                                        onClick={() => handleResponse(color.name)}
+                                        disabled={showFixation}
+                                    >
+                                        {color.name}
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+                    )}
+
+                    {gameState === 'finished' && (
+                        <div>
+                            <h2>Results</h2>
+                            {saveStatus.message && (
+                                <div className={`save-status ${saveStatus.status}`}>
+                                    {isSaving && <span className="loading"></span>}
+                                    {saveStatus.message}
+                                </div>
+                            )}
+                            <div className="results-grid">
+                                <div className="result-card">
+                                    <h3>Overall Performance</h3>
+                                    <p>Accuracy: {calculateResults().accuracy}%</p>
+                                    <p>Mean RT: {calculateResults().meanRT}ms</p>
+                                </div>
+                                <div className="result-card">
+                                    <h3>Stroop Effect</h3>
+                                    <p>Interference: {calculateResults().stroopEffect}ms</p>
+                                </div>
+                                <div className="result-card">
+                                    <h3>Congruent Trials</h3>
+                                    <p>Accuracy: {calculateResults().congruentAccuracy}%</p>
+                                    <p>Mean RT: {calculateResults().congruentRT}ms</p>
+                                </div>
+                                <div className="result-card">
+                                    <h3>Incongruent Trials</h3>
+                                    <p>Accuracy: {calculateResults().incongruentAccuracy}%</p>
+                                    <p>Mean RT: {calculateResults().incongruentRT}ms</p>
+                                </div>
+                            </div>
+                            <button
+                                className="button"
+                                style={{ backgroundColor: '#4CAF50', marginRight: '10px' }}
+                                onClick={startGame}
+                            >
+                                Try Again
+        </button>
+                            <button
+                                className="button"
+                                style={{ backgroundColor: '#2196F3', marginRight: '10px' }}
+                                onClick={saveToGoogleDrive}
+                                disabled={isSaving}
+                            >
+                                Save to Google Drive
+        </button>
+                            <button
+                                className="button"
+                                style={{ backgroundColor: '#2196F3' }}
+                                onClick={downloadData}
+                            >
+                                Download Data (Backup)
+        </button>
+                        </div>
+                    )}
+                </div>
+            );
+        }
+
+        ReactDOM.createRoot(document.getElementById('root')).render(<StroopTask />);
+    </script>
+</body>
+
+</html>

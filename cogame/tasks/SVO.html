@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>资源分配决策研究</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .option-row {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            margin-bottom: 1rem;
+        }
+
+        .option-cell {
+            flex: 1;
+            text-align: center;
+            position: relative;
+        }
+
+        .option-cell:not(:last-child)::after {
+            content: '';
+            position: absolute;
+            right: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            height: 80%;
+            width: 1px;
+            background-color: #e5e7eb;
+        }
+
+        .value-box {
+            border: 2px solid transparent;
+            padding: 0.5rem;
+            margin: 0.25rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .value-box:hover {
+            background-color: #f3f4f6;
+        }
+
+        .value-box.selected {
+            border-color: #3b82f6;
+            background-color: #eff6ff;
+        }
+
+        .connecting-line {
+            width: 1px;
+            height: 20px;
+            background-color: #d1d5db;
+            margin: 0 auto;
+        }
+
+        .self-value {
+            color: #2563eb;
+            font-weight: 500;
+        }
+
+        .other-value {
+            color: #059669;
+            font-weight: 500;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 4px;
+            background-color: #e2e8f0;
+            border-radius: 2px;
+            margin: 10px 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background-color: #3b82f6;
+            border-radius: 2px;
+            transition: width 0.3s ease;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen p-4">
+    <!-- Introduction Screen -->
+    <div id="intro-screen" class="max-w-4xl mx-auto">
+        <div class="bg-white rounded-lg shadow p-8">
+            <h1 class="text-2xl font-bold mb-6 text-center">资源分配决策研究</h1>
+            
+            <div class="space-y-4 text-gray-600">
+                <div class="bg-blue-50 p-6 rounded-lg">
+                    <h2 class="font-semibold text-blue-800 mb-4">任务说明：</h2>
+                    <p class="text-blue-900 leading-relaxed mb-4">
+                        在这项研究中，您将面对6个不同的分配场景。在每个场景中：
+                    </p>
+                    <ul class="list-disc list-inside space-y-2 text-blue-900">
+                        <li>您将看到9个不同的分配方案</li>
+                        <li>请选择您最倾向的分配方案</li>
+                        <li>您的选择会影响实际的收益分配</li>
+                    </ul>
+                </div>
+
+                <div class="bg-yellow-50 p-4 rounded-lg">
+                    <p class="text-yellow-900">没有对错之分，请根据您的真实偏好做出选择。</p>
+                </div>
+            </div>
+
+            <button id="start-button" 
+                    class="mt-8 bg-blue-600 text-white px-8 py-3 rounded-lg font-medium hover:bg-blue-700 transition-colors w-full">
+                开始决策
+            </button>
+        </div>
+    </div>
+
+    <!-- Trial Screen -->
+    <div id="trial-screen" class="max-w-6xl mx-auto hidden">
+        <div class="bg-white rounded-lg shadow p-6">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-xl font-bold text-gray-800">
+                    决策 <span id="trial-number">1</span>/6
+                </h2>
+            </div>
+            
+            <div class="progress-bar">
+                <div id="progress-fill" class="progress-fill" style="width: 0%"></div>
+            </div>
+
+            <div class="mt-6">
+                <div class="flex gap-4 mb-4 justify-center">
+                    <div class="text-base font-medium self-value">
+                        ▲ 分配给您自己的金额
+                    </div>
+                    <div class="text-base font-medium other-value">
+                        ▼ 分配给他人的金额
+                    </div>
+                </div>
+
+                <div id="options-wrapper" class="relative">
+                    <!-- Options will be inserted here -->
+                </div>
+            </div>
+
+            <button id="confirm-button" 
+                    disabled
+                    class="mt-6 bg-gray-400 text-white px-8 py-3 rounded-lg font-medium transition-colors w-full cursor-not-allowed">
+                确认选择
+            </button>
+        </div>
+    </div>
+
+    <!-- Results Screen -->
+    <div id="results-screen" class="max-w-4xl mx-auto hidden">
+        <div class="bg-white rounded-lg shadow p-8">
+            <h2 class="text-2xl font-bold mb-6 text-center">您的社会价值取向分析</h2>
+            
+            <div id="svo-result" class="bg-gray-50 p-6 rounded-lg mb-6">
+                <!-- Result will be inserted here -->
+            </div>
+
+            <div id="svo-description" class="bg-blue-50 p-6 rounded-lg mb-6">
+                <!-- Description will be inserted here -->
+            </div>
+
+            <div id="choice-summary" class="bg-gray-50 p-6 rounded-lg mb-6">
+                <!-- Choice summary will be inserted here -->
+            </div>
+
+            <button id="download-button" 
+                    class="bg-green-600 text-white px-8 py-3 rounded-lg font-medium hover:bg-green-700 transition-colors w-full">
+                下载数据
+            </button>
+        </div>
+    </div>
+
+
+    <script>
+        // SVO题目数据
+        const svoItems = [
+            {
+                id: 1,
+                options: [
+                    { self: 85, other: 85 },
+                    { self: 85, other: 76 },
+                    { self: 85, other: 68 },
+                    { self: 85, other: 59 },
+                    { self: 85, other: 50 },
+                    { self: 85, other: 41 },
+                    { self: 85, other: 33 },
+                    { self: 85, other: 24 },
+                    { self: 85, other: 15 }
+                ]
+            },
+            {
+                id: 2,
+                options: [
+                    { self: 85, other: 15 },
+                    { self: 87, other: 19 },
+                    { self: 89, other: 24 },
+                    { self: 91, other: 28 },
+                    { self: 93, other: 33 },
+                    { self: 94, other: 37 },
+                    { self: 96, other: 41 },
+                    { self: 98, other: 46 },
+                    { self: 100, other: 50 }
+                ]
+            },
+            {
+                id: 3,
+                options: [
+                    { self: 50, other: 100 },
+                    { self: 54, other: 98 },
+                    { self: 59, other: 96 },
+                    { self: 63, other: 94 },
+                    { self: 68, other: 93 },
+                    { self: 72, other: 91 },
+                    { self: 76, other: 89 },
+                    { self: 81, other: 87 },
+                    { self: 85, other: 85 }
+                ]
+            },
+            {
+                id: 4,
+                options: [
+                    { self: 50, other: 100 },
+                    { self: 54, other: 89 },
+                    { self: 59, other: 79 },
+                    { self: 63, other: 68 },
+                    { self: 68, other: 58 },
+                    { self: 72, other: 47 },
+                    { self: 76, other: 36 },
+                    { self: 81, other: 26 },
+                    { self: 85, other: 15 }
+                ]
+            },
+            {
+                id: 5,
+                options: [
+                    { self: 100, other: 50 },
+                    { self: 94, other: 56 },
+                    { self: 88, other: 63 },
+                    { self: 81, other: 69 },
+                    { self: 75, other: 75 },
+                    { self: 69, other: 81 },
+                    { self: 63, other: 88 },
+                    { self: 56, other: 94 },
+                    { self: 50, other: 100 }
+                ]
+            },
+            {
+                id: 6,
+                options: [
+                    { self: 100, other: 50 },
+                    { self: 98, other: 54 },
+                    { self: 96, other: 59 },
+                    { self: 94, other: 63 },
+                    { self: 93, other: 68 },
+                    { self: 91, other: 72 },
+                    { self: 89, other: 76 },
+                    { self: 87, other: 81 },
+                    { self: 85, other: 85 }
+                ]
+            }
+        ];
+    
+        // 游戏数据
+        const gameData = {
+            participantId: Math.floor(100000 + Math.random() * 900000),
+            currentTrialIndex: 0,
+            startTime: null,
+            trialStartTime: null,
+            responses: [],
+            selectedOption: null
+        };
+    
+        // 显示选项
+        function showOptions() {
+            const optionsWrapper = document.getElementById('options-wrapper');
+            optionsWrapper.innerHTML = '';
+            
+            const currentItem = svoItems[gameData.currentTrialIndex];
+            
+            // 创建自己的数值行
+            const selfRow = document.createElement('div');
+            selfRow.className = 'option-row mb-4';
+            
+            // 创建他人的数值行
+            const otherRow = document.createElement('div');
+            otherRow.className = 'option-row';
+            
+            currentItem.options.forEach((option, index) => {
+                // 创建自己的数值单元格
+                const selfCell = document.createElement('div');
+                selfCell.className = 'option-cell';
+                selfCell.innerHTML = `
+                    <div class="value-box" data-index="${index}">
+                        <div class="self-value">${option.self}</div>
+                    </div>
+                    <div class="connecting-line"></div>
+                `;
+                
+                // 创建他人的数值单元格
+                const otherCell = document.createElement('div');
+                otherCell.className = 'option-cell';
+                otherCell.innerHTML = `
+                    <div class="value-box" data-index="${index}">
+                        <div class="other-value">${option.other}</div>
+                    </div>
+                `;
+                
+                selfRow.appendChild(selfCell);
+                otherRow.appendChild(otherCell);
+            });
+            
+            optionsWrapper.appendChild(selfRow);
+            optionsWrapper.appendChild(otherRow);
+            
+            // 添加点击事件
+            document.querySelectorAll('.value-box').forEach(box => {
+                box.addEventListener('click', () => {
+                    const index = parseInt(box.dataset.index);
+                    document.querySelectorAll('.value-box').forEach(b => {
+                        b.classList.remove('selected');
+                    });
+                    document.querySelectorAll(`[data-index="${index}"]`).forEach(b => {
+                        b.classList.add('selected');
+                    });
+                    selectOption(index);
+                });
+            });
+        }
+    
+        // 选择选项
+        function selectOption(index) {
+            gameData.selectedOption = index;
+            
+            const confirmButton = document.getElementById('confirm-button');
+            confirmButton.disabled = false;
+            confirmButton.classList.remove('bg-gray-400', 'cursor-not-allowed');
+            confirmButton.classList.add('bg-blue-600', 'hover:bg-blue-700');
+        }
+    
+        // 记录响应
+        function recordResponse() {
+            if (gameData.selectedOption === null) return;
+    
+            const currentItem = svoItems[gameData.currentTrialIndex];
+            const selectedOption = currentItem.options[gameData.selectedOption];
+            
+            const response = {
+                participantId: gameData.participantId,
+                trialNumber: gameData.currentTrialIndex + 1,
+                selfValue: selectedOption.self,
+                otherValue: selectedOption.other,
+                optionIndex: gameData.selectedOption,
+                RT: new Date() - new Date(gameData.trialStartTime)
+            };
+    
+            gameData.responses.push(response);
+            
+            if (gameData.currentTrialIndex < svoItems.length - 1) {
+                gameData.currentTrialIndex++;
+                showNextTrial();
+            } else {
+                showResults();
+            }
+        }
+    
+        // 显示下一试次
+        function showNextTrial() {
+            gameData.selectedOption = null;
+            gameData.trialStartTime = new Date().toISOString();
+            
+            document.getElementById('trial-number').textContent = gameData.currentTrialIndex + 1;
+            const progress = ((gameData.currentTrialIndex + 1) / svoItems.length) * 100;
+            document.getElementById('progress-fill').style.width = `${progress}%`;
+            
+            const confirmButton = document.getElementById('confirm-button');
+            confirmButton.disabled = true;
+            confirmButton.classList.add('bg-gray-400', 'cursor-not-allowed');
+            confirmButton.classList.remove('bg-blue-600', 'hover:bg-blue-700');
+            
+            showOptions();
+        }
+    
+   // 计算SVO角度
+   function calculateSVOAngle() {
+        let sumSelf = 0;
+        let sumOther = 0;
+        gameData.responses.forEach(response => {
+            sumSelf += response.selfValue;
+            sumOther += response.otherValue;
+        });
+        
+        const meanSelf = sumSelf / gameData.responses.length;
+        const meanOther = sumOther / gameData.responses.length;
+        
+        return Math.atan2(meanOther - 50, meanSelf - 50) * (180 / Math.PI);
+    }
+
+    // 获取SVO类型描述
+    function getSVOTypeDescription(angle) {
+        if (angle > 57.15) {
+            return {
+                type: "利他型",
+                icon: "🤝",
+                description: "您的选择展现出强烈的亲社会倾向，倾向于最大化他人的利益。",
+                characteristics: [
+                    "高度关注他人福祉",
+                    "愿意牺牲个人利益来帮助他人",
+                    "具有强烈的社会责任感",
+                    "重视集体利益"
+                ]
+            };
+        } else if (angle > 22.45) {
+            return {
+                type: "亲社会型",
+                icon: "💚",
+                description: "您的选择体现了合作与互惠的特质，追求共同利益的最大化。",
+                characteristics: [
+                    "注重公平与互惠",
+                    "善于平衡各方利益",
+                    "具有良好的合作精神",
+                    "重视社会和谐"
+                ]
+            };
+        } else if (angle > -12.04) {
+            return {
+                type: "个人主义型",
+                icon: "🎯",
+                description: "您的选择显示了明确的目标导向性，倾向于最大化个人收益。",
+                characteristics: [
+                    "重视个人目标实现",
+                    "具有明确的决策倾向",
+                    "注重效率和结果",
+                    "善于独立决策"
+                ]
+            };
+        } else {
+            return {
+                type: "竞争型",
+                icon: "🏃",
+                description: "您的选择反映了较强的竞争意识，关注相对优势。",
+                characteristics: [
+                    "重视竞争优势",
+                    "具有强烈的进取心",
+                    "追求卓越表现",
+                    "注重比较结果"
+                ]
+            };
+        }
+    }
+
+    // 显示结果
+    function showResults() {
+        document.getElementById('trial-screen').classList.add('hidden');
+        document.getElementById('results-screen').classList.remove('hidden');
+
+        const svoAngle = calculateSVOAngle();
+        const svoType = getSVOTypeDescription(svoAngle);
+
+        document.getElementById('svo-result').innerHTML = `
+            <div class="text-center">
+                <div class="text-4xl mb-4">${svoType.icon}</div>
+                <div class="text-2xl font-bold mb-2">${svoType.type}</div>
+                <div class="text-gray-600 mb-4">SVO角度: ${svoAngle.toFixed(2)}°</div>
+                <p class="text-gray-700">${svoType.description}</p>
+            </div>
+        `;
+
+        document.getElementById('svo-description').innerHTML = `
+            <h3 class="font-semibold mb-3">您的决策特征：</h3>
+            <ul class="list-disc list-inside space-y-2">
+                ${svoType.characteristics.map(char => 
+                    `<li class="text-gray-600">${char}</li>`
+                ).join('')}
+            </ul>
+        `;
+
+        document.getElementById('choice-summary').innerHTML = `
+            <h3 class="font-semibold mb-3">决策记录：</h3>
+            <div class="space-y-2">
+                ${gameData.responses.map(response => `
+                    <div class="flex justify-between items-center text-sm">
+                        <span>决策 ${response.trialNumber}</span>
+                        <span>
+                            <span class="self-amount">您：${response.selfValue}</span> | 
+                            <span class="other-amount">对方：${response.otherValue}</span>
+                        </span>
+                    </div>
+                `).join('')}
+            </div>
+        `;
+    }
+
+    // 下载数据
+    function downloadData() {
+        const headers = [
+            'participantId',
+            'trialNumber',
+            'selfValue',
+            'otherValue',
+            'optionIndex',
+            'RT'
+        ];
+
+        const csvRows = [headers.join(',')];
+        gameData.responses.forEach(response => {
+            const row = headers.map(header => response[header]);
+            csvRows.push(row.join(','));
+        });
+
+        const csvContent = csvRows.join('\n');
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `svo_task_P${gameData.participantId}_${new Date().getTime()}.csv`;
+        
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+
+        const downloadButton = document.getElementById('download-button');
+        downloadButton.textContent = '数据已下载';
+        downloadButton.disabled = true;
+        downloadButton.classList.remove('hover:bg-green-700');
+    }
+
+    // 事件监听器
+    document.getElementById('start-button').addEventListener('click', () => {
+        document.getElementById('intro-screen').classList.add('hidden');
+        document.getElementById('trial-screen').classList.remove('hidden');
+        gameData.startTime = new Date().toISOString();
+        gameData.trialStartTime = new Date().toISOString();
+        showOptions();
+    });
+
+    document.getElementById('confirm-button').addEventListener('click', recordResponse);
+    document.getElementById('download-button').addEventListener('click', downloadData);
+</script>
+
+
+</body>
+</html>
