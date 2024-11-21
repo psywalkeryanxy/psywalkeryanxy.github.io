@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>理想自我判断任务</title>
     <style>
+        /* 保持原有样式不变 */
         body {
             margin: 0;
             padding: 0;
@@ -103,12 +104,21 @@
             line-height: 1.5;
             color: #cccccc;
         }
+
+        #participant-info {
+            color: #cccccc;
+            margin-bottom: 20px;
+            font-size: 16px;
+            text-align: left;
+            padding: 0 20px;
+        }
     </style>
 </head>
 <body>
     <!-- 指导语屏幕 -->
     <div id="intro-screen" class="screen active">
         <h1>理想自我判断任务</h1>
+        <div id="participant-info"></div>
         <div style="max-width: 800px; margin: 0 auto; text-align: left; line-height: 1.6;">
             <p>这个是理想自我任务，这个任务是请您判断<strong>现在的您自己离这个词所描述的那样还有多远，也就是请您判断现在的您和理想的自己的距离。</strong></p>
             <p>一共会有4个选项：</p>
@@ -145,7 +155,9 @@
                 <p id="interpretation"></p>
             </div>
         </div>
-        <button id="download-results">下载数据</button>
+        <div id="save-status" class="feedback" style="display: none;">
+            <p id="save-message"></p>
+        </div>
     </div>
 
     <script>
@@ -163,10 +175,54 @@
             "知足", "称职", "勤奋"
         ];
 
+        // 用户管理类
+        class ParticipantManager {
+            constructor() {
+                this.participantData = this.getParticipantData();
+                this.validateParticipant();
+            }
+
+            getParticipantData() {
+                const urlParams = new URLSearchParams(window.location.search);
+                const urlData = {
+                    participantId: urlParams.get('participantId'),
+                    name: urlParams.get('name'),
+                    age: urlParams.get('age'),
+                    gender: urlParams.get('gender'),
+                    education: urlParams.get('education')
+                };
+
+                const storedData = JSON.parse(localStorage.getItem('participantData'));
+                return urlData.participantId ? urlData : storedData;
+            }
+
+            validateParticipant() {
+                if (!this.participantData || !this.participantData.participantId) {
+                    window.location.href = '../homepage_cogame.html';
+                }
+            }
+
+            getData() {
+                return this.participantData;
+            }
+        }
+
         let currentTrial = 0;
         const responses = [];
         let trialTimeout;
-        let participantId = Math.floor(100000 + Math.random() * 900000);
+        let trialStartTime;
+        let experimentStartTime;
+        let experimentEndTime;
+        
+        // 初始化参与者管理器
+        const participantManager = new ParticipantManager();
+        const participantData = participantManager.getData();
+
+        // 显示参与者信息
+        document.getElementById('participant-info').innerHTML = `
+            参与者：${participantData.name} | ID：${participantData.participantId}<br>
+            年龄：${participantData.age} | 性别：${participantData.gender} | 教育程度：${participantData.education}
+        `;
 
         // 显示屏幕切换函数
         function showScreen(screenId) {
@@ -176,11 +232,13 @@
             document.getElementById(screenId).classList.add('active');
 
             if (screenId === 'results-screen') {
+                experimentEndTime = new Date().toISOString();
                 showResults();
+                // Automatically save data after showing results
+                setTimeout(saveData, 500);
             }
         }
 
-        // 显示fixation
         function showFixation() {
             clearTimeout(trialTimeout);
             document.getElementById('trait-word').style.display = 'none';
@@ -193,7 +251,6 @@
             }, 500);
         }
 
-        // 显示trial
         function showTrial() {
             if (currentTrial >= traits.length) {
                 showScreen('results-screen');
@@ -207,22 +264,19 @@
 
             trialStartTime = Date.now();
 
-            // 3秒后自动进入下一个trial
             trialTimeout = setTimeout(() => {
-                recordResponse(null); // 记录未响应
+                recordResponse(null);
             }, 3000);
         }
 
-        // 计算积极程度
         function calculatePositivity() {
             const validResponses = responses.filter(r => r.response !== null);
             if (validResponses.length === 0) return 0;
 
             const totalScore = validResponses.reduce((sum, r) => sum + r.response, 0);
-            return (totalScore / validResponses.length / 4) * 100; // 转换为百分比
+            return (totalScore / validResponses.length / 4) * 100;
         }
 
-        // 解释积极程度
         function interpretPositivity(score) {
             if (score >= 90) {
                 return "您对自己的现状非常有信心，认为自己已经非常接近理想的状态。保持这种积极的态度，继续追求更好的自己！";
@@ -237,11 +291,16 @@
             }
         }
 
-        // 记录响应
         function recordResponse(value) {
             clearTimeout(trialTimeout);
             const response = {
-                participantId: participantId,
+                participantId: participantData.participantId,
+                name: participantData.name,
+                age: participantData.age,
+                gender: participantData.gender,
+                education: participantData.education,
+                experimentStartTime: experimentStartTime,
+                experimentEndTime: experimentEndTime,
                 trialNumber: currentTrial + 1,
                 trait: traits[currentTrial],
                 response: value,
@@ -254,7 +313,79 @@
             showFixation();
         }
 
-        // 显示结果
+        function saveData() {
+            const saveStatus = document.getElementById('save-status');
+            const saveMessage = document.getElementById('save-message');
+            saveStatus.style.display = 'block';
+            saveMessage.textContent = '正在保存数据...';
+
+            try {
+                const headers = [
+                    'participantId',
+                    'name',
+                    'age',
+                    'gender',
+                    'education',
+                    'experimentStartTime',
+                    'experimentEndTime',
+                    'trialNumber',
+                    'trait',
+                    'response',
+                    'rt',
+                    'timestamp',
+                    'positivityScore'
+                ];
+
+                // 添加BOM以解决中文乱码
+                const BOM = '\uFEFF';
+                const positivityScore = calculatePositivity();
+                const csv = [headers.join(',')];
+                
+                responses.forEach(r => {
+                    const row = [
+                        r.participantId,
+                        r.name,
+                        r.age,
+                        r.gender,
+                        r.education,
+                        r.experimentStartTime,
+                        r.experimentEndTime,
+                        r.trialNumber,
+                        r.trait,
+                        r.response,
+                        r.rt,
+                        r.timestamp,
+                        positivityScore.toFixed(1)
+                    ];
+                    csv.push(row.join(','));
+                });
+
+                const csvContent = BOM + csv.join('\n');
+                const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `ideal_self_${participantData.name}_${participantData.participantId}_${new Date().getTime()}.csv`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+
+                saveMessage.style.color = '#4CAF50';
+                saveMessage.textContent = '数据已成功保存！';
+                
+                // Hide the save status after 3 seconds
+                setTimeout(() => {
+                    saveStatus.style.display = 'none';
+                }, 3000);
+
+            } catch (error) {
+                console.error('保存数据时出错:', error);
+                saveMessage.style.color = '#ff6b6b';
+                saveMessage.textContent = '保存数据失败，请尝试刷新页面重试';
+            }
+        }
+
         function showResults() {
             const positivityScore = calculatePositivity();
             document.getElementById('positivity-score').textContent = 
@@ -263,59 +394,19 @@
                 interpretPositivity(positivityScore);
         }
 
-        // 实验初始化
-        let trialStartTime;
-
         document.getElementById('start-button').addEventListener('click', () => {
+            experimentStartTime = new Date().toISOString();
             showScreen('task-screen');
             showTrial();
         });
 
-        // 添加选项点击事件
         document.querySelectorAll('.option').forEach(option => {
             option.addEventListener('click', () => {
                 recordResponse(parseInt(option.dataset.value));
             });
         });
 
-        document.getElementById('download-results').addEventListener('click', () => {
-            const headers = [
-                'participantId',
-                'trialNumber',
-                'trait',
-                'response',
-                'rt',
-                'timestamp',
-                'positivityScore'
-            ];
-
-            const positivityScore = calculatePositivity();
-            const csv = [headers.join(',')];
-            
-            responses.forEach(r => {
-                const row = [
-                    r.participantId,
-                    r.trialNumber,
-                    r.trait,
-                    r.response,
-                    r.rt,
-                    r.timestamp,
-                    positivityScore.toFixed(1)
-                ];
-                csv.push(row.join(','));
-            });
-
-            const csvContent = csv.join('\n');
-            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `ideal_self_P${participantId}.csv`;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-        });
+        
     </script>
 </body>
 </html>

@@ -1,5 +1,6 @@
+```html
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -77,7 +78,8 @@
 
                 <div class="bg-yellow-50 p-4 rounded-lg">
                     <h2 class="font-semibold text-yellow-800">重要提示：</h2>
-                    <p class="text-yellow-900">每个方案都需要您独立决策，您的选择将影响双方的最终收益。</p>
+                    <p class="text-yellow-900 mb-2">每个方案都需要您独立决策，您的选择将影响双方的最终收益。</p>
+                    <p class="text-yellow-900 font-bold">我们最后会随机抽取一个回合来实现，请慎重对待每一个回合的选择。</p>
                 </div>
             </div>
 
@@ -139,17 +141,57 @@
                 <!-- Summary will be inserted here -->
             </div>
 
-            <button id="download-button" 
-                    class="bg-green-600 text-white px-8 py-3 rounded-lg font-medium hover:bg-green-700 transition-colors w-full">
-                下载数据
+            <p class="text-gray-600 mb-4 text-center">数据已自动保存</p>
+
+            <button onclick="window.location.href='../homepage_cogame.html'"
+                    class="w-full bg-blue-600 text-white px-8 py-3 rounded-lg font-medium hover:bg-blue-700 transition-colors">
+                返回主页
             </button>
         </div>
     </div>
 
     <script>
-        // 游戏设置和数据记录
-        const gameData = {
-            participantId: Math.floor(100000 + Math.random() * 900000),
+        class ParticipantManager {
+            constructor() {
+                this.participantData = this.getParticipantData();
+                this.validateParticipant();
+            }
+
+            getParticipantData() {
+                try {
+                    const urlParams = new URLSearchParams(window.location.search);
+                    const urlData = {
+                        participantId: urlParams.get('participantId'),
+                        name: urlParams.get('name'),
+                        age: urlParams.get('age'),
+                        gender: urlParams.get('gender'),
+                        education: urlParams.get('education')
+                    };
+
+                    if (urlData.participantId) {
+                        return urlData;
+                    }
+                    window.location.href = '../homepage_cogame.html';
+                    return null;
+                } catch (error) {
+                    console.error('Error getting participant data:', error);
+                    return null;
+                }
+            }
+
+            validateParticipant() {
+                if (!this.participantData || !this.participantData.participantId) {
+                    window.location.href = '../homepage_cogame.html';
+                }
+            }
+
+            getData() {
+                return this.participantData;
+            }
+        }
+
+        const gameState = {
+            participant: null,
             totalAmount: 1000,
             currentTrialIndex: 0,
             startTime: null,
@@ -165,7 +207,7 @@
                     { proposerAmount: 5, responderAmount: 5, unfairness: 0 }
                 ];
                 
-                // Fisher-Yates洗牌算法
+                // 随机排序试次
                 for (let i = baseTrials.length - 1; i > 0; i--) {
                     const j = Math.floor(Math.random() * (i + 1));
                     [baseTrials[i], baseTrials[j]] = [baseTrials[j], baseTrials[i]];
@@ -179,43 +221,29 @@
             }
         };
     
-        // DOM元素
-        const screens = {
-            intro: document.getElementById('intro-screen'),
-            trial: document.getElementById('trial-screen'),
-            results: document.getElementById('results-screen')
-        };
-    
-        // 开始游戏
-        document.getElementById('start-button').addEventListener('click', () => {
-            gameData.initializeTrials();
-            screens.intro.classList.add('hidden');
-            screens.trial.classList.remove('hidden');
-            gameData.startTime = new Date().toISOString();
-            showTrial();
-        });
-    
-        // 更新进度条
-        function updateProgress() {
-            const progress = ((gameData.currentTrialIndex + 1) / gameData.trials.length) * 100;
-            document.getElementById('progress-fill').style.width = `${progress}%`;
-        }
-    
-        // 显示当前试次
+        // 显示选项
         function showTrial() {
-            const trial = gameData.trials[gameData.currentTrialIndex];
-            document.getElementById('trial-number').textContent = gameData.currentTrialIndex + 1;
+            const trial = gameState.trials[gameState.currentTrialIndex];
+            document.getElementById('trial-number').textContent = gameState.currentTrialIndex + 1;
             document.getElementById('proposer-amount').textContent = trial.proposerAmount;
             document.getElementById('responder-amount').textContent = trial.responderAmount;
-            updateProgress();
+            
+            const progress = ((gameState.currentTrialIndex + 1) / gameState.trials.length) * 100;
+            document.getElementById('progress-fill').style.width = `${progress}%`;
+            
             trial.trialStartTime = new Date().toISOString();
         }
     
         // 处理决策
         function makeDecision(accepted) {
-            const trial = gameData.trials[gameData.currentTrialIndex];
+            const trial = gameState.trials[gameState.currentTrialIndex];
             const response = {
-                trialNumber: gameData.currentTrialIndex + 1,
+                participantId: gameState.participant.participantId,
+                name: gameState.participant.name,
+                age: gameState.participant.age,
+                gender: gameState.participant.gender,
+                education: gameState.participant.education,
+                trialNumber: gameState.currentTrialIndex + 1,
                 originalIndex: trial.originalIndex,
                 proposerAmount: trial.proposerAmount,
                 responderAmount: trial.responderAmount,
@@ -226,12 +254,13 @@
                 RT: new Date() - new Date(trial.trialStartTime)
             };
             
-            gameData.responses.push(response);
+            gameState.responses.push(response);
             
-            if (gameData.currentTrialIndex < gameData.trials.length - 1) {
-                gameData.currentTrialIndex++;
+            if (gameState.currentTrialIndex < gameState.trials.length - 1) {
+                gameState.currentTrialIndex++;
                 showTrial();
             } else {
+                downloadData();
                 showResults();
             }
         }
@@ -239,14 +268,12 @@
         // 计算不公平敏感度
         function calculateUnfairSensitivity() {
             let totalWeightedRejections = 0;
-            
-            gameData.responses.forEach(response => {
+            gameState.responses.forEach(response => {
                 if (!response.accepted) {
                     totalWeightedRejections += response.unfairness;
                 }
             });
-            
-            return (totalWeightedRejections / gameData.responses.length) * 100;
+            return (totalWeightedRejections / gameState.responses.length) * 100;
         }
     
         // 生成敏感度反馈
@@ -266,87 +293,115 @@
     
         // 显示结果
         function showResults() {
+            const screens = {
+                trial: document.getElementById('trial-screen'),
+                results: document.getElementById('results-screen')
+            };
+
             screens.trial.classList.add('hidden');
             screens.results.classList.remove('hidden');
-    
+
             const sensitivity = calculateUnfairSensitivity();
             const feedback = generateSensitivityFeedback(sensitivity);
-    
-            // 显示敏感度结果
+
             document.getElementById('sensitivity-results').innerHTML = `
                 <h3 class="font-semibold text-blue-800 mb-3">您的不公平敏感度分析</h3>
                 <p class="text-blue-900 mb-4">敏感度指数：${sensitivity.toFixed(1)}%</p>
                 <p class="text-blue-900">${feedback}</p>
             `;
-    
-            // 显示决策总结（按原始顺序排序）
-            const sortedResponses = [...gameData.responses].sort((a, b) => 
+
+            const sortedResponses = [...gameState.responses].sort((a, b) => 
                 a.proposerAmount - b.proposerAmount);
             
-            const summary = document.getElementById('decisions-summary');
-            summary.innerHTML = '<h3 class="font-semibold text-gray-800 mb-3">您的决策总结（从最不公平到最公平）：</h3>';
-            
-            sortedResponses.forEach((response) => {
-                summary.innerHTML += `
+            document.getElementById('decisions-summary').innerHTML = `
+                <h3 class="font-semibold text-gray-800 mb-3">您的决策总结（从最不公平到最公平）：</h3>
+                ${sortedResponses.map(response => `
                     <div class="mb-2 ${response.accepted ? 'text-green-600' : 'text-red-600'}">
                         分配方案 ${response.proposerAmount}:${response.responderAmount} - 
                         ${response.accepted ? '接受' : '拒绝'}
                         (决策用时: ${(response.RT/1000).toFixed(2)}秒)
                     </div>
-                `;
-            });
+                `).join('')}
+            `;
         }
     
         // 下载数据
-        document.getElementById('download-button').addEventListener('click', () => {
-            const headers = [
-                'participantId',
-                'trialNumber',
-                'originalIndex',
-                'proposerAmount',
-                'responderAmount',
-                'unfairness',
-                'accepted',
-                'trialStartTime',
-                'decisionTime',
-                'RT'
-            ];
-    
-            const csvRows = [headers.join(',')];
-            
-            gameData.responses.forEach(response => {
-                const row = [
-                    gameData.participantId,
-                    response.trialNumber,
-                    response.originalIndex,
-                    response.proposerAmount,
-                    response.responderAmount,
-                    response.unfairness,
-                    response.accepted ? 1 : 0,
-                    response.trialStartTime,
-                    response.decisionTime,
-                    response.RT
+        function downloadData() {
+            try {
+                const BOM = '\uFEFF';
+                const headers = [
+                    'participantId',
+                    'name',
+                    'age',
+                    'gender',
+                    'education',
+                    'trialNumber',
+                    'originalIndex',
+                    'proposerAmount',
+                    'responderAmount',
+                    'unfairness',
+                    'accepted',
+                    'trialStartTime',
+                    'decisionTime',
+                    'RT'
                 ];
-                csvRows.push(row.join(','));
+
+                const csvContent = BOM + [
+                    headers.join(','),
+                    ...gameState.responses.map(response => [
+                        response.participantId,
+                        response.name,
+                        response.age,
+                        response.gender,
+                        response.education,
+                        response.trialNumber,
+                        response.originalIndex,
+                        response.proposerAmount,
+                        response.responderAmount,response.unfairness,
+                        response.accepted ? 1 : 0,
+                        response.trialStartTime,
+                        response.decisionTime,
+                        response.RT
+                    ].join(','))
+                ].join('\n');
+
+                const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.href = url;
+                const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+                link.download = `ultimatum_game_${gameState.participant.name}_${gameState.participant.participantId}_${timestamp}.csv`;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                URL.revokeObjectURL(url);
+            } catch (error) {
+                console.error('Error downloading data:', error);
+            }
+        }
+
+        // 初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            const participantManager = new ParticipantManager();
+            gameState.participant = participantManager.getData();
+
+            // 添加参与者信息显示
+            document.body.insertAdjacentHTML('afterbegin', `
+                <div class="fixed top-4 right-4 bg-gray-800 rounded-lg p-4 text-sm text-white">
+                    <p>参与者: ${gameState.participant.name}</p>
+                    <p>ID: ${gameState.participant.participantId}</p>
+                </div>
+            `);
+
+            // 添加开始按钮事件监听
+            document.getElementById('start-button').addEventListener('click', () => {
+                document.getElementById('intro-screen').classList.add('hidden');
+                document.getElementById('trial-screen').classList.remove('hidden');
+                gameState.initializeTrials();
+                gameState.startTime = new Date().toISOString();
+                showTrial();
             });
-    
-            const csvContent = csvRows.join('\n');
-            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-            const url = URL.createObjectURL(blob);
-            const link = document.createElement('a');
-            link.href = url;
-            link.download = `ultimatum_game_P${gameData.participantId}_${new Date().getTime()}.csv`;
-            
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            URL.revokeObjectURL(url);
-    
-            const downloadButton = document.getElementById('download-button');
-            downloadButton.textContent = '数据已下载';
-            downloadButton.disabled = true;
-            downloadButton.classList.remove('hover:bg-green-700');
         });
     </script>
-    </body>
-    </html>
+</body>
+</html>

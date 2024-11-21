@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Stroop Task</title>
+    <title>Stroop任务</title>
     <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
@@ -114,30 +114,21 @@
         }
 
         @keyframes spin {
-            0% {
-                transform: rotate(0deg);
-            }
-
-            100% {
-                transform: rotate(360deg);
-            }
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
     </style>
 </head>
-
 
 <body>
     <div id="root"></div>
 
     <script type="text/babel">
-
-
-
         const COLORS = {
-            RED: { name: 'RED', hex: '#FF0000' },
-            BLUE: { name: 'BLUE', hex: '#0000FF' },
-            GREEN: { name: 'GREEN', hex: '#008000' },
-            YELLOW: { name: 'YELLOW', hex: '#FFD700' }
+            RED: { name: '红', hex: '#FF0000' },
+            BLUE: { name: '蓝', hex: '#0000FF' },
+            GREEN: { name: '绿', hex: '#008000' },
+            YELLOW: { name: '黄', hex: '#FFD700' }
         };
 
         const CONFIG = {
@@ -148,30 +139,55 @@
             DISCOVERY_DOCS: ['https://www.googleapis.com/discovery/v1/apis/drive/v3/rest']
         };
 
+        class ParticipantManager {
+            constructor() {
+                this.participantData = this.getParticipantData();
+                this.validateParticipant();
+            }
+
+            getParticipantData() {
+                const urlParams = new URLSearchParams(window.location.search);
+                const urlData = {
+                    participantId: urlParams.get('participantId'),
+                    name: urlParams.get('name'),
+                    age: urlParams.get('age'),
+                    gender: urlParams.get('gender'),
+                    education: urlParams.get('education')
+                };
+
+                const storedData = JSON.parse(localStorage.getItem('participantData'));
+                return urlData.participantId ? urlData : storedData;
+            }
+
+            validateParticipant() {
+                if (!this.participantData || !this.participantData.participantId) {
+                    window.location.href = '../homepage_cogame.html';
+                }
+            }
+
+            getData() {
+                return this.participantData;
+            }
+        }
 
         function StroopTask() {
-
-
             const [gameState, setGameState] = React.useState('start');
             const [currentTrial, setCurrentTrial] = React.useState(0);
             const [currentStimulus, setCurrentStimulus] = React.useState(null);
             const [responses, setResponses] = React.useState([]);
             const [showFixation, setShowFixation] = React.useState(false);
             const [startTime, setStartTime] = React.useState(null);
-            const [participantId] = React.useState(() =>
-                Math.floor(100000000 + Math.random() * 900000000).toString()
-            );
-
-            ///////////////
             const [isGoogleReady, setIsGoogleReady] = React.useState(false);
             const [saveStatus, setSaveStatus] = React.useState({ status: '', message: '' });
             const [isSaving, setIsSaving] = React.useState(false);
-            /////////////
-
-
+            const [participantData, setParticipantData] = React.useState(null);
 
             const totalTrials = 20;
 
+            React.useEffect(() => {
+                const manager = new ParticipantManager();
+                setParticipantData(manager.getData());
+            }, []);
 
             React.useEffect(() => {
                 const initializeGoogleApi = async () => {
@@ -183,30 +199,25 @@
                         await gapi.client.init({
                             apiKey: CONFIG.API_KEY,
                             clientId: CONFIG.CLIENT_ID,
-                            scope: 'https://www.googleapis.com/auth/drive.file',
-                            discoveryDocs: ['https://www.googleapis.com/discovery/v1/apis/drive/v3/rest']
+                            scope: CONFIG.SCOPES,
+                            discoveryDocs: CONFIG.DISCOVERY_DOCS
                         });
 
-                        // Check if already signed in
                         if (gapi.auth2.getAuthInstance().isSignedIn.get()) {
-                            console.log('User already signed in');
                             setIsGoogleReady(true);
                         } else {
-                            console.log('User needs to sign in');
                             setIsGoogleReady(true);
                         }
 
-                        // Listen for sign-in state changes
                         gapi.auth2.getAuthInstance().isSignedIn.listen((isSignedIn) => {
-                            console.log('Sign in state changed:', isSignedIn);
                             setIsGoogleReady(true);
                         });
 
                     } catch (error) {
-                        console.error('Detailed initialization error:', error);
+                        console.error('初始化错误:', error);
                         setSaveStatus({
                             status: 'error',
-                            message: `Failed to initialize Google Drive integration: ${error.message}`
+                            message: `Google Drive集成初始化失败: ${error.message}`
                         });
                     }
                 };
@@ -214,15 +225,11 @@
                 initializeGoogleApi();
             }, []);
 
-
-
-
             const generateStimulus = () => {
                 const colors = Object.values(COLORS);
                 const wordColor = colors[Math.floor(Math.random() * colors.length)];
                 let displayColor;
 
-                // 50% chance of congruent trials
                 if (Math.random() < 0.5) {
                     displayColor = wordColor;
                 } else {
@@ -239,27 +246,22 @@
                 };
             };
 
-
-
-
-            //////////////////////API google
-
-
-
-            // Save to Google Drive
             const saveToGoogleDrive = async (data) => {
-                setIsSaving(true);
-                setSaveStatus({ status: 'saving', message: 'Saving to Google Drive...' });
-
                 try {
                     await gapi.auth2.getAuthInstance().signIn();
 
-                    const csvContent = [
-                        // Header
-                        ['Participant ID', 'Trial', 'Stimulus', 'Display Color', 'Response', 'Correct', 'RT', 'Trial Type'].join(','),
-                        // Data rows
+                    const BOM = '\uFEFF';
+                    const csvContent = BOM + [
+                        ['参与者ID', '姓名', '年龄', '性别', '教育程度', '实验开始时间', '实验结束时间', 
+                         '试次', '刺激词', '显示颜色', '反应', '正确性', '反应时', '试次类型'].join(','),
                         ...data.map(r => [
-                            participantId,
+                            participantData.participantId,
+                            participantData.name,
+                            participantData.age,
+                            participantData.gender,
+                            participantData.education,
+                            new Date(startTime).toISOString(),
+                            new Date().toISOString(),
                             r.trial,
                             r.stimulus,
                             r.displayColor,
@@ -270,9 +272,12 @@
                         ].join(','))
                     ].join('\n');
 
-                    const file = new Blob([csvContent], { type: 'text/csv' });
+                    const file = new Blob([new Uint8Array([0xEF, 0xBB, 0xBF]), csvContent], { 
+                        type: 'text/csv;charset=utf-8' 
+                    });
+
                     const metadata = {
-                        name: `stroop_data_${participantId}_${new Date().toISOString().split('T')[0]}.csv`,
+                        name: `stroop_data_${participantData.name}_${participantData.participantId}_${new Date().toISOString().split('T')[0]}.csv`,
                         mimeType: 'text/csv',
                         parents: [CONFIG.FOLDER_ID]
                     };
@@ -292,68 +297,85 @@
                         }
                     );
 
-                    if (!response.ok) throw new Error('Failed to upload file');
+                    if (!response.ok) throw new Error('文件上传失败');
 
-                    setSaveStatus({
-                        status: 'success',
-                        message: 'Data saved successfully to Google Drive'
-                    });
+                    return true;
                 } catch (error) {
-                    console.error('Error saving to Google Drive:', error);
-                    setSaveStatus({
-                        status: 'error',
-                        message: 'Failed to save to Google Drive. Using local download as backup.'
-                    });
-                } finally {
-                    setIsSaving(false);
+                    throw error;
                 }
             };
 
+            const downloadData = () => {
+                const BOM = '\uFEFF';
+                const csvContent = BOM + [
+                    ['参与者ID', '姓名', '年龄', '性别', '教育程度', '实验开始时间', '实验结束时间', 
+                     '试次', '刺激词', '显示颜色', '反应', '正确性', '反应时', '试次类型'].join(','),
+                    ...responses.map(r => [
+                        participantData.participantId,
+                        participantData.name,
+                        participantData.age,
+                        participantData.gender,
+                        participantData.education,
+                        new Date(startTime).toISOString(),
+                        new Date().toISOString(),
+                        r.trial,
+                        r.stimulus,
+                        r.displayColor,
+                        r.response,
+                        r.correct ? 1 : 0,
+                        r.rt,
+                        r.type
+                    ].join(','))
+                ].join('\n');
 
-            const startGame = () => {
-                setGameState('running');
-                setCurrentTrial(0);
-                setResponses([]);
-                showNextTrial();
+                const blob = new Blob([new Uint8Array([0xEF, 0xBB, 0xBF]), csvContent], { 
+                    type: 'text/csv;charset=utf-8' 
+                });
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `stroop_data_${participantData.name}_${participantData.participantId}_${new Date().getTime()}.csv`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                window.URL.revokeObjectURL(url);
             };
 
-            const showNextTrial = () => {
-                setShowFixation(true);
-                setTimeout(() => {
-                    setShowFixation(false);
-                    const stimulus = generateStimulus();
-                    setCurrentStimulus(stimulus);
-                    setStartTime(Date.now());
-                }, 500);
-            };
+            const saveData = async () => {
+                setIsSaving(true);
+                setSaveStatus({ status: 'saving', message: '正在保存数据...' });
 
-
-
-
-            //////////////////////////
-            const handleResponse = (response) => {
-                if (!startTime) return;
-
-                const endTime = Date.now();
-                const rt = endTime - startTime;
-
-                const responseData = {
-                    trial: currentTrial + 1,
-                    stimulus: currentStimulus.word,
-                    displayColor: currentStimulus.correctAnswer,
-                    response: response,
-                    correct: response === currentStimulus.correctAnswer,
-                    rt: rt,
-                    type: currentStimulus.type
-                };
-
-                setResponses([...responses, responseData]);
-
-                if (currentTrial < totalTrials - 1) {
-                    setCurrentTrial(currentTrial + 1);
-                    showNextTrial();
-                } else {
-                    setGameState('finished');
+                try {
+                    if (isGoogleReady) {
+                        try {
+                            await saveToGoogleDrive(responses);
+                            setSaveStatus({
+                                status: 'success',
+                                message: '数据已成功保存到Google Drive'
+                            });
+                        } catch (error) {
+                            console.error('Google Drive保存失败，使用本地下载作为备份:', error);
+                            downloadData();
+                            setSaveStatus({
+                                status: 'success',
+                                message: '数据已保存到本地'
+                            });
+                        }
+                    } else {
+                        downloadData();
+                        setSaveStatus({
+                            status: 'success',
+                            message: '数据已保存到本地'
+                        });
+                    }
+                } catch (error) {
+                    console.error('保存数据时出错:', error);
+                    setSaveStatus({
+                        status: 'error',
+                        message: '保存数据失败'
+                    });
+                } finally {
+                    setIsSaving(false);
                 }
             };
 
@@ -375,53 +397,80 @@
                 };
             };
 
-            const downloadData = () => {
-                const csvContent = [
-                    // Header
-                    ['Participant ID', 'Trial', 'Stimulus', 'Display Color', 'Response', 'Correct', 'RT', 'Trial Type'].join(','),
-                    // Data rows
-                    ...responses.map(r => [
-                        participantId,
-                        r.trial,
-                        r.stimulus,
-                        r.displayColor,
-                        r.response,
-                        r.correct ? 1 : 0,
-                        r.rt,
-                        r.type
-                    ].join(','))
-                ].join('\n');
+            const startGame = () => {
+                setGameState('running');
+                setCurrentTrial(0);
+                setResponses([]);
+                setStartTime(Date.now());
+                showNextTrial();
+            };
 
-                const blob = new Blob([csvContent], { type: 'text/csv' });
-                const url = window.URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = `stroop_data_${participantId}.csv`;
-                a.click();
-                window.URL.revokeObjectURL(url);
+            const showNextTrial = () => {
+                setShowFixation(true);
+                setTimeout(() => {
+                    setShowFixation(false);
+                    const stimulus = generateStimulus();
+                    setCurrentStimulus(stimulus);
+                    setStartTime(Date.now());
+                }, 500);
+            };
+
+            const handleGameCompletion = () => {
+                setGameState('finished');
+                // Automatically save data after a brief delay
+                setTimeout(saveData, 500);
+            };
+
+            const handleResponse = (response) => {
+                if (!startTime) return;
+
+                const endTime = Date.now();
+                const rt = endTime - startTime;
+
+                const responseData = {
+                    trial: currentTrial + 1,
+                    stimulus: currentStimulus.word,
+                    displayColor: currentStimulus.correctAnswer,
+                    response: response,
+                    correct: response === currentStimulus.correctAnswer,
+                    rt: rt,
+                    type: currentStimulus.type
+                };
+
+                const newResponses = [...responses, responseData];
+                setResponses(newResponses);
+
+                if (currentTrial < totalTrials - 1) {
+                    setCurrentTrial(currentTrial + 1);
+                    showNextTrial();
+                } else {
+                    handleGameCompletion();
+                }
             };
 
             return (
                 <div className="container">
-                    <h1>Stroop Task</h1>
-                    <p>Participant ID: {participantId}</p>
+                    <h1>Stroop任务</h1>
+                    {participantData && (
+                        <p>参与者: {participantData.name} | ID: {participantData.participantId}</p>
+                    )}
 
                     {gameState === 'start' && (
                         <div>
                             <div className="instructions">
-                                <h2>Instructions:</h2>
-                                <p>In this task, you will see color words (RED, BLUE, GREEN, YELLOW) displayed in different colors.</p>
-                                <p>Your job is to respond to the <strong>COLOR</strong> of the text, not the word itself.</p>
-                                <p>For example, if you see the word "RED" written in blue color, you should click BLUE.</p>
-                                <p>Try to respond as quickly and accurately as possible.</p>
-                                <p>There will be {totalTrials} trials in total.</p>
+                                <h2>任务说明：</h2>
+                                <p>在这个任务中，你将看到用不同颜色显示的汉字（红色、蓝色、绿色、黄色）。</p>
+                                <p>你的任务是对文字的<strong>颜色</strong>作出反应，而不是文字本身的意思。</p>
+                                <p>例如，如果你看到蓝色显示的"红色"这个词，你应该点击蓝色按钮。</p>
+                                <p>请尽可能快速且准确地作出反应。</p>
+                                <p>总共有{totalTrials}个试次。完成后数据将自动保存。</p>
                             </div>
                             <button
                                 className="button"
                                 style={{ backgroundColor: '#4CAF50' }}
                                 onClick={startGame}
                             >
-                                Start Test
+                                开始测试
                             </button>
                         </div>
                     )}
@@ -429,18 +478,18 @@
                     {gameState === 'running' && (
                         <div>
                             <div className="trial-counter">
-                                Trial: {currentTrial + 1} / {totalTrials}
+                                试次: {currentTrial + 1} / {totalTrials}
                             </div>
                             <div className="stimulus-area">
                                 {showFixation ? (
                                     <div className="fixation">+</div>
                                 ) : (
-                                        currentStimulus && (
-                                            <span style={{ color: currentStimulus.color }}>
-                                                {currentStimulus.word}
-                                            </span>
-                                        )
-                                    )}
+                                    currentStimulus && (
+                                        <span style={{ color: currentStimulus.color }}>
+                                            {currentStimulus.word}
+                                        </span>
+                                    )
+                                )}
                             </div>
                             <div className="color-buttons">
                                 {Object.values(COLORS).map((color) => (
@@ -460,7 +509,7 @@
 
                     {gameState === 'finished' && (
                         <div>
-                            <h2>Results</h2>
+                            <h2>结果</h2>
                             {saveStatus.message && (
                                 <div className={`save-status ${saveStatus.status}`}>
                                     {isSaving && <span className="loading"></span>}
@@ -469,47 +518,32 @@
                             )}
                             <div className="results-grid">
                                 <div className="result-card">
-                                    <h3>Overall Performance</h3>
-                                    <p>Accuracy: {calculateResults().accuracy}%</p>
-                                    <p>Mean RT: {calculateResults().meanRT}ms</p>
+                                    <h3>整体表现</h3>
+                                    <p>准确率: {calculateResults().accuracy}%</p>
+                                    <p>平均反应时: {calculateResults().meanRT}毫秒</p>
                                 </div>
                                 <div className="result-card">
-                                    <h3>Stroop Effect</h3>
-                                    <p>Interference: {calculateResults().stroopEffect}ms</p>
+                                    <h3>Stroop效应</h3>
+                                    <p>干扰效应: {calculateResults().stroopEffect}毫秒</p>
                                 </div>
                                 <div className="result-card">
-                                    <h3>Congruent Trials</h3>
-                                    <p>Accuracy: {calculateResults().congruentAccuracy}%</p>
-                                    <p>Mean RT: {calculateResults().congruentRT}ms</p>
+                                    <h3>一致试次</h3>
+                                    <p>准确率: {calculateResults().congruentAccuracy}%</p>
+                                    <p>平均反应时: {calculateResults().congruentRT}毫秒</p>
                                 </div>
                                 <div className="result-card">
-                                    <h3>Incongruent Trials</h3>
-                                    <p>Accuracy: {calculateResults().incongruentAccuracy}%</p>
-                                    <p>Mean RT: {calculateResults().incongruentRT}ms</p>
+                                    <h3>不一致试次</h3>
+                                    <p>准确率: {calculateResults().incongruentAccuracy}%</p>
+                                    <p>平均反应时: {calculateResults().incongruentRT}毫秒</p>
                                 </div>
                             </div>
                             <button
                                 className="button"
-                                style={{ backgroundColor: '#4CAF50', marginRight: '10px' }}
+                                style={{ backgroundColor: '#4CAF50' }}
                                 onClick={startGame}
                             >
-                                Try Again
-        </button>
-                            <button
-                                className="button"
-                                style={{ backgroundColor: '#2196F3', marginRight: '10px' }}
-                                onClick={saveToGoogleDrive}
-                                disabled={isSaving}
-                            >
-                                Save to Google Drive
-        </button>
-                            <button
-                                className="button"
-                                style={{ backgroundColor: '#2196F3' }}
-                                onClick={downloadData}
-                            >
-                                Download Data (Backup)
-        </button>
+                                重新测试
+                            </button>
                         </div>
                     )}
                 </div>

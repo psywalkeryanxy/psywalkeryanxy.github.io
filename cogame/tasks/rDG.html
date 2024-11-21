@@ -70,10 +70,10 @@
     </style>
 </head>
 <body class="bg-gray-50 min-h-screen p-4">
-    <!-- 介绍屏幕 -->
+    <!-- Introduction Screen -->
     <div id="intro-screen" class="screen active max-w-4xl mx-auto">
         <div class="bg-white rounded-lg shadow p-8">
-            <!-- 页面1：欢迎和基本介绍 -->
+            <!-- Page 1 -->
             <div class="intro-page" id="page-1">
                 <h1 class="text-2xl font-bold mb-6 text-center">金钱分配决策实验</h1>
                 <div class="space-y-6 text-gray-600">
@@ -86,7 +86,7 @@
                 </div>
             </div>
 
-            <!-- 页面2：游戏规则 -->
+            <!-- Page 2 -->
             <div class="intro-page hidden" id="page-2">
                 <h2 class="text-xl font-bold mb-6">游戏规则</h2>
                 <div class="space-y-6 text-gray-600">
@@ -102,7 +102,7 @@
                 </div>
             </div>
 
-            <!-- 页面3：示例说明 -->
+            <!-- Page 3 -->
             <div class="intro-page hidden" id="page-3">
                 <h2 class="text-xl font-bold mb-6">示例说明</h2>
                 <div class="bg-yellow-50 p-6 rounded-lg">
@@ -124,7 +124,7 @@
                 </div>
             </div>
 
-            <!-- 页面4：重要提示 -->
+            <!-- Page 4 -->
             <div class="intro-page hidden" id="page-4">
                 <h2 class="text-xl font-bold mb-6">重要提示</h2>
                 <div class="space-y-6">
@@ -142,7 +142,7 @@
                 </div>
             </div>
 
-            <!-- 导航按钮 -->
+            <!-- Navigation -->
             <div class="flex justify-between mt-8">
                 <button id="prev-button" 
                         class="bg-gray-200 text-gray-700 px-6 py-2 rounded-lg font-medium hover:bg-gray-300 transition-colors hidden">
@@ -158,7 +158,7 @@
                 </button>
             </div>
 
-            <!-- 页面指示器 -->
+            <!-- Page indicator -->
             <div class="page-dots mt-6">
                 <div class="dot active"></div>
                 <div class="dot"></div>
@@ -168,7 +168,7 @@
         </div>
     </div>
 
-    <!-- 任务屏幕 -->
+    <!-- Task Screen -->
     <div id="task-screen" class="screen max-w-4xl mx-auto">
         <div class="bg-white rounded-lg shadow p-8">
             <div class="flex justify-between items-center mb-4">
@@ -184,9 +184,7 @@
             <div class="mt-8">
                 <div id="current-task" class="space-y-6">
                     <div class="bg-blue-50 p-6 rounded-lg">
-                        <h3 class="text-lg font-semibold text-blue-800 mb-4" id="task-description">
-                            <!-- 任务描述将由JavaScript填充 -->
-                        </h3>
+                        <h3 class="text-lg font-semibold text-blue-800 mb-4" id="task-description"></h3>
                         <div class="space-y-4">
                             <div class="bg-white p-4 rounded-lg">
                                 <div class="flex items-center gap-2 mb-4">
@@ -241,12 +239,12 @@
         </div>
     </div>
 
-    <!-- 结果屏幕 -->
+    <!-- Results Screen -->
     <div id="results-screen" class="screen max-w-4xl mx-auto">
         <div class="bg-white rounded-lg shadow p-8">
             <h1 class="text-2xl font-bold mb-6 text-center">实验完成</h1>
 
-            <!-- 随机选择的决策结果 -->
+            <!-- Random selected decision results -->
             <div class="bg-blue-50 p-6 rounded-lg mb-6">
                 <h2 class="text-lg font-semibold text-blue-800 mb-4">随机抽取的决策结果</h2>
                 <div id="selected-decision" class="bg-white p-4 rounded-lg">
@@ -276,7 +274,7 @@
                 </div>
             </div>
 
-            <!-- 最终结果计算 -->
+            <!-- Final results -->
             <div class="bg-green-50 p-6 rounded-lg mb-6">
                 <h2 class="text-lg font-semibold text-green-800 mb-4">最终代币计算</h2>
                 <div class="bg-white p-4 rounded-lg">
@@ -293,31 +291,53 @@
                 </div>
             </div>
 
-            <!-- 数据导出按钮 -->
-            <div class="flex justify-between gap-4">
-                <button id="download-csv" 
-                        class="flex-1 bg-blue-600 text-white px-8 py-3 rounded-lg font-medium hover:bg-blue-700 transition-colors">
-                    导出数据 (CSV)
-                </button>
-                <button id="finish-experiment" 
-                        class="flex-1 bg-green-600 text-white px-8 py-3 rounded-lg font-medium hover:bg-green-700 transition-colors">
-                    完成实验
-                </button>
-            </div>
+            <button onclick="window.location.href='../homepage_cogame.html'" 
+                    class="w-full bg-blue-600 text-white px-8 py-3 rounded-lg font-medium hover:bg-blue-700 transition-colors">
+                返回主页
+            </button>
         </div>
     </div>
 
     <script>
-        // 全局状态管理
-        const gameState = {
-            currentScreen: 'intro-screen',
-            introPage: 1,
-            currentTaskIndex: 0,
-            responses: [],
-            participantId: Math.floor(100000 + Math.random() * 900000)
-        };
-    
-        // 任务数据
+        class ParticipantManager {
+            constructor() {
+                this.participantData = this.getParticipantData();
+                this.validateParticipant();
+            }
+
+            getParticipantData() {
+                try {const urlParams = new URLSearchParams(window.location.search);
+                    const urlData = {
+                        participantId: urlParams.get('participantId'),
+                        name: urlParams.get('name'),
+                        age: urlParams.get('age'),
+                        gender: urlParams.get('gender'),
+                        education: urlParams.get('education')
+                    };
+
+                    if (urlData.participantId) {
+                        return urlData;
+                    }
+                    window.location.href = '../homepage_cogame.html';
+                    return null;
+                } catch (error) {
+                    console.error('Error getting participant data:', error);
+                    return null;
+                }
+            }
+
+            validateParticipant() {
+                if (!this.participantData || !this.participantData.participantId) {
+                    window.location.href = '../homepage_cogame.html';
+                }
+            }
+
+            getData() {
+                return this.participantData;
+            }
+        }
+
+        // Task data
         const tasks = [
             { total: 90, selfMultiplier: 1, otherMultiplier: 3 },
             { total: 90, selfMultiplier: 3, otherMultiplier: 1 },
@@ -340,32 +360,41 @@
             { total: 120, selfMultiplier: 2, otherMultiplier: 1 },
             { total: 100, selfMultiplier: 1, otherMultiplier: 1 }
         ];
-    
-        // 屏幕切换函数
+
+        // Global state
+        const gameState = {
+            currentScreen: 'intro-screen',
+            introPage: 1,
+            currentTaskIndex: 0,
+            responses: [],
+            participant: null
+        };
+
+        // Screen control functions
         function showScreen(screenId) {
             document.querySelectorAll('.screen').forEach(screen => {
                 screen.classList.remove('active');
             });
             document.getElementById(screenId).classList.add('active');
             gameState.currentScreen = screenId;
-    
+
             if (screenId === 'task-screen') {
                 taskControl.init();
             } else if (screenId === 'results-screen') {
                 resultsControl.init();
             }
         }
-    
-        // 介绍页面控制
+
+        // Introduction control
         const introControl = {
             currentPage: 1,
             totalPages: 4,
-    
+
             init() {
                 this.setupEventListeners();
                 this.updatePageDisplay();
             },
-    
+
             setupEventListeners() {
                 document.getElementById('prev-button').addEventListener('click', () => this.prevPage());
                 document.getElementById('next-button').addEventListener('click', () => this.nextPage());
@@ -373,7 +402,7 @@
                     showScreen('task-screen');
                 });
             },
-    
+
             updatePageDisplay() {
                 document.querySelectorAll('.intro-page').forEach(page => {
                     page.classList.add('hidden');
@@ -399,14 +428,14 @@
                     dot.classList.toggle('active', index + 1 === this.currentPage);
                 });
             },
-    
+
             nextPage() {
                 if (this.currentPage < this.totalPages) {
                     this.currentPage++;
                     this.updatePageDisplay();
                 }
             },
-    
+
             prevPage() {
                 if (this.currentPage > 1) {
                     this.currentPage--;
@@ -414,27 +443,26 @@
                 }
             }
         };
-    
-        // 任务控制
+
+        // Task control
         const taskControl = {
             init() {
                 this.setupEventListeners();
                 this.showCurrentTask();
             },
-    
+
             setupEventListeners() {
                 const selfInput = document.getElementById('self-amount');
                 const confirmButton = document.getElementById('confirm-button');
-    
+
                 selfInput.addEventListener('input', (e) => {
-                    // 只允许输入数字
                     e.target.value = e.target.value.replace(/[^\d]/g, '');
                     this.updateDisplay();
                 });
-    
+
                 confirmButton.addEventListener('click', () => this.recordResponse());
             },
-    
+
             showCurrentTask() {
                 const task = tasks[gameState.currentTaskIndex];
                 const taskNumber = gameState.currentTaskIndex + 1;
@@ -455,23 +483,20 @@
                 document.getElementById('other-amount').textContent = '0';
                 
                 this.updateDisplay();
-    
-                // 重置确认按钮
+
                 const confirmButton = document.getElementById('confirm-button');
                 confirmButton.disabled = true;
                 confirmButton.classList.add('bg-gray-400', 'cursor-not-allowed');
                 confirmButton.classList.remove('bg-blue-600', 'hover:bg-blue-700');
             },
-    
+
             updateDisplay() {
                 const task = tasks[gameState.currentTaskIndex];
                 const selfAmount = parseInt(document.getElementById('self-amount').value) || 0;
                 const otherAmount = task.total - selfAmount;
                 
-                // 更新分配给对方的金额显示
                 document.getElementById('other-amount').textContent = otherAmount;
                 
-                // 更新结果显示
                 if (selfAmount > 0) {
                     const selfResult = selfAmount * task.selfMultiplier;
                     const selfResultBox = document.getElementById('self-result');
@@ -486,11 +511,9 @@
                     otherResultBox.querySelector('span').textContent = otherResult;
                 }
                 
-                // 更新总额显示
                 document.getElementById('total-amount').textContent = 
                     `总金额：${selfAmount + otherAmount}/${task.total} 代币`;
-    
-                // 验证输入
+
                 const confirmButton = document.getElementById('confirm-button');
                 const errorMessage = document.getElementById('error-message');
                 
@@ -506,13 +529,18 @@
                     errorMessage.classList.remove('hidden');
                 }
             },
-    
+
             recordResponse() {
                 const task = tasks[gameState.currentTaskIndex];
                 const selfAmount = parseInt(document.getElementById('self-amount').value);
                 const otherAmount = task.total - selfAmount;
                 
                 const response = {
+                    participantId: gameState.participant.participantId,
+                    name: gameState.participant.name,
+                    age: gameState.participant.age,
+                    gender: gameState.participant.gender,
+                    education: gameState.participant.education,
                     taskNumber: gameState.currentTaskIndex + 1,
                     totalTokens: task.total,
                     selfAmount: selfAmount,
@@ -530,28 +558,27 @@
                     gameState.currentTaskIndex++;
                     this.showCurrentTask();
                 } else {
+                    downloadData();
                     showScreen('results-screen');
                 }
             }
         };
-    
-        // 结果控制
+
+        // Results control
         const resultsControl = {
             selectedTask: null,
-    
+
             init() {
                 this.selectRandomTask();
                 this.displayResults();
-                this.setupEventListeners();
             },
-    
+
             selectRandomTask() {
                 const randomIndex = Math.floor(Math.random() * gameState.responses.length);
                 this.selectedTask = gameState.responses[randomIndex];
             },
-    
+
             displayResults() {
-                // 显示选中的决策
                 document.getElementById('selected-trial-number').textContent = 
                     this.selectedTask.taskNumber;
                 document.getElementById('selected-total').textContent = 
@@ -562,22 +589,19 @@
                     `${this.selectedTask.selfAmount} → ${this.selectedTask.finalSelfAmount} 代币`;
                 document.getElementById('selected-other-amount').textContent = 
                     `${this.selectedTask.otherAmount} → ${this.selectedTask.finalOtherAmount} 代币`;
-    
-                // 显示最终代币
                 document.getElementById('final-self-tokens').textContent = 
                     `${this.selectedTask.finalSelfAmount} 代币`;
-            },
-    
-            setupEventListeners() {
-                document.getElementById('download-csv').addEventListener('click', () => this.downloadData());
-                document.getElementById('finish-experiment').addEventListener('click', () => {
-                    alert('实验已完成，感谢您的参与！');
-                });
-            },
-    
-            downloadData() {
+            }
+        };
+
+        function downloadData() {
+            try {
                 const headers = [
                     'participantId',
+                    'name',
+                    'age',
+                    'gender',
+                    'education',
                     'taskNumber',
                     'totalTokens',
                     'selfAmount',
@@ -588,35 +612,50 @@
                     'finalOtherAmount',
                     'timestamp'
                 ];
-    
-                const csvRows = [headers.join(',')];
-                
-                gameState.responses.forEach(response => {
-                    const row = headers.map(header => {
-                        if (header === 'participantId') return gameState.participantId;
-                        return response[header] || '';
-                    });
-                    csvRows.push(row.join(','));
-                });
-    
-                const csvContent = csvRows.join('\n');
+
+                const BOM = '\uFEFF';
+                const csvContent = BOM + [
+                    headers.join(','),
+                    ...gameState.responses.map(response => {
+                        const row = headers.map(header => {
+                            const value = response[header];
+                            return value && (typeof value === 'string' &&
+                                (value.includes(',') || value.includes('"') || value.includes('\n'))) ?
+                                `"${value.replace(/"/g, '""')}"` : value;
+                        });
+                        return row.join(',');
+                    })
+                ].join('\n');
+
                 const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
                 const url = URL.createObjectURL(blob);
                 const link = document.createElement('a');
                 link.href = url;
-                link.download = `dictator_game_P${gameState.participantId}.csv`;
+                const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+                link.download = `dictator_game_${gameState.participant.name}_${gameState.participant.participantId}_${timestamp}.csv`;
                 document.body.appendChild(link);
                 link.click();
                 document.body.removeChild(link);
                 URL.revokeObjectURL(url);
+            } catch (error) {
+                console.error('Error downloading data:', error);
             }
-        };
-    
-        // 初始化应用
+        }
+
+        // Initialize
         document.addEventListener('DOMContentLoaded', function() {
+            const participantManager = new ParticipantManager();
+            gameState.participant = participantManager.getData();
+
+            document.body.insertAdjacentHTML('afterbegin', `
+                <div class="fixed top-4 right-4 bg-gray-800 rounded-lg p-4 text-sm text-white">
+                    <p>参与者: ${gameState.participant.name}</p>
+                    <p>ID: ${gameState.participant.participantId}</p>
+                </div>
+            `);
+
             introControl.init();
         });
     </script>
-    </body>
-    </html>
-
+</body>
+</html>

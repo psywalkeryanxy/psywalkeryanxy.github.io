@@ -84,6 +84,18 @@
             margin-top: 10px;
             font-style: italic;
         }
+
+        #save-status {
+            margin: 20px 0;
+            padding: 15px;
+            border-radius: 5px;
+            display: none;
+        }
+
+        #save-message {
+            margin: 0;
+            font-size: 16px;
+        }
     </style>
 </head>
 <body>
@@ -116,15 +128,76 @@
     <div id="results-screen" class="screen">
         <h2>谢谢您的参与</h2>
         <p>您已完成填写。</p>
-        <button id="download-results">下载数据</button>
+        <div id="save-status">
+            <p id="save-message"></p>
+        </div>
     </div>
 
     <script>
-        let startTime;
-        let participantId = Math.floor(100000 + Math.random() * 900000);
+        // Game state management
+        const gameState = {
+            participant: null,
+            startTime: null,
+        };
+
         let inputTimes = {};
 
-        // 显示屏幕切换函数
+        // Participant Manager Class
+        class ParticipantManager {
+            constructor() {
+                this.participantData = this.getParticipantData();
+                this.validateParticipant();
+                this.saveParticipantData();
+            }
+
+            getParticipantData() {
+                const urlParams = new URLSearchParams(window.location.search);
+                const urlData = {
+                    participantId: urlParams.get('participantId'),
+                    name: urlParams.get('name'),
+                    age: urlParams.get('age'),
+                    gender: urlParams.get('gender'),
+                    education: urlParams.get('education')
+                };
+
+                if (urlData.participantId) {
+                    return urlData;
+                }
+
+                const storedData = localStorage.getItem('participantData');
+                return storedData ? JSON.parse(storedData) : null;
+            }
+
+            saveParticipantData() {
+                if (this.participantData) {
+                    localStorage.setItem('participantData', 
+                        JSON.stringify(this.participantData));
+
+                    const history = JSON.parse(
+                        localStorage.getItem('participationHistory') || '[]'
+                    );
+                    history.push({
+                        participantId: this.participantData.participantId,
+                        taskName: 'important_others',
+                        timestamp: new Date().toISOString()
+                    });
+                    localStorage.setItem('participationHistory', 
+                        JSON.stringify(history));
+                }
+            }
+
+            validateParticipant() {
+                if (!this.participantData || !this.participantData.participantId) {
+                    window.location.href = '../homepage_cogame.html';
+                }
+            }
+
+            getData() {
+                return this.participantData;
+            }
+        }
+
+        // Screen management function
         function showScreen(screenId) {
             document.querySelectorAll('.screen').forEach(screen => {
                 screen.classList.remove('active');
@@ -132,7 +205,7 @@
             document.getElementById(screenId).classList.add('active');
         }
 
-        // 创建输入框
+        // Create input fields
         function createInputFields() {
             const container = document.getElementById('input-container');
             for (let i = 1; i <= 10; i++) {
@@ -148,14 +221,12 @@
                 input.id = `person-${i}`;
                 input.placeholder = `第${i}位重要的人`;
                 
-                // 记录每个输入框的开始时间
                 input.addEventListener('focus', () => {
                     if (!inputTimes[i]) {
                         inputTimes[i] = { start: Date.now() };
                     }
                 });
 
-                // 记录完成时间
                 input.addEventListener('blur', () => {
                     if (inputTimes[i] && !inputTimes[i].end && input.value.trim()) {
                         inputTimes[i].end = Date.now();
@@ -168,7 +239,7 @@
             }
         }
 
-        // 收集响应数据
+        // Collect responses
         function collectResponses() {
             const responses = [];
             for (let i = 1; i <= 10; i++) {
@@ -177,7 +248,11 @@
                 if (value) {
                     const times = inputTimes[i] || {};
                     responses.push({
-                        participantId: participantId,
+                        participantId: gameState.participant.participantId,
+                        name: gameState.participant.name,
+                        age: gameState.participant.age,
+                        gender: gameState.participant.gender,
+                        education: gameState.participant.education,
                         rank: i,
                         person: value,
                         startTime: times.start ? new Date(times.start).toISOString() : null,
@@ -189,50 +264,115 @@
             return responses;
         }
 
-        // 事件监听器设置
-        document.getElementById('start-button').addEventListener('click', () => {
-            showScreen('task-screen');
-            createInputFields();
-            startTime = Date.now();
-        });
+        // Save data function
+        async function saveData() {
+            const saveStatus = document.getElementById('save-status');
+            const saveMessage = document.getElementById('save-message');
+            saveStatus.style.display = 'block';
+            saveStatus.style.backgroundColor = 'rgba(255, 255, 255, 0.1)';
+            saveMessage.style.color = '#66b3ff';
+            saveMessage.textContent = '正在保存数据...';
 
-        document.getElementById('complete-button').addEventListener('click', () => {
-            showScreen('results-screen');
-        });
+            try {
+                const responses = collectResponses();
+                const headers = [
+                    'participantId',
+                    'name',
+                    'age',
+                    'gender',
+                    'education',
+                    'rank',
+                    'person',
+                    'startTime',
+                    'endTime',
+                    'responseTime'
+                ];
 
-        document.getElementById('download-results').addEventListener('click', () => {
-            const responses = collectResponses();
-            const headers = [
-                'participantId',
-                'rank',
-                'person',
-                'startTime',
-                'endTime',
-                'responseTime'
-            ];
-
-            const csv = [headers.join(',')];
-            
-            responses.forEach(r => {
-                const row = headers.map(header => {
-                    const value = r[header];
-                    // 如果值包含逗号，用引号包裹
-                    return value && value.toString().includes(',') ? 
-                        `"${value}"` : value;
+                const BOM = '\uFEFF';
+                const csv = [headers.join(',')];
+                
+                responses.forEach(r => {
+                    const row = headers.map(header => {
+                        const value = r[header];
+                        return value && (typeof value === 'string' && 
+                            (value.includes(',') || value.includes('"') || value.includes('\n'))) ? 
+                            `"${value.replace(/"/g, '""')}"` : value;
+                    });
+                    csv.push(row.join(','));
                 });
-                csv.push(row.join(','));
+
+                const csvContent = BOM + csv.join('\n');
+                const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `important_others_${gameState.participant.name}_${gameState.participant.participantId}_${new Date().getTime()}.csv`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+
+                saveStatus.style.backgroundColor = 'rgba(75, 181, 67, 0.2)';
+                saveMessage.style.color = '#4bb543';
+                saveMessage.textContent = '数据已成功保存！';
+
+                setTimeout(() => {
+                    saveStatus.style.display = 'none';
+                }, 3000);
+
+            } catch (error) {
+                console.error('保存数据时出错:', error);
+                saveStatus.style.backgroundColor = 'rgba(255, 0, 0, 0.2)';
+                saveMessage.style.color = '#ff4444';
+                saveMessage.textContent = '保存数据失败，请刷新页面重试';
+            }
+        }
+
+        // Initialize everything when DOM is loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            const participantManager = new ParticipantManager();
+            gameState.participant = participantManager.getData();
+
+            // Display participant info
+            document.body.insertAdjacentHTML('afterbegin', `
+                <div id="participant-info" style="
+                    background: rgba(255,255,255,0.1); 
+                    padding: 15px; 
+                    margin-bottom: 20px; 
+                    border-radius: 8px;
+                ">
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <p style="margin: 0;">参与者: <span style="font-weight: bold;">
+                                ${gameState.participant.name}</span></p>
+                            <p style="margin: 5px 0 0 0;">ID: <span style="font-weight: bold;">
+                                ${gameState.participant.participantId}</span></p>
+                        </div>
+                        <button onclick="window.location.href='../homepage_cogame.html'" 
+                            style="background: none; color: white; border: 1px solid white; padding: 5px 10px;">
+                            返回主页
+                        </button>
+                    </div>
+                </div>
+            `);
+
+            // Start button event listener
+            document.getElementById('start-button').addEventListener('click', () => {
+                showScreen('task-screen');
+                createInputFields();
+                gameState.startTime = Date.now();
             });
 
-            const csvContent = csv.join('\n');
-            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `important_others_P${participantId}.csv`;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
+            // Complete button event listener
+            document.getElementById('complete-button').addEventListener('click', () => {
+                const responses = collectResponses();
+                if (responses.length === 0) {
+                    alert('请至少填写一个重要他人');
+                    return;
+                }
+                showScreen('results-screen');
+                setTimeout(saveData, 500);
+            });
         });
     </script>
 </body>

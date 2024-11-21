@@ -34,6 +34,21 @@
     </style>
 </head>
 <body class="bg-gray-50 min-h-screen p-8">
+    <!-- Participant Info Display -->
+    <div id="participant-info" class="max-w-2xl mx-auto mb-4 bg-white rounded-lg p-4">
+        <div class="flex justify-between items-center">
+            <div>
+                <p class="text-gray-600">参与者: <span id="participant-name" class="font-medium"></span></p>
+                <p class="text-gray-600">ID: <span id="participant-id" class="font-medium"></span></p>
+            </div>
+            <button id="return-home" 
+                    class="text-blue-600 hover:text-blue-800 text-sm"
+                    onclick="window.location.href='../homepage_cogame.html'">
+                返回主页
+            </button>
+        </div>
+    </div>
+
     <!-- Introduction Screen -->
     <div id="intro-screen" class="max-w-2xl mx-auto">
         <div class="info-card p-8 mb-8">
@@ -99,23 +114,48 @@
         </div>
     </div>
 
-    <!-- Completion Screen -->
-    <div id="completion-screen" class="max-w-2xl mx-auto hidden">
-        <div class="info-card p-8">
-            <h2 class="text-2xl font-bold mb-6 text-gray-800">研究完成</h2>
-            <p class="text-gray-600 mb-6">感谢您的参与。</p>
-            <button id="download-button" 
-                    class="bg-green-600 text-white px-8 py-3 rounded-lg font-medium hover:bg-green-700 transition-colors w-full">
-                下载数据
-            </button>
-        </div>
-    </div>
-
+  
+    
 
     <script>
-        // 游戏数据记录
+        // 用户数据管理类
+        class ParticipantManager {
+            constructor() {
+                this.participantData = this.getParticipantData();
+                this.validateParticipant();
+            }
+
+            getParticipantData() {
+                const urlParams = new URLSearchParams(window.location.search);
+                const urlData = {
+                    participantId: urlParams.get('participantId'),
+                    name: urlParams.get('name'),
+                    age: urlParams.get('age'),
+                    gender: urlParams.get('gender'),
+                    education: urlParams.get('education')
+                };
+
+                const storedData = JSON.parse(localStorage.getItem('participantData'));
+                return urlData.participantId ? urlData : storedData;
+            }
+
+            validateParticipant() {
+                if (!this.participantData || !this.participantData.participantId) {
+                    window.location.href = '../homepage_cogame.html';
+                }
+            }
+
+            getData() {
+                return this.participantData;
+            }
+        }
+
+        // 初始化参与者管理器
+        const participantManager = new ParticipantManager();
+
+        // 游戏数据
         const gameData = {
-            participantId: Math.floor(100000 + Math.random() * 900000),
+            participant: participantManager.getData(),
             trial: {
                 startTime: null,
                 decisionTime: null,
@@ -124,117 +164,143 @@
                 investedAmount: null
             }
         };
-    
+
         // DOM元素
         const screens = {
             intro: document.getElementById('intro-screen'),
             investment: document.getElementById('investment-screen'),
             completion: document.getElementById('completion-screen')
         };
-    
+
         const elements = {
             confirmButton: document.getElementById('confirm-button'),
             selectionSummary: document.getElementById('selection-summary'),
             investedAmount: document.getElementById('invested-amount'),
             keptAmount: document.getElementById('kept-amount')
         };
-    
+
+        // 显示参与者信息
+        document.getElementById('participant-name').textContent = gameData.participant.name;
+        document.getElementById('participant-id').textContent = gameData.participant.participantId;
+
         let selectedAmount = null;
-    
+
         // 开始按钮事件处理
         document.getElementById('start-button').addEventListener('click', () => {
             screens.intro.classList.add('hidden');
             screens.investment.classList.remove('hidden');
             gameData.trial.startTime = new Date().toISOString();
         });
-    
+
         // 金额选项点击处理
         document.querySelectorAll('.amount-option').forEach(option => {
             option.addEventListener('click', () => {
-                // 移除其他选项的选中状态
                 document.querySelectorAll('.amount-option').forEach(opt => 
                     opt.classList.remove('selected'));
                 
-                // 添加当前选项的选中状态
                 option.classList.add('selected');
                 selectedAmount = parseInt(option.dataset.value);
                 
-                // 更新显示
                 elements.investedAmount.textContent = selectedAmount;
                 elements.keptAmount.textContent = gameData.trial.initialAmount - selectedAmount;
                 elements.selectionSummary.classList.remove('hidden');
                 
-                // 启用确认按钮
                 elements.confirmButton.disabled = false;
                 elements.confirmButton.classList.remove('bg-gray-400', 'cursor-not-allowed');
                 elements.confirmButton.classList.add('bg-blue-600', 'hover:bg-blue-700');
             });
         });
-    
-        // 确认按钮事件处理
-        elements.confirmButton.addEventListener('click', () => {
-            if (selectedAmount !== null) {
-                // 记录决策时间和RT
-                gameData.trial.decisionTime = new Date().toISOString();
-                gameData.trial.RT = new Date(gameData.trial.decisionTime) - new Date(gameData.trial.startTime);
-                
-                // 记录投资决策
-                gameData.trial.investedAmount = selectedAmount;
-    
-                // 直接进入完成界面
-                screens.investment.classList.add('hidden');
-                screens.completion.classList.remove('hidden');
-    
-                // 打印数据到控制台（用于调试）
-                console.log('Trial Data:', gameData);
-            }
-        });
-    
-        // 下载数据按钮事件处理
-        document.getElementById('download-button').addEventListener('click', () => {
-            // 准备CSV数据
-            const headers = [
-                'participantId',
-                'trialStartTime',
-                'decisionTime',
-                'RT',
-                'initialAmount',
-                'investedAmount'
-            ];
-    
-            const values = [
-                gameData.participantId,
-                gameData.trial.startTime,
-                gameData.trial.decisionTime,
-                gameData.trial.RT,
-                gameData.trial.initialAmount,
-                gameData.trial.investedAmount
-            ];
-    
-            // 创建CSV内容
-            const csvContent = [
-                headers.join(','),
-                values.join(',')
-            ].join('\n');
-    
-            // 创建并触发下载
-            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-            const url = URL.createObjectURL(blob);
-            const link = document.createElement('a');
-            link.href = url;
-            link.download = `trust_game_P${gameData.participantId}_${new Date().getTime()}.csv`;
-            
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            URL.revokeObjectURL(url);
-    
-            // 更新下载按钮文本
-            const downloadButton = document.getElementById('download-button');
-            downloadButton.textContent = '数据已下载';
-            downloadButton.disabled = true;
-            downloadButton.classList.remove('hover:bg-green-700');
-        });
+
+        // 修改确认按钮事件处理，在实验完成时自动下载数据
+elements.confirmButton.addEventListener('click', () => {
+    if (selectedAmount !== null) {
+        gameData.trial.decisionTime = new Date().toISOString();
+        gameData.trial.RT = new Date(gameData.trial.decisionTime) - new Date(gameData.trial.startTime);
+        gameData.trial.investedAmount = selectedAmount;
+
+        // 自动下载数据
+        downloadData();
+
+        // 显示完成界面
+        screens.investment.classList.add('hidden');
+        screens.completion.classList.remove('hidden');
+    }
+});
+
+const completionScreen = `
+<div class="info-card p-8">
+    <h2 class="text-2xl font-bold mb-6 text-gray-800">研究完成</h2>
+    <p class="text-gray-600 mb-6">感谢您的参与！数据已自动保存。</p>
+    <button onclick="window.location.href='../homepage_cogame.html'"
+            class="bg-blue-600 text-white px-8 py-3 rounded-lg font-medium hover:bg-blue-700 transition-colors w-full">
+        返回主页
+    </button>
+</div>
+`;
+
+document.getElementById('completion-screen').innerHTML = completionScreen;
+
+document.getElementById('completion-screen').innerHTML = completionScreen;
+
+// 数据下载函数
+function downloadData() {
+    try {
+        const BOM = '\uFEFF';  // Add BOM for proper Chinese character encoding
+        const headers = [
+            'participantId',
+            'name',
+            'age',
+            'gender',
+            'education',
+            'trialStartTime',
+            'decisionTime',
+            'RT',
+            'initialAmount',
+            'investedAmount'
+        ];
+
+        const values = [
+            gameData.participant.participantId,
+            gameData.participant.name,
+            gameData.participant.age,
+            gameData.participant.gender,
+            gameData.participant.education,
+            gameData.trial.startTime,
+            gameData.trial.decisionTime,
+            gameData.trial.RT,
+            gameData.trial.initialAmount,
+            gameData.trial.investedAmount
+        ];
+
+        const csvContent = BOM + [
+            headers.join(','),
+            values.map(value => {
+                return value && (typeof value === 'string' &&
+                    (value.includes(',') || value.includes('"') || value.includes('\n'))) ?
+                    `"${value.replace(/"/g, '""')}"` : value;
+            }).join(',')
+        ].join('\n');
+
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+        link.download = `trust_game_${gameData.participant.name}_${gameData.participant.participantId}_${timestamp}.csv`;
+        
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+    } catch (error) {
+        console.error('Error downloading data:', error);
+    }
+}
+
+// 移除下载按钮的事件监听器，因为不再需要
+// 删除这一行: document.getElementById('download-button').addEventListener('click', downloadData);
+
+
     </script>
-    </body>
-    </html>
+</body>
+</html>

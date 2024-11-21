@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -76,13 +76,12 @@
         }
     </style>
 </head>
-
 <body class="bg-gray-50 min-h-screen p-8">
     <!-- Introduction Screen -->
     <div id="intro-screen" class="max-w-2xl mx-auto">
         <div class="bg-white rounded-lg shadow p-8">
             <h1 class="text-2xl font-bold mb-6 text-center">抛硬币决策任务</h1>
-            
+
             <div class="space-y-4 text-gray-600">
                 <div class="bg-blue-50 p-6 rounded-lg">
                     <h2 class="font-semibold text-blue-800 mb-4">任务说明：</h2>
@@ -99,12 +98,15 @@
 
                 <div class="bg-yellow-50 p-4 rounded-lg">
                     <h2 class="font-semibold text-yellow-800">请注意：</h2>
-                    <p class="text-yellow-900">您的选择将影响最终收益，请认真对待每个决策。</p>
+                    <p class="text-yellow-900">
+                        您的选择将影响最终收益，实验结束后我们会随机抽取一个回合的结果作为您的实际收益。
+                        请认真对待每个决策。
+                    </p>
                 </div>
             </div>
 
-            <button id="start-button" 
-                    class="mt-8 bg-blue-600 text-white px-8 py-3 rounded-lg font-medium hover:bg-blue-700 transition-colors w-full">
+            <button id="start-button"
+                class="mt-8 bg-blue-600 text-white px-8 py-3 rounded-lg font-medium hover:bg-blue-700 transition-colors w-full">
                 开始任务
             </button>
         </div>
@@ -142,7 +144,7 @@
             <h3 class="text-xl font-bold mb-4">练习结果</h3>
             <div id="practice-result" class="text-lg mb-6"></div>
             <button onclick="startMainTask()" 
-                    class="bg-blue-600 text-white px-8 py-3 rounded-lg font-medium hover:bg-blue-700 transition-colors">
+                class="bg-blue-600 text-white px-8 py-3 rounded-lg font-medium hover:bg-blue-700 transition-colors">
                 开始正式任务
             </button>
         </div>
@@ -208,111 +210,169 @@
                 <!-- Summary will be inserted here -->
             </div>
 
-            <button id="download-button" 
-                    class="bg-green-600 text-white px-8 py-3 rounded-lg font-medium hover:bg-green-700 transition-colors w-full">
-                下载数据
-            </button>
+            <div id="save-status" class="mt-4 p-4 rounded-lg hidden">
+                <p id="save-message" class="text-center font-medium"></p>
+            </div>
         </div>
     </div>
 
-    <script>
-        const trials = [
-            { win: 36, loss: 24 }, { win: 24, loss: 20 }, { win: 20, loss: 28 },
-            { win: 32, loss: 20 }, { win: 28, loss: 20 }, { win: 24, loss: 24 },
-            { win: 32, loss: 24 }, { win: 28, loss: 32 }, { win: 24, loss: 28 },
-            { win: 20, loss: 36 }, { win: 36, loss: 20 }, { win: 36, loss: 36 },
-            { win: 32, loss: 32 }, { win: 28, loss: 36 }, { win: 20, loss: 20 },
-            { win: 36, loss: 28 }, { win: 20, loss: 24 }, { win: 20, loss: 32 },
-            { win: 32, loss: 28 }, { win: 36, loss: 32 }, { win: 28, loss: 28 },
-            { win: 24, loss: 32 }, { win: 32, loss: 36 }, { win: 24, loss: 36 },
-            { win: 28, loss: 24 }
-        ];
+
     
-        const gameData = {
-            participantId: Math.floor(100000 + Math.random() * 900000),
-            currentTrialIndex: 0,
-            startTime: null,
-            responses: [],
-            totalEarnings: 0,
-            practiceComplete: false
-        };
-    
-        const screens = {
-            intro: document.getElementById('intro-screen'),
-            practice: document.getElementById('practice-screen'),
-            practiceFeedback: document.getElementById('practice-feedback'),
-            coin: document.getElementById('coin-screen'),
-            fixation: document.getElementById('fixation-screen'),
-            trial: document.getElementById('trial-screen'),
-            completion: document.getElementById('completion-screen')
-        };
-    
-        function showCoinAnimation(callback, showResult = true) {
-            screens.coin.classList.remove('hidden');
-            const coin = screens.coin.querySelector('.coin');
-            coin.style.animation = 'none';
-            coin.offsetHeight; // Trigger reflow
-            coin.style.animation = 'flip 1s linear forwards';
-            
-            setTimeout(() => {
-                screens.coin.classList.add('hidden');
-                if (callback) callback();
-            }, 1000);
+<script>
+    // ParticipantManager Class
+    class ParticipantManager {
+        constructor() {
+            this.participantData = this.getParticipantData();
+            this.validateParticipant();
+            this.saveParticipantData();
         }
-    
-        function makePracticeChoice(choseToFlip) {
-            if (choseToFlip) {
-                const outcome = Math.random() < 0.5;
-                const win = parseInt(document.getElementById('practice-win').textContent);
-                const loss = parseInt(document.getElementById('practice-loss').textContent);
-                
-                showCoinAnimation(() => {
-                    screens.practice.classList.add('hidden');
-                    screens.practiceFeedback.classList.remove('hidden');
-                    
-                    const result = outcome ? 
-                        `<span class="text-green-600">恭喜！硬币花朝上，您赢得了 ${win} 元</span>` :
-                        `<span class="text-red-600">很遗憾，硬币字朝上，您损失了 ${loss} 元</span>`;
-                    
-                    document.getElementById('practice-result').innerHTML = result;
+
+        getParticipantData() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const urlData = {
+                participantId: urlParams.get('participantId'),
+                name: urlParams.get('name'),
+                age: urlParams.get('age'),
+                gender: urlParams.get('gender'),
+                education: urlParams.get('education')
+            };
+
+            if (urlData.participantId) {
+                return urlData;
+            }
+
+            const storedData = localStorage.getItem('participantData');
+            return storedData ? JSON.parse(storedData) : null;
+        }
+
+        saveParticipantData() {
+            if (this.participantData) {
+                localStorage.setItem('participantData',
+                    JSON.stringify(this.participantData));
+
+                const history = JSON.parse(
+                    localStorage.getItem('participationHistory') || '[]'
+                );
+                history.push({
+                    participantId: this.participantData.participantId,
+                    taskName: 'coin_flip',
+                    timestamp: new Date().toISOString()
                 });
-            } else {
-                screens.practice.classList.add('hidden');
-                screens.practiceFeedback.classList.remove('hidden');
-                document.getElementById('practice-result').innerHTML = 
-                    '<span class="text-blue-600">您选择了不抛硬币，不输不赢</span>';
+                localStorage.setItem('participationHistory',
+                    JSON.stringify(history));
             }
         }
-    
-        function startMainTask() {
-            screens.practiceFeedback.classList.add('hidden');
-            gameData.startTime = new Date().toISOString();
-            showFixation();
-        }
-    
-        function showFixation() {
-            screens.trial.classList.add('hidden');
-            screens.fixation.classList.remove('hidden');
-            
-            setTimeout(() => {
-                screens.fixation.classList.add('hidden');
-                showTrial();
-            }, Math.random() * 100 + 400); // 400-500ms jitter
-        }
-    </script>
 
-<script>
+        validateParticipant() {
+            if (!this.participantData || !this.participantData.participantId) {
+                window.location.href = '../homepage_cogame.html';
+            }
+        }
+
+        getData() {
+            return this.participantData;
+        }
+    }
+
+    // Trial data
+    const trials = [
+        { win: 36, loss: 24 }, { win: 24, loss: 20 }, { win: 20, loss: 28 },
+        { win: 32, loss: 20 }, { win: 28, loss: 20 }, { win: 24, loss: 24 },
+        { win: 32, loss: 24 }, { win: 28, loss: 32 }, { win: 24, loss: 28 },
+        { win: 20, loss: 36 }, { win: 36, loss: 20 }, { win: 36, loss: 36 },
+        { win: 32, loss: 32 }, { win: 28, loss: 36 }, { win: 20, loss: 20 },
+        { win: 36, loss: 28 }, { win: 20, loss: 24 }, { win: 20, loss: 32 },
+        { win: 32, loss: 28 }, { win: 36, loss: 32 }, { win: 28, loss: 28 },
+        { win: 24, loss: 32 }, { win: 32, loss: 36 }, { win: 24, loss: 36 },
+        { win: 28, loss: 24 }
+    ];
+
+    // Game state management
+    const gameData = {
+        participant: null,
+        currentTrialIndex: 0,
+        startTime: null,
+        responses: [],
+        totalEarnings: 0,
+        practiceComplete: false,
+        selectedTrial: null
+    };
+
+    const screens = {
+        intro: document.getElementById('intro-screen'),
+        practice: document.getElementById('practice-screen'),
+        practiceFeedback: document.getElementById('practice-feedback'),
+        coin: document.getElementById('coin-screen'),
+        fixation: document.getElementById('fixation-screen'),
+        trial: document.getElementById('trial-screen'),
+        completion: document.getElementById('completion-screen')
+    };
+
+    // Core game functions
+    function showCoinAnimation(callback, showResult = true) {
+        screens.coin.classList.remove('hidden');
+        const coin = screens.coin.querySelector('.coin');
+        coin.style.animation = 'none';
+        coin.offsetHeight; // Trigger reflow
+        coin.style.animation = 'flip 1s linear forwards';
+
+        setTimeout(() => {
+            screens.coin.classList.add('hidden');
+            if (callback) callback();
+        }, 1000);
+    }
+
+    function makePracticeChoice(choseToFlip) {
+        if (choseToFlip) {
+            const outcome = Math.random() < 0.5;
+            const win = parseInt(document.getElementById('practice-win').textContent);
+            const loss = parseInt(document.getElementById('practice-loss').textContent);
+
+            showCoinAnimation(() => {
+                screens.practice.classList.add('hidden');
+                screens.practiceFeedback.classList.remove('hidden');
+
+                const result = outcome ?
+                    `<span class="text-green-600">恭喜！硬币花朝上，您赢得了 ${win} 元</span>` :
+                    `<span class="text-red-600">很遗憾，硬币字朝上，您损失了 ${loss} 元</span>`;
+
+                document.getElementById('practice-result').innerHTML = result;
+            });
+        } else {
+            screens.practice.classList.add('hidden');
+            screens.practiceFeedback.classList.remove('hidden');
+            document.getElementById('practice-result').innerHTML =
+                '<span class="text-blue-600">您选择了不抛硬币，不输不赢</span>';
+        }
+    }
+
+    function startMainTask() {
+        screens.practiceFeedback.classList.add('hidden');
+        gameData.startTime = new Date().toISOString();
+        showFixation();
+    }
+
+    function showFixation() {
+        screens.trial.classList.add('hidden');
+        screens.fixation.classList.remove('hidden');
+
+        setTimeout(() => {
+            screens.fixation.classList.add('hidden');
+            showTrial();
+        }, Math.random() * 100 + 400); // 400-500ms jitter
+    }
+
     function showTrial() {
         const trial = trials[gameData.currentTrialIndex];
         screens.trial.classList.remove('hidden');
-        
+
         document.getElementById('trial-number').textContent = gameData.currentTrialIndex + 1;
         document.getElementById('win-amount').textContent = trial.win;
         document.getElementById('loss-amount').textContent = trial.loss;
-        
-        document.getElementById('progress-fill').style.width = 
+
+        document.getElementById('progress-fill').style.width =
             `${((gameData.currentTrialIndex + 1) / trials.length) * 100}%`;
-        
+
         gameData.trialStartTime = new Date().toISOString();
     }
 
@@ -320,10 +380,14 @@
         const trial = trials[gameData.currentTrialIndex];
         const outcome = choseToFlip ? (Math.random() < 0.5) : null;
         const earnings = choseToFlip ? (outcome ? trial.win : -trial.loss) : 0;
-        
+
         gameData.totalEarnings += earnings;
         gameData.responses.push({
-            participantId: gameData.participantId,
+            participantId: gameData.participant.participantId,
+            name: gameData.participant.name,
+            age: gameData.participant.age,
+            gender: gameData.participant.gender,
+            education: gameData.participant.education,
             trialNumber: gameData.currentTrialIndex + 1,
             winAmount: trial.win,
             lossAmount: trial.loss,
@@ -354,22 +418,109 @@
         }
     }
 
+    async function saveData() {
+        const saveStatus = document.getElementById('save-status');
+        const saveMessage = document.getElementById('save-message');
+        saveStatus.classList.remove('hidden');
+        saveStatus.style.backgroundColor = 'rgba(255, 255, 255, 0.1)';
+        saveMessage.style.color = '#66b3ff';
+        saveMessage.textContent = '正在保存数据...';
+
+        try {
+            const headers = [
+                'participantId',
+                'name',
+                'age',
+                'gender',
+                'education',
+                'trialNumber',
+                'winAmount',
+                'lossAmount',
+                'choseToFlip',
+                'outcome',
+                'earnings',
+                'RT',
+                'trialStartTime',
+                'decisionTime',
+                'selectedTrial'
+            ];
+
+            const BOM = '\uFEFF';
+            const csvContent = BOM + [
+                headers.join(','),
+                ...gameData.responses.map(response => {
+                    const row = {
+                        ...response,
+                        selectedTrial: response === gameData.selectedTrial ? 'yes' : 'no'
+                    };
+                    return headers.map(h => {
+                        const value = row[h];
+                        return value && (typeof value === 'string' &&
+                            (value.includes(',') || value.includes('"') || value.includes('\n'))) ?
+                            `"${value.replace(/"/g, '""')}"` : value;
+                    }).join(',');
+                })
+            ].join('\n');
+
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `coin_flip_${gameData.participant.name}_${gameData.participant.participantId}_${new Date().getTime()}.csv`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+
+            saveStatus.style.backgroundColor = 'rgba(75, 181, 67, 0.2)';
+            saveMessage.style.color = '#4bb543';
+            saveMessage.textContent = '数据已成功保存！';
+
+            setTimeout(() => {
+                saveStatus.classList.add('hidden');
+            }, 3000);
+
+        } catch (error) {
+            console.error('保存数据时出错:', error);
+            saveStatus.style.backgroundColor = 'rgba(255, 0, 0, 0.2)';
+            saveMessage.style.color = '#ff4444';
+            saveMessage.textContent = '保存数据失败，请刷新页面重试';
+        }
+    }
+
+    function getTrialSummary(trial) {
+        if (!trial.choseToFlip) {
+            return "您选择不抛硬币";
+        }
+        return trial.outcome === 'win' ?
+            `您选择抛硬币并赢得了 ${trial.winAmount} 元` :
+            `您选择抛硬币并损失了 ${trial.lossAmount} 元`;
+    }
+
     function showCompletion() {
         screens.trial.classList.add('hidden');
         screens.completion.classList.remove('hidden');
 
+        const selectedTrialIndex = Math.floor(Math.random() * gameData.responses.length);
+        gameData.selectedTrial = gameData.responses[selectedTrialIndex];
+
         const flipDecisions = gameData.responses.filter(r => r.choseToFlip);
         const wins = gameData.responses.filter(r => r.outcome === 'win');
         const losses = gameData.responses.filter(r => r.outcome === 'loss');
-        
+
         document.getElementById('task-summary').innerHTML = `
             <div class="space-y-4">
                 <h3 class="text-xl font-bold mb-4">任务总结</h3>
-                <p class="text-lg">总收益：
-                    <span class="font-bold ${gameData.totalEarnings >= 0 ? 'text-green-600' : 'text-red-600'}">
-                        ${gameData.totalEarnings}元
-                    </span>
-                </p>
+                <div class="bg-yellow-50 p-4 rounded-lg mb-4">
+                    <h4 class="font-bold text-yellow-800 mb-2">随机抽取结果</h4>
+                    <p class="text-yellow-900">
+                        第 ${gameData.selectedTrial.trialNumber} 回合被选中：<br>
+                        ${getTrialSummary(gameData.selectedTrial)}
+                    </p>
+                    <p class="font-bold text-lg mt-2 ${gameData.selectedTrial.earnings >= 0 ? 'text-green-600' : 'text-red-600'}">
+                        您的实际收益: ${gameData.selectedTrial.earnings}元
+                    </p>
+                </div>
                 <div class="bg-gray-100 p-4 rounded-lg">
                     <p>选择抛硬币次数：${flipDecisions.length}</p>
                     <p>赢钱次数：${wins.length}</p>
@@ -379,42 +530,70 @@
                 </div>
             </div>
         `;
+
+        // Automatically save data after a brief delay
+        setTimeout(saveData, 500);
     }
 
-    function downloadData() {
-        const headers = [
-            'participantId', 'trialNumber', 'winAmount', 'lossAmount',
-            'choseToFlip', 'outcome', 'earnings', 'RT', 'trialStartTime', 'decisionTime'
-        ];
+    // Initialize everything when DOM is loaded
+    document.addEventListener('DOMContentLoaded', () => {
+        const participantManager = new ParticipantManager();
+        gameData.participant = participantManager.getData();
 
-        const csvContent = [
-            headers.join(','),
-            ...gameData.responses.map(response => headers.map(h => response[h]).join(','))
-        ].join('\n');
+        // Add participant info display
+        document.body.insertAdjacentHTML('afterbegin', `
+            <div class="max-w-2xl mx-auto mb-4 bg-white rounded-lg p-4">
+                <div class="flex justify-between items-center">
+                    <div>
+                        <p class="text-gray-600">参与者: <span class="font-medium">
+                            ${gameData.participant.name}</span></p>
+                        <p class="text-gray-600">ID: <span class="font-medium">
+                            ${gameData.participant.participantId}</span></p>
+                    </div>
+                    <button onclick="window.location.href='../homepage_cogame.html'" 
+                            class="text-blue-600 hover:text-blue-800 text-sm">
+                        返回主页
+                    </button>
+                </div>
+            </div>
+        `);
 
-        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-        const url = URL.createObjectURL(blob);
-        const link = document.createElement('a');
-        link.href = url;
-        link.download = `loss_aversion_P${gameData.participantId}_${new Date().getTime()}.csv`;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        URL.revokeObjectURL(url);
+        // Start button event listener
+        document.getElementById('start-button').addEventListener('click', () => {
+            screens.intro.classList.add('hidden');
+            screens.practice.classList.remove('hidden');
+        });
 
-        const downloadButton = document.getElementById('download-button');
-        downloadButton.textContent = '数据已下载';
-        downloadButton.disabled = true;
-        downloadButton.classList.remove('hover:bg-green-700');
-    }
+        // Handle keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            if (gameData.active) {
+                if (e.code === 'ArrowLeft' || e.code === 'KeyF') {
+                    document.querySelector('.choice-box:first-child').click();
+                } else if (e.code === 'ArrowRight' || e.code === 'KeyJ') {
+                    document.querySelector('.choice-box:last-child').click();
+                }
+            }
+        });
 
-    // Event Listeners
-    document.getElementById('start-button').addEventListener('click', () => {
-        screens.intro.classList.add('hidden');
-        screens.practice.classList.remove('hidden');
+        // Prevent accidental back navigation
+        window.addEventListener('beforeunload', (e) => {
+            if (gameData.active && !gameData.completed) {
+                e.preventDefault();
+                e.returnValue = '';
+            }
+            
+        });
+
+        // Randomize trials
+        for (let i = trials.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [trials[i], trials[j]] = [trials[j], trials[i]];
+        }
+
+        // Initialize game state
+        gameData.active = true;
+        gameData.completed = false;
     });
-
-    document.getElementById('download-button').addEventListener('click', downloadData);
 </script>
 </body>
 </html>
