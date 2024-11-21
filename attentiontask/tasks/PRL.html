@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>翻转学习任务</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .square {
+            width: 150px;
+            height: 150px;
+            cursor: pointer;
+            transition: transform 0.2s;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .square:hover {
+            transform: scale(1.05);
+        }
+
+        .square .bars {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: space-evenly;
+            align-items: center;
+        }
+
+        .bar {
+            width: 30px;
+            height: 120px;
+        }
+
+        .yellow-bar {
+            background-color: #FFD700;
+        }
+
+        .blue-bar {
+            background-color: #00BFFF;
+        }
+
+        .fixation {
+            font-size: 2rem;
+            color: white;
+        }
+
+        .outcome-circle {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: outcomeAppear 0.5s ease-out;
+        }
+
+        .coin {
+            background: #C0C0C0;
+            position: relative;
+            box-shadow: inset -2px -2px 6px rgba(0,0,0,0.2),
+                        inset 2px 2px 6px rgba(255,255,255,0.2);
+        }
+
+        .coin::before {
+            content: "¥1";
+            font-family: "Arial", sans-serif;
+            font-size: 32px;
+            font-weight: bold;
+            color: #666;
+        }
+
+        .coin::after {
+            content: "";
+            position: absolute;
+            top: 4px;
+            left: 4px;
+            right: 4px;
+            bottom: 4px;
+            border: 2px solid #A0A0A0;
+            border-radius: 50%;
+        }
+
+        .no-reward {
+            border: 4px solid #FF0000;
+        }
+
+        @keyframes outcomeAppear {
+            0% { transform: scale(0); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .instruction {
+            max-width: 800px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        .dashed-border {
+            border: 2px dashed white;
+            padding: 10px;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-900 min-h-screen flex items-center justify-center">
+    <!-- 指导语屏幕 -->
+    <div id="instruction-screen" class="text-white instruction">
+        <h1 class="text-3xl font-bold mb-6 text-center">欢迎参加学习游戏！</h1>
+
+        <div class="space-y-4 mb-8">
+            <p>在这个游戏中，你将：</p>
+            <ul class="list-disc list-inside space-y-2">
+                <li>看到两个带有彩色条纹（黄色和蓝色）的方块</li>
+                <li>通过点击选择其中一个</li>
+                <li>你将看到金币（获得奖励）或红圈（未获得奖励）</li>
+                <li>尝试学习哪种颜色能给你带来更多奖励！</li>
+            </ul>
+
+            <p class="font-bold">首先，让我们先练习5次！</p>
+        </div>
+
+        <button id="start-practice" class="bg-green-500 text-white px-6 py-3 rounded-lg mx-auto block
+                       hover:bg-green-600 transition-colors">
+            开始练习
+        </button>
+    </div>
+
+    <!-- 练习完成屏幕 -->
+    <div id="practice-complete" class="text-white instruction hidden">
+        <h2 class="text-2xl font-bold mb-6 text-center">练习完成！</h2>
+
+        <div class="space-y-4 mb-8">
+            <p>干得好！现在你已经准备好开始正式游戏了。</p>
+            <p>请记住：</p>
+            <ul class="list-disc list-inside space-y-2">
+                <li>选择你认为更可能给你带来奖励的方块</li>
+                <li>更好的选择可能在游戏过程中发生改变</li>
+                <li>注意观察结果！</li>
+            </ul>
+        </div>
+
+        <button id="start-main" class="bg-blue-500 text-white px-6 py-3 rounded-lg mx-auto block
+                       hover:bg-blue-600 transition-colors">
+            开始正式游戏
+        </button>
+    </div>
+
+    <!-- 游戏屏幕 -->
+    <div id="game-screen" class="hidden">
+        <!-- 注视点 -->
+        <div id="fixation" class="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 fixation">
+            +
+        </div>
+
+        <!-- 选择显示 -->
+        <div id="choice-display" class="hidden">
+            <div class="flex justify-center items-center space-x-40">
+            </div>
+        </div>
+    </div>
+
+    <!-- 完成屏幕 -->
+<!-- Completion Screen -->
+<div id="completion-screen" class="text-white instruction hidden">
+    <h2 class="text-2xl font-bold mb-6 text-center">游戏完成！</h2>
+    <p class="text-xl mb-4">感谢您的参与！</p>
+    <p class="text-gray-300 mb-4">数据已自动保存</p>
+    <button onclick="window.location.href='../homepage_cogame.html'" 
+            class="bg-blue-500 text-white px-6 py-3 rounded-lg mx-auto block hover:bg-blue-600 transition-colors">
+        返回主页
+    </button>
+</div>
+
+    <script>
+        // 用户管理类
+        class ParticipantManager {
+            constructor() {
+                this.participantData = this.getParticipantData();
+                this.validateParticipant();
+            }
+
+            getParticipantData() {
+                const urlParams = new URLSearchParams(window.location.search);
+                const urlData = {
+                    participantId: urlParams.get('participantId'),
+                    name: urlParams.get('name'),
+                    age: urlParams.get('age'),
+                    gender: urlParams.get('gender'),
+                    education: urlParams.get('education')
+                };
+
+                const storedData = JSON.parse(localStorage.getItem('participantData'));
+                return urlData.participantId ? urlData : storedData;
+            }
+
+            validateParticipant() {
+                if (!this.participantData || !this.participantData.participantId) {
+                    window.location.href = '../homepage_cogame.html';
+                }
+            }
+
+            getData() {
+                return this.participantData;
+            }
+        }
+
+        // 游戏状态
+        const gameState = {
+            isPractice: true,
+            currentTrial: 0,
+            totalTrials: 125,
+            practiceTrials: 5,
+            trialData: [],
+            participantData: null,
+            startTime: null,
+            endTime: null,
+            phases: [
+                { start: 0, end: 49, yellowProb: 0.25, blueProb: 0.75 },
+                { start: 50, end: 74, yellowProb: 0.75, blueProb: 0.25 },
+                { start: 75, end: 124, yellowProb: 0.25, blueProb: 0.75 }
+            ],
+            practiceProbability: { yellowProb: 0.3, blueProb: 0.7 }
+        };
+
+        // 初始化参与者管理器
+        const participantManager = new ParticipantManager();
+        gameState.participantData = participantManager.getData();
+
+        // 屏幕元素
+        const screens = {
+            instruction: document.getElementById('instruction-screen'),
+            practiceComplete: document.getElementById('practice-complete'),
+            game: document.getElementById('game-screen'),
+            completion: document.getElementById('completion-screen'),
+            fixation: document.getElementById('fixation'),
+            choiceDisplay: document.getElementById('choice-display')
+        };
+
+        // 创建方块元素
+        function createSquare(color) {
+            const square = document.createElement('div');
+            square.className = `square dashed-border`;
+            square.setAttribute('data-color', color);
+
+            const bars = document.createElement('div');
+            bars.className = 'bars';
+
+            for (let i = 0; i < 3; i++) {
+                const bar = document.createElement('div');
+                bar.className = `bar ${color}-bar`;
+                bars.appendChild(bar);
+            }
+
+            square.appendChild(bars);
+            return square;
+        }
+
+        // 获取当前概率
+        function getCurrentProbability(trialNum) {
+            if (gameState.isPractice) {
+                return gameState.practiceProbability;
+            }
+
+            const phase = gameState.phases.find(p =>
+                trialNum >= p.start && trialNum <= p.end
+            );
+            return phase;
+        }
+
+        // 随机化位置
+        function randomizePositions() {
+            const leftIsYellow = Math.random() < 0.5;
+            return {
+                left: leftIsYellow ? 'yellow' : 'blue',
+                right: leftIsYellow ? 'blue' : 'yellow'
+            };
+        }
+
+        // 检查是否应该给予奖励
+        function shouldGiveReward(color, probabilities) {
+            const prob = color === 'yellow' ? probabilities.yellowProb : probabilities.blueProb;
+            return Math.random() < prob;
+        }
+
+        // 显示结果
+        function showOutcome(reward) {
+            const outcomeContainer = document.createElement('div');
+            outcomeContainer.className = 'fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2';
+
+            const outcomeCircle = document.createElement('div');
+            outcomeCircle.className = `outcome-circle ${reward ? 'coin' : 'no-reward'}`;
+            outcomeContainer.appendChild(outcomeCircle);
+
+            document.body.appendChild(outcomeContainer);
+            return outcomeContainer;
+        }
+
+        // 记录试次数据
+        function recordTrial(position, color, reward, reactionTime) {
+            const trialNum = gameState.isPractice ?
+                `P${gameState.currentTrial + 1}` :
+                gameState.currentTrial + 1;
+
+            const data = {
+                participantId: gameState.participantData.participantId,
+                name: gameState.participantData.name,
+                age: gameState.participantData.age,
+                gender: gameState.participantData.gender,
+                education: gameState.participantData.education,
+                experimentStartTime: gameState.startTime,
+                experimentEndTime: gameState.endTime,
+                trialNumber: trialNum,
+                phase: gameState.isPractice ? 'practice' :
+                    gameState.phases.findIndex(p =>
+                        gameState.currentTrial >= p.start && gameState.currentTrial <= p.end
+                    ) + 1,
+                chosenPosition: position,
+                chosenColor: color,
+                reward: reward,
+                reactionTime: reactionTime,
+                timestamp: new Date().toISOString()
+            };
+
+            gameState.trialData.push(data);
+        }
+
+        // 处理选择
+        async function handleChoice(position, color) {
+            const choiceTime = Date.now();
+            const reactionTime = choiceTime - gameState.trialStartTime;
+
+            screens.choiceDisplay.classList.add('hidden');
+
+            const probs = getCurrentProbability(gameState.currentTrial);
+            const reward = shouldGiveReward(color, probs);
+
+            recordTrial(position, color, reward, reactionTime);
+
+            const outcomeContainer = showOutcome(reward);
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            outcomeContainer.remove();
+
+            await showFixation();
+            gameState.currentTrial++;
+
+            if (gameState.isPractice && gameState.currentTrial >= gameState.practiceTrials) {
+                endPractice();
+            } else if (!gameState.isPractice && gameState.currentTrial >= gameState.totalTrials) {
+                gameState.endTime = new Date().toISOString();
+                endGame();
+            } else {
+                startTrial();
+            }
+        }
+
+        // 显示注视点
+        async function showFixation() {
+            screens.fixation.classList.remove('hidden');
+            await new Promise(resolve => setTimeout(resolve, 200));
+            screens.fixation.classList.add('hidden');
+        }
+
+        // 开始新的试次
+        async function startTrial() {
+            await showFixation();
+
+            screens.choiceDisplay.innerHTML = '';
+            screens.choiceDisplay.classList.remove('hidden');
+
+            const positions = randomizePositions();
+            const leftSquare = createSquare(positions.left);
+            const rightSquare = createSquare(positions.right);
+
+            const squareContainer = document.createElement('div');
+            squareContainer.className = 'flex justify-center items-center space-x-40';
+            squareContainer.appendChild(leftSquare);
+            squareContainer.appendChild(rightSquare);
+
+            screens.choiceDisplay.appendChild(squareContainer);
+
+            leftSquare.addEventListener('click', () => handleChoice('left', positions.left));
+            rightSquare.addEventListener('click', () => handleChoice('right', positions.right));
+
+            gameState.startTime = gameState.startTime || new Date().toISOString();
+            gameState.trialStartTime = Date.now();
+        }
+
+        // 结束练习阶段
+        function endPractice() {
+            screens.game.classList.add('hidden');
+            screens.practiceComplete.classList.remove('hidden');
+        }
+
+        // 开始主游戏
+        function startMainGame() {
+            gameState.isPractice = false;
+            gameState.currentTrial = 0;
+            gameState.startTime = new Date().toISOString();
+
+            screens.practiceComplete.classList.add('hidden');
+            screens.game.classList.remove('hidden');
+
+            startTrial();
+        }
+
+        // 结束游戏
+        function endGame() {
+    screens.game.classList.add('hidden');
+    screens.completion.classList.remove('hidden');
+    
+    // Automatically download data
+    const BOM = '\uFEFF';
+    const headers = [
+        '参与者ID',
+        '姓名',
+        '年龄',
+        '性别',
+        '教育程度',
+        '实验开始时间',
+        '实验结束时间',
+        '试次编号',
+        '阶段',
+        '选择位置',
+        '选择颜色',
+        '是否获得奖励',
+        '反应时',
+        '时间戳'
+    ];
+
+    try {
+        const csvContent = BOM + [
+            headers.join(','),
+            ...gameState.trialData.map(trial => [
+                trial.participantId,
+                trial.name,
+                trial.age,
+                trial.gender,
+                trial.education,
+                trial.experimentStartTime,
+                trial.experimentEndTime,
+                trial.trialNumber,
+                trial.phase,
+                trial.chosenPosition,
+                trial.chosenColor,
+                trial.reward ? 1 : 0,
+                trial.reactionTime,
+                trial.timestamp
+            ].join(','))
+        ].join('\n');
+
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+        link.download = `reversal_learning_${gameState.participantData.name}_${gameState.participantData.participantId}_${timestamp}.csv`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+    } catch (error) {
+        console.error('Error downloading data:', error);
+    }
+}
+
+        // 事件监听器
+        document.getElementById('start-practice').addEventListener('click', () => {
+            screens.instruction.classList.add('hidden');
+            screens.game.classList.remove('hidden');
+            startTrial();
+        });
+
+        document.getElementById('start-main').addEventListener('click', startMainGame);
+        
+        // 键盘支持
+        document.addEventListener('keydown', (event) => {
+            if (!screens.choiceDisplay.classList.contains('hidden')) {
+                const squares = screens.choiceDisplay.querySelectorAll('.square');
+                if (event.key === 'ArrowLeft') {
+                    squares[0].click();
+                } else if (event.key === 'ArrowRight') {
+                    squares[1].click();
+                }
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,94 @@
+
+        .letter-display {
+            font-size: 72px;
+            font-weight: bold;
+            width: 150px;
+            height: 150px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 3px dashed #ffffff;
+            border-radius: 10px;
+            transition: border-color 0.3s ease;
+        }
+
+        .fixation {
+            font-size: 72px;
+            font-weight: bold;
+            color: white;
+        }
+
+        .letter-correct { border-color: #4CAF50; }
+        .letter-incorrect { border-color: #FF5252; }
+
+        .instruction {
+            max-width: 900px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        .example-container {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .sequence-display {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin: 15px 0;
+        }
+
+        .example-letter {
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            border-radius: 8px;
+            font-size: 24px;
+            font-weight: bold;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .current-letter {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: white;
+        }
+
+        .click-area {
+            cursor: pointer;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            margin-top: 20px;
+            text-align: center;
+            transition: background-color 0.3s ease;
+        }
+
+        .click-area:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .performance-card {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 20px;
+            margin: 15px 0;
+        }
+
+        .performance-level {
+            font-size: 24px;
+            font-weight: bold;
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 8px;
+        }
+
+        .excellent { background: #4CAF50; color: white; }
+        .good { background: #2196F3; color: white; }
+        .average { background: #FF9800; color: white; }
+        .needsPractice { background: #F44336; color: white; }

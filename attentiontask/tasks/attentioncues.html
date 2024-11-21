@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>注意力实验</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: black;
+            color: white;
+            font-family: Arial, sans-serif;
+            min-height: 100vh;
+            padding: 40px;
+        }
+        .container {
+            width: 1200px;
+            position: relative;
+            padding: 20px;
+            margin: 0 auto;
+        }
+        .screen {
+            display: none;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .screen.active {
+            display: block;
+        }
+        .stimulus-container {
+            position: relative;
+            height: 600px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: black;
+        }
+        .face {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            display: none;
+            width: 150px;
+            height: 150px;
+        }
+        .shape {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            top: 50%;
+            display: none;
+        }
+        .shape.left { 
+            left: calc(50% - 250px);
+            transform: translate(-50%, -50%);
+        }
+        .shape.right {
+            left: calc(50% + 250px);
+            transform: translate(-50%, -50%);
+        }
+        .fixation {
+            font-size: 40px;
+            position: absolute;
+            display: none;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+        }
+        .feedback {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 24px;
+            display: none;
+            text-align: center;
+            z-index: 10;
+        }
+        .hidden { display: none !important; }
+        .correct { color: #4bb543; }
+        .incorrect { color: #ff4444; }
+        .session-break {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            display: none;
+            z-index: 100;
+        }
+        button {
+            background-color: white;
+            color: black;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 5px;
+            font-size: 18px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+        button:hover {
+            background-color: #cccccc;
+        }
+        .transition-screen {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.95);
+            padding: 40px;
+            border-radius: 8px;
+            text-align: center;
+            z-index: 1000;
+            width: 80%;
+            max-width: 600px;
+        }
+    </style>
+</head>
+<body>
+    <div id="instructions" class="screen active">
+        <h1>注意力实验</h1>
+        <p>实验说明：</p>
+        <ol>
+            <li>首先，屏幕中央会出现"+"号注视点 (1000毫秒)</li>
+            <li>然后会出现一个面孔，眼睛可能朝左或朝右看 (300或600毫秒)</li>
+            <li>接着，面孔和几何图形会同时呈现 (2秒内需作答)</li>
+            <li>几何图形可能是：圆形、正方形或六边形</li>
+            <li>图形会出现在面孔的左侧或右侧</li>
+            <li>您的任务是判断图形的位置：
+                <ul>
+                    <li>左侧 - 按 F 键</li>
+                    <li>右侧 - 按 J 键</li>
+                </ul>
+            </li>
+        </ol>
+        <button onclick="startExperiment()">开始练习(24次)</button>
+    </div>
+
+    <div id="transition-screen" class="transition-screen" style="display: none;">
+        <!-- Content will be dynamically inserted here -->
+    </div>
+
+    <div id="experiment-container" class="screen">
+        <div class="stimulus-container">
+            <div class="fixation">+</div>
+            <div class="feedback"></div>
+            
+            <svg class="face" width="150" height="150" id="face-left">
+                <circle cx="75" cy="75" r="60" fill="#ffdb99"/>
+                <circle cx="45" cy="60" r="8" fill="black"/>
+                <circle cx="83" cy="60" r="8" fill="black"/>
+                <path d="M 53 90 Q 75 90 98 90" stroke="black" stroke-width="3" fill="none"/>
+            </svg>
+
+            <svg class="face" width="150" height="150" id="face-right">
+                <circle cx="75" cy="75" r="60" fill="#ffdb99"/>
+                <circle cx="68" cy="60" r="8" fill="black"/>
+                <circle cx="105" cy="60" r="8" fill="black"/>
+                <path d="M 53 90 Q 75 90 98 90" stroke="black" stroke-width="3" fill="none"/>
+            </svg>
+
+            <svg class="shape" id="shape-container">
+                <circle id="circle" cx="30" cy="30" r="25" fill="white" class="hidden"/>
+                <rect id="square" x="5" y="5" width="50" height="50" fill="white" class="hidden"/>
+                <polygon id="hexagon" points="30,5 55,18 55,42 30,55 5,42 5,18" fill="white" class="hidden"/>
+            </svg>
+        </div>
+    </div>
+
+    <div id="session-break" class="session-break">
+        <h2>休息时间</h2>
+        <p>您已完成一组实验，请休息片刻。</p>
+        <p>准备好后请点击下方按钮继续。</p>
+        <button onclick="continueExperiment()">开始下一组实验</button>
+    </div>
+
+    
+<script>
+    class ParticipantManager {
+        constructor() {
+            this.participantData = this.getParticipantData();
+            this.validateParticipant();
+            this.saveParticipantData();
+        }
+
+        getParticipantData() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const urlData = {
+                participantId: urlParams.get('participantId'),
+                name: urlParams.get('name'),
+                age: urlParams.get('age'),
+                gender: urlParams.get('gender'),
+                education: urlParams.get('education')
+            };
+
+            if (urlData.participantId) {
+                return urlData;
+            }
+
+            const storedData = localStorage.getItem('participantData');
+            return storedData ? JSON.parse(storedData) : null;
+        }
+
+        saveParticipantData() {
+            if (this.participantData) {
+                localStorage.setItem('participantData', JSON.stringify(this.participantData));
+            }
+        }
+
+        validateParticipant() {
+            if (!this.participantData || !this.participantData.participantId) {
+                window.location.href = '../homepage_cogame.html';
+            }
+        }
+
+        getData() {
+            return this.participantData;
+        }
+    }
+
+    const STATE = {
+        totalTrials: 288,
+        practiceTrials: 24,
+        isPractice: true,
+        responses: [],
+        isTrialActive: false,
+        trialTimeout: null,
+        currentFaceDirection: null,
+        currentSession: 1,
+        participant: null,
+        startTime: null
+    };
+
+    function showTransitionScreen(accuracy, avgRT) {
+        const transitionScreen = document.getElementById('transition-screen');
+        transitionScreen.innerHTML = `
+            <h2>练习阶段完成</h2>
+            <p>正确率: ${accuracy.toFixed(2)}%</p>
+            <p>平均反应时间: ${avgRT.toFixed(2)}ms</p>
+            ${accuracy >= 80 ? 
+                `<p>表现良好！现在开始正式实验。</p>
+                 <p>正式实验共有288个试次，每完成72个试次会有休息时间。</p>
+                 <button onclick="startFormalExperiment()">开始正式实验</button>` : 
+                `<p>正确率未达到80%，需要重新练习。</p>
+                 <button onclick="restartPractice()">重新练习</button>`
+            }`;
+        transitionScreen.style.display = 'block';
+    }
+
+    function hideTransitionScreen() {
+        document.getElementById('transition-screen').style.display = 'none';
+    }
+
+    function startFormalExperiment() {
+        hideTransitionScreen();
+        STATE.isPractice = false;
+        STATE.responses = [];
+        STATE.currentSession = 1;
+        showScreen('experiment-container');
+        setTimeout(runTrial, 1000);
+    }
+
+    function restartPractice() {
+        hideTransitionScreen();
+        STATE.responses = [];
+        showScreen('experiment-container');
+        setTimeout(runTrial, 1000);
+    }
+
+    function getRandomDelay(min, max) {
+        return Math.random() * (max - min) + min;
+    }
+
+    function showScreen(screenId) {
+        document.querySelectorAll('.screen').forEach(screen => {
+            screen.classList.remove('active');
+        });
+        document.getElementById(screenId).classList.add('active');
+    }
+
+    function hideAllStimuli() {
+        document.querySelectorAll('.face, .shape, .fixation, .feedback').forEach(el => {
+            el.style.display = 'none';
+        });
+        document.querySelectorAll('#shape-container > *').forEach(el => {
+            el.classList.add('hidden');
+        });
+    }
+
+    function showFace(direction) {
+        hideAllStimuli();
+        STATE.currentFaceDirection = direction;
+        document.getElementById(`face-${direction}`).style.display = 'block';
+    }
+
+    function showShape(position) {
+        const shapes = ['circle', 'square', 'hexagon'];
+        const shapeType = shapes[Math.floor(Math.random() * shapes.length)];
+        
+        const shapeContainer = document.querySelector('#shape-container');
+        document.getElementById(shapeType).classList.remove('hidden');
+        shapeContainer.style.display = 'block';
+        
+        if (position === 'left') {
+            shapeContainer.style.left = 'calc(50% - 250px)';
+        } else {
+            shapeContainer.style.left = 'calc(50% + 250px)';
+        }
+        shapeContainer.style.transform = 'translate(-50%, -50%)';
+        
+        return shapeType;
+    }
+
+    function checkPracticeCompletion() {
+        const accuracy = STATE.responses.filter(r => r.correct).length * 100 / STATE.practiceTrials;
+        const avgRT = STATE.responses.filter(r => r.reactionTime).reduce((sum, r) => sum + r.reactionTime, 0) / 
+                     STATE.responses.filter(r => r.reactionTime).length;
+
+        showTransitionScreen(accuracy, avgRT);
+    }
+
+    function showFeedback(trial) {
+        if (STATE.isPractice) {
+            const feedback = document.querySelector('.feedback');
+            feedback.textContent = `${trial.correct ? '正确' : '错误'}! ${trial.reactionTime ? trial.reactionTime + 'ms' : '超时'}`;
+            feedback.className = `feedback ${trial.correct ? 'correct' : 'incorrect'}`;
+            feedback.style.display = 'block';
+
+            setTimeout(() => {
+                feedback.style.display = 'none';
+                if (STATE.responses.length >= STATE.practiceTrials) {
+                    checkPracticeCompletion();
+                } else {
+                    setTimeout(runTrial, getRandomDelay(1000, 1500));
+                }
+            }, 500);
+        } else {
+            if (STATE.responses.length >= STATE.totalTrials) {
+                finishExperiment();
+            } else if (STATE.responses.length % 72 === 0) {
+                document.getElementById('session-break').style.display = 'block';
+            } else {
+                setTimeout(runTrial, getRandomDelay(1000, 1500));
+            }
+        }
+    }
+
+    function finishExperiment() {
+        const validResponses = STATE.responses.filter(r => r.reactionTime);
+        const avgRT = validResponses.reduce((sum, r) => sum + r.reactionTime, 0) / validResponses.length;
+        const accuracy = STATE.responses.filter(r => r.correct).length * 100 / STATE.totalTrials;
+        
+        alert(`实验完成!\n平均反应时间: ${avgRT.toFixed(2)}ms\n正确率: ${accuracy.toFixed(2)}%`);
+        downloadResults();
+    }
+
+    function continueExperiment() {
+        document.getElementById('session-break').style.display = 'none';
+        STATE.currentSession++;
+        runTrial();
+    }
+
+    function runTrial() {
+        // Check if we should stop
+        if (!STATE.isPractice && STATE.responses.length >= STATE.totalTrials) {
+            finishExperiment();
+            return;
+        }
+        if (STATE.isPractice && STATE.responses.length >= STATE.practiceTrials) {
+            return;
+        }
+
+        STATE.isTrialActive = true;
+        clearTimeout(STATE.trialTimeout);
+
+        hideAllStimuli();
+        document.querySelector('.fixation').style.display = 'block';
+
+        setTimeout(() => {
+            const direction = Math.random() < 0.5 ? 'left' : 'right';
+            showFace(direction);
+
+            const faceDisplayTime = Math.random() < 0.5 ? 300 : 600;
+
+            setTimeout(() => {
+                const shapePosition = Math.random() < 0.5 ? 'left' : 'right';
+                const shapeType = showShape(shapePosition);
+
+                STATE.currentTrial = {
+                    trialNumber: STATE.responses.length + 1,
+                    shapeType,
+                    shapePosition,
+                    faceDirection: direction,
+                    faceDisplayTime,
+                    startTime: Date.now(),
+                    session: STATE.currentSession,
+                    isPractice: STATE.isPractice
+                };
+
+                STATE.trialTimeout = setTimeout(() => {
+                    if (STATE.isTrialActive) {
+                        handleResponse(null);
+                    }
+                }, 2000);
+            }, faceDisplayTime);
+        }, 1000);
+    }
+
+    function handleResponse(response) {
+        if (!STATE.isTrialActive) return;
+
+        clearTimeout(STATE.trialTimeout);
+        STATE.isTrialActive = false;
+
+        const trial = {
+            ...STATE.currentTrial,
+            response,
+            reactionTime: response ? Date.now() - STATE.currentTrial.startTime : null,
+            correct: response === STATE.currentTrial.shapePosition,
+            participantId: STATE.participant.participantId,
+            name: STATE.participant.name,
+            age: STATE.participant.age,
+            gender: STATE.participant.gender,
+            education: STATE.participant.education,
+            timestamp: new Date().toISOString()
+        };
+
+        if (!response) {
+            trial.correct = false;
+            trial.response = 'timeout';
+        }
+
+        STATE.responses.push(trial);
+        hideAllStimuli();
+        showFeedback(trial);
+    }
+
+    function downloadResults() {
+        const headers = [
+            'participantId',
+            'name',
+            'age',
+            'gender',
+            'education',
+            'session',
+            'trialNumber',
+            'shapeType',
+            'shapePosition',
+            'faceDirection',
+            'faceDisplayTime',
+            'response',
+            'correct',
+            'reactionTime',
+            'timestamp'
+        ];
+
+        const BOM = '\uFEFF';
+        const csv = [headers.join(',')];
+        
+        STATE.responses.forEach(r => {
+            const row = [
+                r.participantId,
+                r.name,
+                r.age,
+                r.gender,
+                r.education,
+                r.session,
+                r.trialNumber,
+                r.shapeType,
+                r.shapePosition,
+                r.faceDirection,
+                r.faceDisplayTime,
+                r.response,
+                r.correct,
+                r.reactionTime,
+                r.timestamp
+            ];
+            csv.push(row.join(','));
+        });
+
+        const csvContent = BOM + csv.join('\n');
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `attention_experiment_${STATE.participant.name}_${STATE.participant.participantId}_${new Date().getTime()}.csv`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+
+        setTimeout(() => {
+            window.location.href = '../homepage_cogame.html';
+        }, 1000);
+    }
+
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'f' || e.key === 'j') {
+            handleResponse(e.key === 'f' ? 'left' : 'right');
+        }
+    });
+
+    function startExperiment() {
+        showScreen('experiment-container');
+        STATE.startTime = Date.now();
+        runTrial();
+    }
+
+    // Initialize everything when DOM is loaded
+    document.addEventListener('DOMContentLoaded', () => {
+        const participantManager = new ParticipantManager();
+        STATE.participant = participantManager.getData();
+
+        // Display participant info
+        document.body.insertAdjacentHTML('afterbegin', `
+            <div id="participant-info" style="
+                background: rgba(255,255,255,0.1); 
+                padding: 15px; 
+                margin-bottom: 20px; 
+                border-radius: 8px;
+            ">
+                <div class="flex justify-between items-center">
+                    <div>
+                        <p style="margin: 0;">参与者: <span style="font-weight: bold;">
+                            ${STATE.participant.name}</span></p>
+                        <p style="margin: 5px 0 0 0;">ID: <span style="font-weight: bold;">
+                            ${STATE.participant.participantId}</span></p>
+                    </div>
+                    <button onclick="window.location.href='../homepage_cogame.html'" 
+                        style="background: none; color: white; border: 1px solid white; padding: 5px 10px;">
+                        返回主页
+                    </button>
+                </div>
+            </div>
+        `);
+    });
+</script>
+
+</body>
+</html>

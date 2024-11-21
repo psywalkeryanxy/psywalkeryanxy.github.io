@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stroop任务</title>
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+    <script src="https://apis.google.com/js/api.js"></script>
+    <script src="https://accounts.google.com/gsi/client"></script>
+    <style>
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .button {
+            padding: 10px 20px;
+            margin: 5px;
+            border: none;
+            border-radius: 5px;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+
+        .button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .stimulus-area {
+            height: 200px;
+            background-color: #f0f0f0;
+            margin: 20px 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            font-weight: bold;
+            border-radius: 10px;
+        }
+
+        .color-buttons {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        .trial-counter {
+            margin: 10px 0;
+            font-size: 18px;
+        }
+
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            max-width: 600px;
+            margin: 20px auto;
+        }
+
+        .result-card {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: left;
+        }
+
+        .fixation {
+            font-size: 40px;
+            font-weight: bold;
+        }
+
+        .instructions {
+            max-width: 600px;
+            margin: 20px auto;
+            text-align: left;
+            line-height: 1.6;
+        }
+
+        .save-status {
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        .save-status.success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .save-status.error {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #3498db;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const COLORS = {
+            RED: { name: '红', hex: '#FF0000' },
+            BLUE: { name: '蓝', hex: '#0000FF' },
+            GREEN: { name: '绿', hex: '#008000' },
+            YELLOW: { name: '黄', hex: '#FFD700' }
+        };
+
+        const CONFIG = {
+            API_KEY: 'AIzaSyDXX6BMGlLjYScokYaGuhrtR9nTM6AiO6c',
+            CLIENT_ID: '920162760915-2msiiljf9bad12l4b42u13qk3rp38k9p.apps.googleusercontent.com',
+            FOLDER_ID: '1NVDN7E4Z0EW4ipL11iEGhWNePJ9XEtx1',
+            SCOPES: 'https://www.googleapis.com/auth/drive.file',
+            DISCOVERY_DOCS: ['https://www.googleapis.com/discovery/v1/apis/drive/v3/rest']
+        };
+
+        class ParticipantManager {
+            constructor() {
+                this.participantData = this.getParticipantData();
+                this.validateParticipant();
+            }
+
+            getParticipantData() {
+                const urlParams = new URLSearchParams(window.location.search);
+                const urlData = {
+                    participantId: urlParams.get('participantId'),
+                    name: urlParams.get('name'),
+                    age: urlParams.get('age'),
+                    gender: urlParams.get('gender'),
+                    education: urlParams.get('education')
+                };
+
+                const storedData = JSON.parse(localStorage.getItem('participantData'));
+                return urlData.participantId ? urlData : storedData;
+            }
+
+            validateParticipant() {
+                if (!this.participantData || !this.participantData.participantId) {
+                    window.location.href = '../homepage_cogame.html';
+                }
+            }
+
+            getData() {
+                return this.participantData;
+            }
+        }
+
+        function StroopTask() {
+            const [gameState, setGameState] = React.useState('start');
+            const [currentTrial, setCurrentTrial] = React.useState(0);
+            const [currentStimulus, setCurrentStimulus] = React.useState(null);
+            const [responses, setResponses] = React.useState([]);
+            const [showFixation, setShowFixation] = React.useState(false);
+            const [startTime, setStartTime] = React.useState(null);
+            const [isGoogleReady, setIsGoogleReady] = React.useState(false);
+            const [saveStatus, setSaveStatus] = React.useState({ status: '', message: '' });
+            const [isSaving, setIsSaving] = React.useState(false);
+            const [participantData, setParticipantData] = React.useState(null);
+
+            const totalTrials = 20;
+
+            React.useEffect(() => {
+                const manager = new ParticipantManager();
+                setParticipantData(manager.getData());
+            }, []);
+
+            React.useEffect(() => {
+                const initializeGoogleApi = async () => {
+                    try {
+                        await new Promise((resolve, reject) => {
+                            gapi.load('client:auth2', resolve);
+                        });
+
+                        await gapi.client.init({
+                            apiKey: CONFIG.API_KEY,
+                            clientId: CONFIG.CLIENT_ID,
+                            scope: CONFIG.SCOPES,
+                            discoveryDocs: CONFIG.DISCOVERY_DOCS
+                        });
+
+                        if (gapi.auth2.getAuthInstance().isSignedIn.get()) {
+                            setIsGoogleReady(true);
+                        } else {
+                            setIsGoogleReady(true);
+                        }
+
+                        gapi.auth2.getAuthInstance().isSignedIn.listen((isSignedIn) => {
+                            setIsGoogleReady(true);
+                        });
+
+                    } catch (error) {
+                        console.error('初始化错误:', error);
+                        setSaveStatus({
+                            status: 'error',
+                            message: `Google Drive集成初始化失败: ${error.message}`
+                        });
+                    }
+                };
+
+                initializeGoogleApi();
+            }, []);
+
+            const generateStimulus = () => {
+                const colors = Object.values(COLORS);
+                const wordColor = colors[Math.floor(Math.random() * colors.length)];
+                let displayColor;
+
+                if (Math.random() < 0.5) {
+                    displayColor = wordColor;
+                } else {
+                    do {
+                        displayColor = colors[Math.floor(Math.random() * colors.length)];
+                    } while (displayColor === wordColor);
+                }
+
+                return {
+                    word: wordColor.name,
+                    color: displayColor.hex,
+                    correctAnswer: displayColor.name,
+                    type: wordColor === displayColor ? 'congruent' : 'incongruent'
+                };
+            };
+
+            const saveToGoogleDrive = async (data) => {
+                try {
+                    await gapi.auth2.getAuthInstance().signIn();
+
+                    const BOM = '\uFEFF';
+                    const csvContent = BOM + [
+                        ['参与者ID', '姓名', '年龄', '性别', '教育程度', '实验开始时间', '实验结束时间', 
+                         '试次', '刺激词', '显示颜色', '反应', '正确性', '反应时', '试次类型'].join(','),
+                        ...data.map(r => [
+                            participantData.participantId,
+                            participantData.name,
+                            participantData.age,
+                            participantData.gender,
+                            participantData.education,
+                            new Date(startTime).toISOString(),
+                            new Date().toISOString(),
+                            r.trial,
+                            r.stimulus,
+                            r.displayColor,
+                            r.response,
+                            r.correct ? 1 : 0,
+                            r.rt,
+                            r.type
+                        ].join(','))
+                    ].join('\n');
+
+                    const file = new Blob([new Uint8Array([0xEF, 0xBB, 0xBF]), csvContent], { 
+                        type: 'text/csv;charset=utf-8' 
+                    });
+
+                    const metadata = {
+                        name: `stroop_data_${participantData.name}_${participantData.participantId}_${new Date().toISOString().split('T')[0]}.csv`,
+                        mimeType: 'text/csv',
+                        parents: [CONFIG.FOLDER_ID]
+                    };
+
+                    const form = new FormData();
+                    form.append('metadata', new Blob([JSON.stringify(metadata)], { type: 'application/json' }));
+                    form.append('file', file);
+
+                    const accessToken = gapi.auth2.getAuthInstance().currentUser.get().getAuthResponse().access_token;
+
+                    const response = await fetch(
+                        'https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart',
+                        {
+                            method: 'POST',
+                            headers: new Headers({ 'Authorization': 'Bearer ' + accessToken }),
+                            body: form
+                        }
+                    );
+
+                    if (!response.ok) throw new Error('文件上传失败');
+
+                    return true;
+                } catch (error) {
+                    throw error;
+                }
+            };
+
+            const downloadData = () => {
+                const BOM = '\uFEFF';
+                const csvContent = BOM + [
+                    ['参与者ID', '姓名', '年龄', '性别', '教育程度', '实验开始时间', '实验结束时间', 
+                     '试次', '刺激词', '显示颜色', '反应', '正确性', '反应时', '试次类型'].join(','),
+                    ...responses.map(r => [
+                        participantData.participantId,
+                        participantData.name,
+                        participantData.age,
+                        participantData.gender,
+                        participantData.education,
+                        new Date(startTime).toISOString(),
+                        new Date().toISOString(),
+                        r.trial,
+                        r.stimulus,
+                        r.displayColor,
+                        r.response,
+                        r.correct ? 1 : 0,
+                        r.rt,
+                        r.type
+                    ].join(','))
+                ].join('\n');
+
+                const blob = new Blob([new Uint8Array([0xEF, 0xBB, 0xBF]), csvContent], { 
+                    type: 'text/csv;charset=utf-8' 
+                });
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `stroop_data_${participantData.name}_${participantData.participantId}_${new Date().getTime()}.csv`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                window.URL.revokeObjectURL(url);
+            };
+
+            const saveData = async () => {
+                setIsSaving(true);
+                setSaveStatus({ status: 'saving', message: '正在保存数据...' });
+
+                try {
+                    if (isGoogleReady) {
+                        try {
+                            await saveToGoogleDrive(responses);
+                            setSaveStatus({
+                                status: 'success',
+                                message: '数据已成功保存到Google Drive'
+                            });
+                        } catch (error) {
+                            console.error('Google Drive保存失败，使用本地下载作为备份:', error);
+                            downloadData();
+                            setSaveStatus({
+                                status: 'success',
+                                message: '数据已保存到本地'
+                            });
+                        }
+                    } else {
+                        downloadData();
+                        setSaveStatus({
+                            status: 'success',
+                            message: '数据已保存到本地'
+                        });
+                    }
+                } catch (error) {
+                    console.error('保存数据时出错:', error);
+                    setSaveStatus({
+                        status: 'error',
+                        message: '保存数据失败'
+                    });
+                } finally {
+                    setIsSaving(false);
+                }
+            };
+
+            const calculateResults = () => {
+                const congruentTrials = responses.filter(r => r.type === 'congruent');
+                const incongruentTrials = responses.filter(r => r.type === 'incongruent');
+
+                return {
+                    accuracy: ((responses.filter(r => r.correct).length / responses.length) * 100).toFixed(1),
+                    meanRT: (responses.reduce((sum, r) => sum + r.rt, 0) / responses.length).toFixed(0),
+                    congruentRT: (congruentTrials.reduce((sum, r) => sum + r.rt, 0) / congruentTrials.length).toFixed(0),
+                    incongruentRT: (incongruentTrials.reduce((sum, r) => sum + r.rt, 0) / incongruentTrials.length).toFixed(0),
+                    stroopEffect: (
+                        incongruentTrials.reduce((sum, r) => sum + r.rt, 0) / incongruentTrials.length -
+                        congruentTrials.reduce((sum, r) => sum + r.rt, 0) / congruentTrials.length
+                    ).toFixed(0),
+                    congruentAccuracy: ((congruentTrials.filter(r => r.correct).length / congruentTrials.length) * 100).toFixed(1),
+                    incongruentAccuracy: ((incongruentTrials.filter(r => r.correct).length / incongruentTrials.length) * 100).toFixed(1)
+                };
+            };
+
+            const startGame = () => {
+                setGameState('running');
+                setCurrentTrial(0);
+                setResponses([]);
+                setStartTime(Date.now());
+                showNextTrial();
+            };
+
+            const showNextTrial = () => {
+                setShowFixation(true);
+                setTimeout(() => {
+                    setShowFixation(false);
+                    const stimulus = generateStimulus();
+                    setCurrentStimulus(stimulus);
+                    setStartTime(Date.now());
+                }, 500);
+            };
+
+            const handleGameCompletion = () => {
+                setGameState('finished');
+                // Automatically save data after a brief delay
+                setTimeout(saveData, 500);
+            };
+
+            const handleResponse = (response) => {
+                if (!startTime) return;
+
+                const endTime = Date.now();
+                const rt = endTime - startTime;
+
+                const responseData = {
+                    trial: currentTrial + 1,
+                    stimulus: currentStimulus.word,
+                    displayColor: currentStimulus.correctAnswer,
+                    response: response,
+                    correct: response === currentStimulus.correctAnswer,
+                    rt: rt,
+                    type: currentStimulus.type
+                };
+
+                const newResponses = [...responses, responseData];
+                setResponses(newResponses);
+
+                if (currentTrial < totalTrials - 1) {
+                    setCurrentTrial(currentTrial + 1);
+                    showNextTrial();
+                } else {
+                    handleGameCompletion();
+                }
+            };
+
+            return (
+                <div className="container">
+                    <h1>Stroop任务</h1>
+                    {participantData && (
+                        <p>参与者: {participantData.name} | ID: {participantData.participantId}</p>
+                    )}
+
+                    {gameState === 'start' && (
+                        <div>
+                            <div className="instructions">
+                                <h2>任务说明：</h2>
+                                <p>在这个任务中，你将看到用不同颜色显示的汉字（红色、蓝色、绿色、黄色）。</p>
+                                <p>你的任务是对文字的<strong>颜色</strong>作出反应，而不是文字本身的意思。</p>
+                                <p>例如，如果你看到蓝色显示的"红色"这个词，你应该点击蓝色按钮。</p>
+                                <p>请尽可能快速且准确地作出反应。</p>
+                                <p>总共有{totalTrials}个试次。完成后数据将自动保存。</p>
+                            </div>
+                            <button
+                                className="button"
+                                style={{ backgroundColor: '#4CAF50' }}
+                                onClick={startGame}
+                            >
+                                开始测试
+                            </button>
+                        </div>
+                    )}
+
+                    {gameState === 'running' && (
+                        <div>
+                            <div className="trial-counter">
+                                试次: {currentTrial + 1} / {totalTrials}
+                            </div>
+                            <div className="stimulus-area">
+                                {showFixation ? (
+                                    <div className="fixation">+</div>
+                                ) : (
+                                    currentStimulus && (
+                                        <span style={{ color: currentStimulus.color }}>
+                                            {currentStimulus.word}
+                                        </span>
+                                    )
+                                )}
+                            </div>
+                            <div className="color-buttons">
+                                {Object.values(COLORS).map((color) => (
+                                    <button
+                                        key={color.name}
+                                        className="button"
+                                        style={{ backgroundColor: color.hex }}
+                                        onClick={() => handleResponse(color.name)}
+                                        disabled={showFixation}
+                                    >
+                                        {color.name}
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+                    )}
+
+                    {gameState === 'finished' && (
+                        <div>
+                            <h2>结果</h2>
+                            {saveStatus.message && (
+                                <div className={`save-status ${saveStatus.status}`}>
+                                    {isSaving && <span className="loading"></span>}
+                                    {saveStatus.message}
+                                </div>
+                            )}
+                            <div className="results-grid">
+                                <div className="result-card">
+                                    <h3>整体表现</h3>
+                                    <p>准确率: {calculateResults().accuracy}%</p>
+                                    <p>平均反应时: {calculateResults().meanRT}毫秒</p>
+                                </div>
+                                <div className="result-card">
+                                    <h3>Stroop效应</h3>
+                                    <p>干扰效应: {calculateResults().stroopEffect}毫秒</p>
+                                </div>
+                                <div className="result-card">
+                                    <h3>一致试次</h3>
+                                    <p>准确率: {calculateResults().congruentAccuracy}%</p>
+                                    <p>平均反应时: {calculateResults().congruentRT}毫秒</p>
+                                </div>
+                                <div className="result-card">
+                                    <h3>不一致试次</h3>
+                                    <p>准确率: {calculateResults().incongruentAccuracy}%</p>
+                                    <p>平均反应时: {calculateResults().incongruentRT}毫秒</p>
+                                </div>
+                            </div>
+                            <button
+                                className="button"
+                                style={{ backgroundColor: '#4CAF50' }}
+                                onClick={startGame}
+                            >
+                                重新测试
+                            </button>
+                        </div>
+                    )}
+                </div>
+            );
+        }
+
+        ReactDOM.createRoot(document.getElementById('root')).render(<StroopTask />);
+    </script>
+</body>
+
+</html>

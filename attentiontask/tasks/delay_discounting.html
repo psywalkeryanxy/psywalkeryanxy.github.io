@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>延迟折扣实验</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .game-container {
+            width: 1000px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .option {
+            transition: all 0.3s ease;
+            transform-origin: center;
+        }
+
+        .option:hover {
+            transform: scale(1.05);
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.05);
+            }
+
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        .pulse {
+            animation: pulse 0.5s ease-in-out;
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        button:not(:disabled):hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        @media (max-width: 1024px) {
+            .game-container {
+                width: 95%;
+                padding: 4px;
+            }
+        }
+    </style>
+</head>
+
+<body class="bg-blue-50 min-h-screen py-8">
+    <!-- 用户信息显示 -->
+    <div id="participant-info" class="max-w-2xl mx-auto mb-4 bg-white rounded-lg p-4">
+        <div class="flex justify-between items-center">
+            <div>
+                <p class="text-gray-600">参与者: <span id="participant-name" class="font-medium"></span></p>
+                <p class="text-gray-600">ID: <span id="participant-id" class="font-medium"></span></p>
+            </div>
+            <button onclick="window.location.href='../homepage_cogame.html'"
+                class="text-blue-600 hover:text-blue-800 text-sm">
+                返回主页
+            </button>
+        </div>
+    </div>
+
+    <div class="game-container bg-white rounded-2xl shadow-lg p-8">
+        <!-- 指导语屏幕 -->
+        <div id="intro-screen" class="text-center mb-8">
+            <h1 class="text-4xl font-bold mb-4 text-blue-600">💰 延迟折扣实验 💰</h1>
+            <p class="text-lg text-gray-600 mb-6">
+                在接下来的实验中，您需要在两个选项之间做出选择：<br>
+                一个选项是今天获得一定金额，另一个选项是在未来某一天获得一定金额。<br>
+                请根据您的真实偏好做出选择。<br><br>
+                <span class="font-bold text-blue-600">
+                    实验结束后，我们会随机抽取一个回合的选择来实现奖励发放。<br>
+                    因此请认真对待每一个选择！
+                </span>
+            </p>
+            <button id="start-button" class="px-8 py-4 bg-blue-500 text-white text-xl rounded-xl 
+                           hover:bg-blue-600 transition-colors">
+                开始实验 🎮
+            </button>
+        </div>
+
+        <!-- 实验屏幕 -->
+        <div id="task-screen" class="hidden">
+            <!-- 进度显示 -->
+            <div class="text-center mb-6">
+                <div class="text-2xl font-bold">
+                    <span class="text-purple-500">进度: <span id="trial-progress">0/26</span></span>
+                </div>
+            </div>
+
+            <!-- 选项区域 -->
+            <div class="flex justify-center items-center space-x-12 my-8">
+                <div id="option-left" class="option w-64 h-40 border-2 border-blue-500 rounded-xl 
+                                          flex flex-col items-center justify-center cursor-pointer
+                                          hover:bg-blue-50 transition-all">
+                    <div class="amount text-3xl font-bold text-blue-600 mb-2">¥10</div>
+                    <div class="time text-xl text-gray-600">今天</div>
+                </div>
+                <div id="option-right" class="option w-64 h-40 border-2 border-blue-500 rounded-xl 
+                                           flex flex-col items-center justify-center cursor-pointer
+                                           hover:bg-blue-50 transition-all">
+                    <div class="amount text-3xl font-bold text-blue-600 mb-2">¥11</div>
+                    <div class="time text-xl text-gray-600">1天后</div>
+                </div>
+            </div>
+
+            <div id="fixation" class="hidden text-6xl font-bold text-center">+</div>
+        </div>
+
+        <!-- 结果屏幕 -->
+<!-- 结果屏幕 -->
+<div id="results-screen" class="hidden text-center">
+    <h2 class="text-3xl font-bold text-blue-600 mb-6">实验完成！</h2>
+    <div class="max-w-2xl mx-auto bg-gray-50 rounded-xl p-6 mb-6">
+        <h3 class="text-2xl font-bold text-gray-700 mb-4">您的延迟折扣率</h3>
+        <p id="k-value" class="text-3xl font-bold text-green-600 mb-4"></p>
+        <p id="interpretation" class="text-lg text-gray-600"></p>
+    </div>
+    <!-- Add save status message -->
+    <div id="save-status" class="max-w-2xl mx-auto bg-gray-50 rounded-xl p-4 mb-6 hidden">
+        <p id="save-message" class="text-lg font-semibold"></p>
+    </div>
+</div>
+
+<script>
+    // 用户数据管理类
+    class ParticipantManager {
+        constructor() {
+            this.participantData = this.getParticipantData();
+            this.validateParticipant();
+            this.saveParticipantData();
+        }
+
+        getParticipantData() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const urlData = {
+                participantId: urlParams.get('participantId'),
+                name: urlParams.get('name'),
+                age: urlParams.get('age'),
+                gender: urlParams.get('gender'),
+                education: urlParams.get('education')
+            };
+
+            if (urlData.participantId) {
+                return urlData;
+            }
+
+            const storedData = localStorage.getItem('participantData');
+            return storedData ? JSON.parse(storedData) : null;
+        }
+
+        saveParticipantData() {
+            if (this.participantData) {
+                localStorage.setItem('participantData',
+                    JSON.stringify(this.participantData));
+
+                const history = JSON.parse(
+                    localStorage.getItem('participationHistory') || '[]'
+                );
+                history.push({
+                    participantId: this.participantData.participantId,
+                    taskName: 'delay_discounting',
+                    timestamp: new Date().toISOString()
+                });
+                localStorage.setItem('participationHistory',
+                    JSON.stringify(history));
+            }
+        }
+
+        validateParticipant() {
+            if (!this.participantData || !this.participantData.participantId) {
+                window.location.href = '../homepage_cogame.html';
+            }
+        }
+
+        getData() {
+            return this.participantData;
+        }
+    }
+
+    // 实验状态管理
+    const gameState = {
+        active: false,
+        currentTrial: 0,
+        maxTrials: 26,
+        participant: null,
+        trials: [],
+        responses: [],
+        startTime: null,
+        trialStartTime: null,
+        selectedTrial: null,
+        selectedResponse: null
+    };
+
+    // 实验控制函数
+    function showScreen(screenId) {
+        ['intro-screen', 'task-screen', 'results-screen'].forEach(id => {
+            document.getElementById(id).classList.add('hidden');
+        });
+        document.getElementById(screenId).classList.remove('hidden');
+    }
+
+    function updateTrialDisplay() {
+        document.getElementById('trial-progress').textContent =
+            `${gameState.currentTrial}/${gameState.maxTrials}`;
+    }
+
+    function showFixation() {
+        const taskScreen = document.getElementById('task-screen');
+        const optionsContainer = taskScreen.querySelector('.flex');
+        const fixation = document.getElementById('fixation');
+
+        optionsContainer.classList.add('hidden');
+        fixation.classList.remove('hidden');
+
+        setTimeout(() => {
+            fixation.classList.add('hidden');
+            optionsContainer.classList.remove('hidden');
+            showTrial();
+            gameState.trialStartTime = Date.now();
+        }, 500);
+    }
+
+    function showTrial() {
+        if (gameState.currentTrial >= gameState.maxTrials) {
+            endExperiment();
+            return;
+        }
+
+        const trial = gameState.trials[gameState.currentTrial];
+
+        const leftOption = document.getElementById('option-left');
+        const rightOption = document.getElementById('option-right');
+
+        leftOption.querySelector('.amount').textContent = `¥${trial.leftAmount}`;
+        leftOption.querySelector('.time').textContent = trial.leftDelay;
+        rightOption.querySelector('.amount').textContent = `¥${trial.rightAmount}`;
+        rightOption.querySelector('.time').textContent = trial.rightDelay;
+
+        updateTrialDisplay();
+    }
+
+    function recordResponse(choice) {
+        const trial = gameState.trials[gameState.currentTrial];
+        const response = {
+            participantId: gameState.participant.participantId,
+            name: gameState.participant.name,
+            age: gameState.participant.age,
+            gender: gameState.participant.gender,
+            education: gameState.participant.education,
+            trialNumber: gameState.currentTrial + 1,
+            leftAmount: trial.leftAmount,
+            leftDelay: trial.leftDelay,
+            rightAmount: trial.rightAmount,
+            rightDelay: trial.rightDelay,
+            choice: choice,
+            rt: Date.now() - gameState.trialStartTime,
+            timestamp: new Date().toISOString()
+        };
+
+        gameState.responses.push(response);
+        gameState.currentTrial++;
+        showFixation();
+    }
+
+    function calculateDiscountRate() {
+        const presentValue = 10;
+        let kValues = [];
+
+        gameState.responses.forEach(response => {
+            let delay, amount;
+            if (response.choice === 'right' && response.rightDelay !== '今天') {
+                delay = parseInt(response.rightDelay);
+                amount = response.rightAmount;
+            } else if (response.choice === 'left' && response.leftDelay !== '今天') {
+                delay = parseInt(response.leftDelay);
+                amount = response.leftAmount;
+            }
+
+            if (delay > 0) {
+                const k = (amount / presentValue - 1) / delay;
+                kValues.push(k);
+            }
+        });
+
+        return kValues.length > 0 ?
+            kValues.reduce((a, b) => a + b, 0) / kValues.length : 0;
+    }
+
+    function interpretDiscountRate(k) {
+        if (k < 0.001) {
+            return "您对未来奖励的耐心程度很高，更倾向于等待更大的收益。";
+        } else if (k < 0.01) {
+            return "您对未来奖励有较好的耐心，在即时和延迟奖励之间保持着平衡。";
+        } else if (k < 0.1) {
+            return "您对即时奖励的偏好较强，但仍会考虑未来收益。";
+        } else {
+            return "您强烈偏好即时奖励，相对不太愿意等待未来的更大收益。";
+        }
+    }
+
+    async function saveData() {
+        const saveStatus = document.getElementById('save-status');
+        const saveMessage = document.getElementById('save-message');
+        saveStatus.classList.remove('hidden');
+        saveMessage.className = 'text-lg font-semibold text-blue-600';
+        saveMessage.textContent = '正在保存数据...';
+
+        try {
+            const headers = [
+                'participantId',
+                'name',
+                'age',
+                'gender',
+                'education',
+                'trialNumber',
+                'leftAmount',
+                'leftDelay',
+                'rightAmount',
+                'rightDelay',
+                'choice',
+                'rt',
+                'timestamp',
+                'discountRate',
+                'selectedTrial',
+                'selectedReward'
+            ];
+
+            const k = calculateDiscountRate();
+            const csvContent = [
+                headers.join(','),
+                ...gameState.responses.map(r => {
+                    const isSelected = gameState.selectedResponse &&
+                        r.trialNumber === gameState.selectedResponse.trialNumber;
+                    const selectedReward = isSelected ?
+                        (r.choice === 'left' ? r.leftAmount : r.rightAmount) : '';
+
+                    const row = [
+                        ...headers.slice(0, -3).map(header => r[header]),
+                        k,
+                        isSelected ? 'yes' : 'no',
+                        selectedReward
+                    ];
+                    return row.join(',');
+                })
+            ].join('\n');
+
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `delay_discounting_${gameState.participant.name}_${gameState.participant.participantId}_${new Date().getTime()}.csv`;
+            
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+
+            saveMessage.className = 'text-lg font-semibold text-green-600';
+            saveMessage.textContent = '数据已成功保存！';
+
+            setTimeout(() => {
+                saveStatus.classList.add('hidden');
+            }, 3000);
+
+        } catch (error) {
+            console.error('保存数据时出错:', error);
+            saveMessage.className = 'text-lg font-semibold text-red-600';
+            saveMessage.textContent = '保存数据失败，请刷新页面重试';
+        }
+    }
+
+    function startExperiment() {
+        gameState.active = true;
+        gameState.currentTrial = 0;
+        gameState.startTime = new Date();
+        gameState.responses = [];
+
+        showScreen('task-screen');
+        showTrial();
+        gameState.trialStartTime = Date.now();
+    }
+
+    function endExperiment() {
+        gameState.active = false;
+
+        const selectedIndex = Math.floor(Math.random() * gameState.responses.length);
+        gameState.selectedTrial = gameState.trials[selectedIndex];
+        gameState.selectedResponse = gameState.responses[selectedIndex];
+
+        showScreen('results-screen');
+
+        const k = calculateDiscountRate();
+        document.getElementById('k-value').textContent = `k = ${k.toExponential(2)}`;
+        document.getElementById('interpretation').textContent = interpretDiscountRate(k);
+
+        const selectedTrialInfo = document.createElement('div');
+        selectedTrialInfo.className = 'max-w-2xl mx-auto bg-yellow-50 rounded-xl p-6 mt-6';
+        selectedTrialInfo.innerHTML = `
+            <h3 class="text-2xl font-bold text-yellow-600 mb-4">随机抽取回合</h3>
+            <p class="text-lg text-gray-700">
+                在第 ${gameState.selectedResponse.trialNumber} 个回合中，您选择了
+                ${gameState.selectedResponse.choice === 'left' ?
+                `现在获得 ¥${gameState.selectedTrial.leftAmount}` :
+                `${gameState.selectedTrial.rightDelay}获得 ¥${gameState.selectedTrial.rightAmount}`}
+            </p>
+            <p class="text-lg font-bold text-green-600 mt-2">
+                这将是您在本实验中获得的实际奖励！
+            </p>
+        `;
+
+        document.getElementById('results-screen').insertBefore(
+            selectedTrialInfo,
+            document.getElementById('save-status')
+        );
+
+        // Automatically save data after a brief delay
+        setTimeout(saveData, 500);
+    }
+
+    // 事件监听器初始化
+    document.addEventListener('DOMContentLoaded', () => {
+        // 初始化参与者管理器和数据
+        const participantManager = new ParticipantManager();
+        gameState.participant = participantManager.getData();
+
+        // 显示参与者信息
+        document.getElementById('participant-name').textContent = gameState.participant.name;
+        document.getElementById('participant-id').textContent = gameState.participant.participantId;
+
+        // 按钮事件监听
+        document.getElementById('start-button').addEventListener('click', startExperiment);
+
+        // 选项点击事件
+        document.getElementById('option-left').addEventListener('click', () => {
+            if (gameState.active) {
+                document.getElementById('option-left').classList.add('pulse');
+                setTimeout(() => {
+                    document.getElementById('option-left').classList.remove('pulse');
+                    recordResponse('left');
+                }, 200);
+            }
+        });
+
+        document.getElementById('option-right').addEventListener('click', () => {
+            if (gameState.active) {
+                document.getElementById('option-right').classList.add('pulse');
+                setTimeout(() => {
+                    document.getElementById('option-right').classList.remove('pulse');
+                    recordResponse('right');
+                }, 200);
+            }
+        });
+
+        // 键盘控制
+        document.addEventListener('keydown', (event) => {
+            if (!gameState.active) return;
+
+            switch (event.key) {
+                case 'ArrowLeft':
+                case 'f':
+                case 'F':
+                    event.preventDefault();
+                    document.getElementById('option-left').click();
+                    break;
+                case 'ArrowRight':
+                case 'j':
+                case 'J':
+                    event.preventDefault();
+                    document.getElementById('option-right').click();
+                    break;
+            }
+        });
+
+        // 防止实验区域右键菜单
+        document.querySelector('.game-container').addEventListener('contextmenu',
+            (e) => e.preventDefault()
+        );
+
+        // 窗口焦点处理
+        window.addEventListener('blur', () => {
+            if (gameState.active) {
+                document.getElementById('option-left').style.pointerEvents = 'none';
+                document.getElementById('option-right').style.pointerEvents = 'none';
+            }
+        });
+
+        window.addEventListener('focus', () => {
+            if (gameState.active) {
+                document.getElementById('option-left').style.pointerEvents = 'auto';
+                document.getElementById('option-right').style.pointerEvents = 'auto';
+            }
+        });
+
+        // 初始化trials数组
+        gameState.trials = [
+            { leftAmount: 10, leftDelay: '今天', rightAmount: 11, rightDelay: '1天后' },
+            { leftAmount: 10, leftDelay: '今天', rightAmount: 29, rightDelay: '90天后' },
+            { leftAmount: 14, leftDelay: '14天后', rightAmount: 10, rightDelay: '今天' },
+            { leftAmount: 10, leftDelay: '今天', rightAmount: 11, rightDelay: '1天后' },
+            { leftAmount: 10, leftDelay: '今天', rightAmount: 20, rightDelay: '60天后' },
+            { leftAmount: 17, rightDelay: '7天后', rightAmount: 10, rightDelay: '今天' },
+            { leftAmount: 10, leftDelay: '今天', rightAmount: 26, rightDelay: '90天后' },
+            { leftAmount: 10, leftDelay: '今天', rightAmount: 26, rightDelay: '1天后' },
+            { leftAmount: 10, leftDelay: '今天', rightAmount: 20, rightDelay: '5天后' },
+            { leftAmount: 14, leftDelay: '7天后', rightAmount: 10, rightDelay: '今天' },
+            { leftAmount: 10, leftDelay: '今天', rightAmount: 26, rightDelay: '3天后' },
+            { leftAmount: 10, leftDelay: '今天', rightAmount: 17, rightDelay: '5天后' },
+            { leftAmount: 10, leftDelay: '今天', rightAmount: 20, rightDelay: '90天后' },
+            { leftAmount: 11, leftDelay: '7天后', rightAmount: 10, rightDelay: '今天' },
+            { leftAmount: 17, leftDelay: '60天后', rightAmount: 10, rightDelay: '今天' },
+            { leftAmount: 10, leftDelay: '今天', rightAmount: 20, rightDelay: '1天后' },
+            { leftAmount: 17, leftDelay: '1天后', rightAmount: 10, rightDelay: '今天' },
+            { leftAmount: 23, leftDelay: '7天后', rightAmount: 10, rightDelay: '今天' },
+            { leftAmount: 10, leftDelay: '今天', rightAmount: 14, rightDelay: '1天后' },
+            { leftAmount: 10, leftDelay: '今天', rightAmount: 14, rightDelay: '90天后' },
+            { leftAmount: 23, leftDelay: '60天后', rightAmount: 10, rightDelay: '今天' },
+            { leftAmount: 23, leftDelay: '14天后', rightAmount: 10, rightDelay: '今天' },
+            { leftAmount: 10, leftDelay: '今天', rightAmount: 14, rightDelay: '60天后' },
+            { leftAmount: 20, leftDelay: '7天后', rightAmount: 10, rightDelay: '今天' },
+            { leftAmount: 14, leftDelay: '3天后', rightAmount: 10, rightDelay: '今天' },
+            { leftAmount: 11, leftDelay: '90天后', rightAmount: 10, rightDelay: '今天' }
+        ];
+
+        // Randomize trials order
+        for (let i = gameState.trials.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [gameState.trials[i], gameState.trials[j]] = [gameState.trials[j], gameState.trials[i]];
+        }
+    });
+</script>
+</body>
+
+</html>

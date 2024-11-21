@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>气球风险游戏</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .game-container {
+            width: 1000px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .balloon {
+            transition: all 0.3s ease;
+            transform-origin: bottom center;
+        }
+
+        .coin {
+            width: 40px;
+            height: 40px;
+            background: gold;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #B8860B;
+            font-weight: bold;
+            border: 2px solid #B8860B;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            transition: transform 0.2s ease;
+        }
+
+        .coin:hover {
+            transform: scale(1.1);
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px) rotate(-5deg); }
+            75% { transform: translateX(5px) rotate(5deg); }
+        }
+
+        @keyframes pop {
+            0% { transform: scale(1); opacity: 1; }
+            25% { transform: scale(1.2); opacity: 0.8; }
+            50% { transform: scale(1.4); opacity: 0.5; }
+            75% { transform: scale(1.6); opacity: 0.2; }
+            100% { transform: scale(2); opacity: 0; }
+        }
+
+        @keyframes particleAnimation {
+            0% { transform: translate(0, 0) scale(1); opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { transform: translate(var(--tx), var(--ty)) scale(0); opacity: 0; }
+        }
+
+        .shake {
+            animation: shake 0.5s ease-in-out;
+        }
+
+        .pop {
+            animation: pop 0.5s ease-out forwards;
+        }
+
+        .particle {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            animation: particleAnimation 0.5s ease-out forwards;
+        }
+
+        .balloon-grow {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        @keyframes warningShake {
+            0%, 100% { transform: rotate(0deg); }
+            25% { transform: rotate(-1deg); }
+            75% { transform: rotate(1deg); }
+        }
+
+        .warning {
+            animation: warningShake 0.5s ease-in-out infinite;
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        button:not(:disabled):hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        @media (max-width: 1024px) {
+            .game-container {
+                width: 95%;
+                padding: 4px;
+            }
+        }
+    </style>
+</head>
+<body class="bg-blue-50 min-h-screen py-8">
+    <!-- 用户信息显示 -->
+    <div id="participant-info" class="max-w-2xl mx-auto mb-4 bg-white rounded-lg p-4">
+        <div class="flex justify-between items-center">
+            <div>
+                <p class="text-gray-600">参与者: <span id="participant-name" class="font-medium"></span></p>
+                <p class="text-gray-600">ID: <span id="participant-id" class="font-medium"></span></p>
+            </div>
+            <button onclick="window.location.href='../homepage_cogame.html'" 
+                    class="text-blue-600 hover:text-blue-800 text-sm">
+                返回主页
+            </button>
+        </div>
+    </div>
+
+    <div class="game-container bg-white rounded-2xl shadow-lg p-8">
+        <!-- 标题 -->
+        <div class="text-center mb-8">
+            <h1 class="text-4xl font-bold mb-2 text-blue-600">🎈 气球风险游戏 🎈</h1>
+        </div>
+
+        <!-- 分数显示 -->
+        <div class="text-center mb-6 space-y-4">
+            <div class="text-2xl font-bold">
+                <span class="text-yellow-500">金币: <span id="total-coins">0</span></span>
+                <span class="mx-4">|</span>
+                <span class="text-purple-500">气球: <span id="current-trial">0</span>/20</span>
+            </div>
+            <div class="text-xl text-blue-500" id="current-coins">
+                当前气球金币: 0
+            </div>
+        </div>
+
+        <!-- 游戏区域 -->
+        <div class="flex justify-center items-center space-x-12">
+            <!-- 气球和金币 -->
+            <div class="flex flex-col items-center space-y-4">
+                <div id="balloon-container" class="relative" style="width: 200px; height: 250px;">
+                    <svg id="balloon" class="balloon" width="200" height="250" viewBox="0 0 200 250">
+                        <path id="balloon-string" 
+                              d="M100 200 Q 110 220 100 240" 
+                              stroke="#666" 
+                              fill="none" 
+                              stroke-width="2"/>
+                        <ellipse id="balloon-body" 
+                                cx="100" cy="100" 
+                                rx="30" ry="40" 
+                                fill="#FF6B6B"/>
+                        <ellipse id="balloon-highlight" 
+                                cx="80" cy="60" 
+                                rx="8" ry="10" 
+                                fill="#FFE2E2" 
+                                opacity="0.6"/>
+                    </svg>
+                </div>
+                <div id="coin-container" class="flex flex-wrap gap-2 justify-center max-w-xs"></div>
+            </div>
+
+            <!-- 游戏控制 -->
+            <div class="flex flex-col space-y-6">
+                <button id="pump-button"
+                        class="px-8 py-4 bg-green-500 text-white text-xl rounded-xl 
+                               hover:bg-green-600 transition-colors transform hover:scale-105">
+                    充气! 💨
+                </button>
+                <button id="collect-button"
+                        class="px-8 py-4 bg-yellow-500 text-white text-xl rounded-xl 
+                               hover:bg-yellow-600 transition-colors transform hover:scale-105">
+                    收集金币! 🪙
+                </button>
+            </div>
+        </div>
+
+        <!-- 游戏控制按钮 -->
+        <div class="mt-8 text-center">
+            <button id="start-button"
+                    class="px-8 py-4 bg-blue-500 text-white text-xl rounded-xl 
+                           hover:bg-blue-600 transition-colors">
+                开始新游戏! 🎮
+            </button>
+        </div>
+
+        <!-- 保存状态提示 -->
+        <div id="save-status" class="mt-4 text-center hidden">
+            <p class="text-lg font-semibold"></p>
+        </div>
+
+        <!-- 说明 -->
+        <div class="mt-6 text-center text-lg text-gray-600">
+            <p>给气球充气来收集金币! 🎈</p>
+            <p>但要小心 - 如果气球爆炸了，这个气球的金币就都没了! 💥</p>
+        </div>
+    </div>
+
+    <script>
+        // 用户数据管理类
+        class ParticipantManager {
+            constructor() {
+                this.participantData = this.getParticipantData();
+                this.validateParticipant();
+            }
+
+            getParticipantData() {
+                const urlParams = new URLSearchParams(window.location.search);
+                const urlData = {
+                    participantId: urlParams.get('participantId'),
+                    name: urlParams.get('name'),
+                    age: urlParams.get('age'),
+                    gender: urlParams.get('gender'),
+                    education: urlParams.get('education')
+                };
+
+                const storedData = JSON.parse(localStorage.getItem('participantData'));
+                return urlData.participantId ? urlData : storedData;
+            }
+
+            validateParticipant() {
+                if (!this.participantData || !this.participantData.participantId) {
+                    window.location.href = '../homepage_cogame.html';
+                }
+            }
+
+            getData() {
+                return this.participantData;
+            }
+        }
+
+        // 游戏状态和配置
+        const gameState = {
+            active: false,
+            currentTrial: 0,
+            maxTrials: 20,
+            currentPumps: 0,
+            totalCoins: 0,
+            currentCoins: 0,
+            participant: null,
+            trialData: [],
+            balloonType: [],
+            popThreshold: null,
+            initialBalloonSize: {
+                rx: 30,
+                ry: 40
+            },
+            pumpGrowth: {
+                rx: 4,
+                ry: 5
+            },
+            startTime: null,
+            lastPumpTime: null,
+            config: {
+                easyRange: { min: 1, max: 8 },
+                hardRange: { min: 1, max: 16 },
+                pumpInterval: 200,
+                popAnimationDuration: 500,
+                particleCount: 20
+            }
+        };
+
+        // 气球类型配置
+        const balloonTypes = {
+            easy: {
+                color: '#FF6B6B',
+                highlightColor: '#FFE2E2',
+                particleColors: ['#FF6B6B', '#FFE2E2', '#FF8888'],
+                maxPumps: 8
+            },
+            hard: {
+                color: '#FF4444',
+                highlightColor: '#FFD5D5',
+                particleColors: ['#FF4444', '#FFD5D5', '#FF6666'],
+                maxPumps: 16
+            }
+        };
+
+        // 初始化函数
+        function initializeBalloonTypes() {
+            let types = Array(10).fill('easy').concat(Array(10).fill('hard'));
+            for (let i = types.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [types[i], types[j]] = [types[j], types[i]];
+            }
+            return types;
+        }
+
+        function generatePopThreshold(type) {
+            const range = type === 'easy' ? 
+                gameState.config.easyRange : 
+                gameState.config.hardRange;
+            return Math.floor(Math.random() * (range.max - range.min + 1)) + range.min;
+        }
+
+        // 气球视觉效果函数
+        function updateBalloonSize() {
+            const balloon = document.getElementById('balloon-body');
+            const highlight = document.getElementById('balloon-highlight');
+            
+            const currentRx = gameState.initialBalloonSize.rx + 
+                (gameState.pumpGrowth.rx * gameState.currentPumps);
+            const currentRy = gameState.initialBalloonSize.ry + 
+                (gameState.pumpGrowth.ry * gameState.currentPumps);
+            
+            balloon.classList.add('balloon-grow');
+            highlight.classList.add('balloon-grow');
+            
+            balloon.setAttribute('rx', currentRx);
+            balloon.setAttribute('ry', currentRy);
+            
+            highlight.setAttribute('rx', currentRx * 0.25);
+            highlight.setAttribute('ry', currentRy * 0.25);
+            
+            const popRisk = gameState.currentPumps / gameState.popThreshold;
+            if (popRisk > 0.8) {
+                balloon.parentElement.classList.add('warning');
+            } else {
+                balloon.parentElement.classList.remove('warning');
+            }
+        }
+
+        function resetBalloonSize() {
+            const balloon = document.getElementById('balloon-body');
+            const highlight = document.getElementById('balloon-highlight');
+            
+            balloon.classList.remove('balloon-grow');
+            highlight.classList.remove('balloon-grow');
+            
+            balloon.setAttribute('rx', gameState.initialBalloonSize.rx);
+            balloon.setAttribute('ry', gameState.initialBalloonSize.ry);
+            highlight.setAttribute('rx', gameState.initialBalloonSize.rx * 0.25);
+            highlight.setAttribute('ry', gameState.initialBalloonSize.ry * 0.25);
+            
+            balloon.parentElement.classList.remove('warning');
+        }
+
+        function createParticles(x, y) {
+            const container = document.getElementById('balloon-container');
+            const currentType = gameState.balloonType[gameState.currentTrial - 1];
+            const colors = balloonTypes[currentType].particleColors;
+            
+            for (let i = 0; i < gameState.config.particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                
+                particle.style.left = x + 'px';
+                particle.style.top = y + 'px';
+                
+                const angle = (Math.random() * Math.PI * 2);
+                const distance = 50 + Math.random() * 100;
+                const tx = Math.cos(angle) * distance;
+                const ty = Math.sin(angle) * distance;
+                
+                particle.style.setProperty('--tx', `${tx}px`);
+                particle.style.setProperty('--ty', `${ty}px`);
+                
+                container.appendChild(particle);
+                setTimeout(() => particle.remove(), 500);
+            }
+        }
+
+        function popBalloon() {
+            const balloon = document.getElementById('balloon');
+            const balloonBody = document.getElementById('balloon-body');
+            const balloonString = document.getElementById('balloon-string');
+            const balloonHighlight = document.getElementById('balloon-highlight');
+            
+            const rect = balloon.getBoundingClientRect();
+            const centerX = rect.width / 2;
+            const centerY = rect.height / 2;
+            createParticles(centerX, centerY);
+            
+            [balloonBody, balloonString, balloonHighlight].forEach(element => {
+                element.style.opacity = '0';
+            });
+            
+            balloon.classList.add('pop');
+            
+            setTimeout(() => {
+                [balloonBody, balloonString, balloonHighlight].forEach(element => {
+                    element.style.opacity = '1';
+                });
+                balloon.classList.remove('pop');
+                resetBalloonSize();
+            }, gameState.config.popAnimationDuration);
+        }
+
+        // 更新显示
+        function updateDisplays() {
+            document.getElementById('total-coins').textContent = gameState.totalCoins;
+            document.getElementById('current-coins').textContent = 
+                `当前气球金币: ${gameState.currentCoins}`;
+            document.getElementById('current-trial').textContent = 
+                `${gameState.currentTrial}/${gameState.maxTrials}`;
+            
+            const coinContainer = document.getElementById('coin-container');
+            coinContainer.innerHTML = '';
+            for (let i = 0; i < gameState.currentCoins; i++) {
+                const coin = document.createElement('div');
+                coin.className = 'coin';
+                coin.textContent = '🪙';
+                coin.style.animationDelay = `${i * 50}ms`;
+                coinContainer.appendChild(coin);
+            }
+        }
+
+        function updateBalloonColor() {
+            const balloonBody = document.getElementById('balloon-body');
+            const balloonHighlight = document.getElementById('balloon-highlight');
+            const currentType = gameState.balloonType[gameState.currentTrial - 1];
+            
+            balloonBody.setAttribute('fill', balloonTypes[currentType].color);
+            balloonHighlight.setAttribute('fill', balloonTypes[currentType].highlightColor);
+        }
+
+        async function saveData() {
+            const saveStatus = document.getElementById('save-status');
+            saveStatus.classList.remove('hidden');
+            const statusText = saveStatus.querySelector('p');
+            statusText.className = 'text-lg font-semibold text-blue-600';
+            statusText.textContent = '正在保存数据...';
+
+            try {
+                const headers = [
+                    'participantId',
+                    'name',
+                    'age',
+                    'gender',
+                    'education',
+                    'trialNumber',
+                    'balloonType',
+                    'popThreshold',
+                    'numPumps',
+                    'earned',
+                    'popped',
+                    'trialDuration',
+                    'timestamp'
+                ];
+
+                const csvContent = [
+                    headers.join(','),
+                    ...gameState.trialData.map(trial => 
+                        headers.map(header => {
+                            const value = trial[header];
+                            return typeof value === 'string' && value.includes(',') ?
+                                `"${value}"` : value;
+                        }).join(',')
+                    )
+                ].join('\n');
+
+                const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = `balloon_task_${gameState.participant.name}_${gameState.participant.participantId}_${new Date().getTime()}.csv`;
+                
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                URL.revokeObjectURL(url);
+
+                // Show success message
+                statusText.className = 'text-lg font-semibold text-green-600';
+                statusText.textContent = '数据已成功保存！';
+
+                // Hide status message after 3 seconds
+                setTimeout(() => {
+                    saveStatus.classList.add('hidden');
+                }, 3000);
+
+            } catch (error) {
+                console.error('保存数据时出错:', error);
+                statusText.className = 'text-lg font-semibold text-red-600';
+                statusText.textContent = '保存数据失败，请稍后重试';
+            }
+        }
+
+        // 游戏控制函数
+        function startNewTrial() {
+            if (gameState.currentTrial >= gameState.maxTrials) {
+                endGame();
+                return;
+            }
+
+            gameState.currentTrial++;
+            gameState.currentPumps = 0;
+            gameState.currentCoins = 0;
+            gameState.startTime = new Date();
+            gameState.lastPumpTime = null;
+
+            const balloonType = gameState.balloonType[gameState.currentTrial - 1];
+            gameState.popThreshold = generatePopThreshold(balloonType);
+
+            resetBalloonSize();
+            updateBalloonColor();
+            updateDisplays();
+
+            document.getElementById('pump-button').disabled = false;
+            document.getElementById('collect-button').disabled = false;
+        }
+
+        function handlePump() {
+            if (!gameState.active || 
+                (gameState.lastPumpTime && 
+                 Date.now() - gameState.lastPumpTime < gameState.config.pumpInterval)) {
+                return;
+            }
+
+            gameState.currentPumps++;
+            gameState.currentCoins++;
+            gameState.lastPumpTime = Date.now();
+
+            updateBalloonSize();
+            updateDisplays();
+
+            const balloon = document.getElementById('balloon');
+            balloon.classList.add('shake');
+            setTimeout(() => balloon.classList.remove('shake'), 200);
+
+            if (gameState.currentPumps >= gameState.popThreshold) {
+                gameState.currentCoins = 0;
+                popBalloon();
+                recordTrialData(true);
+                setTimeout(startNewTrial, gameState.config.popAnimationDuration);
+            }
+        }
+
+        function handleCollect() {
+            if (!gameState.active) return;
+
+            gameState.totalCoins += gameState.currentCoins;
+            recordTrialData(false);
+            startNewTrial();
+        }
+
+        function startGame() {
+            const existingMessage = document.querySelector('.completion-message');
+            if (existingMessage) {
+                existingMessage.remove();
+            }
+            
+            gameState.active = true;
+            gameState.currentTrial = 0;
+            gameState.totalCoins = 0;
+            gameState.trialData = [];
+            gameState.balloonType = initializeBalloonTypes();
+            
+            document.getElementById('start-button').disabled = true;
+            document.getElementById('save-status').classList.add('hidden');
+            
+            startNewTrial();
+        }
+
+        function endGame() {
+            gameState.active = false;
+            
+            document.getElementById('pump-button').disabled = true;
+            document.getElementById('collect-button').disabled = true;
+            document.getElementById('start-button').disabled = false;
+            
+            const message = document.createElement('div');
+            message.className = 'text-xl text-green-600 font-bold mt-4 text-center completion-message';
+            message.textContent = `游戏完成！您总共收集了 ${gameState.totalCoins} 个金币！🎉`;
+            
+            const existingMessage = document.querySelector('.completion-message');
+            if (existingMessage) {
+                existingMessage.remove();
+            }
+            
+            const instructions = document.querySelector('.mt-6.text-center');
+            instructions.parentNode.insertBefore(message, instructions);
+
+            // Automatically save data after a brief delay
+            setTimeout(saveData, 500);
+        }
+
+        function recordTrialData(popped) {
+            const currentTime = new Date();
+            const trialDuration = gameState.startTime ? 
+                currentTime - gameState.startTime : null;
+
+            gameState.trialData.push({
+                participantId: gameState.participant.participantId,
+                name: gameState.participant.name,
+                age: gameState.participant.age,
+                gender: gameState.participant.gender,
+                education: gameState.participant.education,
+                trialNumber: gameState.currentTrial,
+                balloonType: gameState.balloonType[gameState.currentTrial - 1],
+                popThreshold: gameState.popThreshold,
+                numPumps: gameState.currentPumps,
+                earned: popped ? 0 : gameState.currentCoins,
+                popped: popped,
+                trialDuration: trialDuration,
+                timestamp: currentTime.toISOString()
+            });
+        }
+
+        // 事件监听器初始化
+        document.addEventListener('DOMContentLoaded', () => {
+            // 初始化参与者管理器和数据
+            const participantManager = new ParticipantManager();
+            gameState.participant = participantManager.getData();
+
+            // 显示参与者信息
+            document.getElementById('participant-name').textContent = gameState.participant.name;
+            document.getElementById('participant-id').textContent = gameState.participant.participantId;
+
+            // 按钮事件监听
+            document.getElementById('start-button').addEventListener('click', startGame);
+            document.getElementById('pump-button').addEventListener('click', handlePump);
+            document.getElementById('collect-button').addEventListener('click', handleCollect);
+
+            // 键盘控制
+            document.addEventListener('keydown', (event) => {
+                if (!gameState.active) return;
+
+                switch(event.key) {
+                    case ' ':
+                    case 'ArrowUp':
+                        event.preventDefault();
+                        handlePump();
+                        break;
+                    case 'Enter':
+                    case 'ArrowDown':
+                        event.preventDefault();
+                        handleCollect();
+                        break;
+                }
+            });
+
+            // 防止游戏区域右键菜单
+            document.getElementById('balloon-container').addEventListener('contextmenu', 
+                (e) => e.preventDefault()
+            );
+
+            // 窗口焦点处理
+            window.addEventListener('blur', () => {
+                if (gameState.active) {
+                    document.getElementById('pump-button').disabled = true;
+                    document.getElementById('collect-button').disabled = true;
+                }
+            });
+
+            window.addEventListener('focus', () => {
+                if (gameState.active) {
+                    document.getElementById('pump-button').disabled = false;
+                    document.getElementById('collect-button').disabled = false;
+                }
+            });
+        });
+    </script>
+</body>
+</html>

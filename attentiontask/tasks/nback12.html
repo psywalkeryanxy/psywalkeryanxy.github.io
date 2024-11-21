@@ -1,0 +1,620 @@
+
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>工作记忆评估</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .letter-display {
+            font-size: 72px;
+            font-weight: bold;
+            width: 150px;
+            height: 150px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 3px dashed #ffffff;
+            border-radius: 10px;
+            transition: border-color 0.3s ease;
+        }
+
+        .fixation {
+            font-size: 72px;
+            font-weight: bold;
+            color: white;
+        }
+
+        .letter-correct {
+            border-color: #4CAF50;
+        }
+
+        .letter-incorrect {
+            border-color: #FF5252;
+        }
+
+        .example-container {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .sequence-display {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin: 15px 0;
+        }
+
+        .example-letter {
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            border-radius: 8px;
+            font-size: 24px;
+            font-weight: bold;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .current-letter {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: white;
+        }
+
+        .performance-card {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 20px;
+            margin: 15px 0;
+        }
+
+        .performance-level {
+            font-size: 24px;
+            font-weight: bold;
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body class="bg-gray-900 min-h-screen flex items-center justify-center text-white p-8">
+    <!-- 1-Back Instructions -->
+    <div id="instruction-1back" class="max-w-4xl mx-auto">
+        <div class="bg-white/10 rounded-lg p-8">
+            <h1 class="text-2xl font-bold mb-6 text-center">工作记忆评估：1-回合任务</h1>
+            
+            <div class="space-y-4">
+                <div class="bg-blue-900/50 p-6 rounded-lg">
+                    <h2 class="font-semibold text-blue-200 mb-4">任务说明：</h2>
+                    <p class="text-blue-100 mb-4">
+                        在这部分实验中，您将在屏幕上看到一系列字母。
+                    </p>
+                    <ul class="list-disc list-inside space-y-2 text-blue-100">
+                        <li>当当前字母与前一个字母相同时，请按空格键</li>
+                        <li>每个字母显示1秒钟</li>
+                        <li>练习阶段需要达到80%的正确率才能进入正式试验</li>
+                        <li>练习包含10个试次</li>
+                    </ul>
+                </div>
+
+                <div class="example-container">
+                    <p class="text-green-400 font-bold mb-2">举个例子：</p>
+                    <div class="sequence-display">
+                        <div class="sequence-letters flex items-center gap-4">
+                            <div class="example-letter">T</div>
+                            <div class="example-letter current-letter">T</div>
+                        </div>
+                        <div class="text-green-400">← 需要点击空格键（相同！）</div>
+                    </div>
+
+                    <div class="sequence-display">
+                        <div class="sequence-letters flex items-center gap-4">
+                            <div class="example-letter">T</div>
+                            <div class="example-letter current-letter">K</div>
+                        </div>
+                        <div class="text-red-400">← 不要点击（不同）</div>
+                    </div>
+                </div>
+            </div>
+
+            <button id="start-practice-1back" 
+                    class="mt-8 bg-blue-600 text-white px-8 py-3 rounded-lg font-medium hover:bg-blue-700 transition-colors w-full">
+                开始练习
+            </button>
+        </div>
+    </div>
+
+    <!-- 2-Back Instructions -->
+    <div id="instruction-2back" class="max-w-4xl mx-auto hidden">
+        <div class="bg-white/10 rounded-lg p-8">
+            <h1 class="text-2xl font-bold mb-6 text-center">工作记忆评估：2-回合任务</h1>
+            
+            <div class="space-y-4">
+                <div class="bg-purple-900/50 p-6 rounded-lg">
+                    <h2 class="font-semibold text-purple-200 mb-4">任务说明：</h2>
+                    <p class="text-purple-100 mb-4">
+                        在这部分实验中，规则略有变化。
+                    </p>
+                    <ul class="list-disc list-inside space-y-2 text-purple-100">
+                        <li>当当前字母与前两个字母相同时，请按空格键</li>
+                        <li>每个字母显示1秒钟</li>
+                        <li>练习阶段需要达到80%的正确率才能进入正式试验</li>
+                        <li>练习包含10个试次</li>
+                    </ul>
+                </div>
+
+                <div class="example-container">
+                    <p class="text-green-400 font-bold mb-2">举个例子：</p>
+                    <div class="sequence-display">
+                        <div class="sequence-letters flex items-center gap-4">
+                            <div class="example-letter">T</div>
+                            <div class="example-letter">K</div>
+                            <div class="example-letter current-letter">T</div>
+                        </div>
+                        <div class="text-green-400">← 需要点击空格键（与前两个字母相同！）</div>
+                    </div>
+
+                    <div class="sequence-display">
+                        <div class="sequence-letters flex items-center gap-4">
+                            <div class="example-letter">T</div>
+                            <div class="example-letter">K</div>
+                            <div class="example-letter current-letter">L</div>
+                        </div>
+                        <div class="text-red-400">← 不要点击（不同）</div>
+                    </div>
+                </div>
+            </div>
+
+            <button id="start-practice-2back" 
+                    class="mt-8 bg-purple-600 text-white px-8 py-3 rounded-lg font-medium hover:bg-purple-700 transition-colors w-full">
+                开始练习
+            </button>
+        </div>
+    </div>
+
+    <!-- Task Screen -->
+    <div id="task-screen" class="hidden">
+        <div class="fixed top-4 left-4 text-lg">
+            <span id="block-type" class="text-xl font-bold text-blue-400">1-回合</span>
+            <br />
+            阶段: <span id="current-block">练习</span>
+        </div>
+
+        <div id="letter-display" class="letter-display mx-auto" aria-live="polite"></div>
+        <div class="mt-8 text-lg">按下空格键表示当前字母与<span id="instruction-text">前一个</span>字母相同</div>
+    </div>
+
+    <!-- Task Complete -->
+    <div id="task-complete" class="max-w-4xl mx-auto hidden">
+        <div class="bg-white/10 rounded-lg p-8">
+            <h2 class="text-2xl font-bold mb-6 text-center">任务完成！</h2>
+            
+            <div id="performance-summary" class="performance-card">
+                <h3 class="text-xl font-bold mb-4">您的工作记忆表现：</h3>
+                <div id="performance-details"></div>
+                <div id="performance-level" class="performance-level"></div>
+            </div>
+
+            <div class="mt-8 text-center">
+                <p class="text-gray-300 mb-4">数据已自动保存</p>
+                <button onclick="window.location.href='../homepage_cogame.html'" 
+                        class="bg-blue-600 text-white px-8 py-3 rounded-lg font-medium hover:bg-blue-700 transition-colors">
+                    返回主页
+                </button>
+            </div>
+        </div>
+    </div>
+   
+    <script>
+            class ParticipantManager {
+                constructor() {
+                    this.participantData = this.getParticipantData();
+                    this.validateParticipant();
+                }
+    
+                getParticipantData() {
+                    try {
+                        const urlParams = new URLSearchParams(window.location.search);
+                        const urlData = {
+                            participantId: urlParams.get('participantId'),
+                            name: urlParams.get('name'),
+                            age: urlParams.get('age'),
+                            gender: urlParams.get('gender'),
+                            education: urlParams.get('education')
+                        };
+    
+                        if (urlData.participantId) {
+                            return urlData;
+                        }
+                        window.location.href = '../homepage_cogame.html';
+                        return null;
+                    } catch (error) {
+                        console.error('Error getting participant data:', error);
+                        return null;
+                    }
+                }
+    
+                validateParticipant() {
+                    if (!this.participantData || !this.participantData.participantId) {
+                        window.location.href = '../homepage_cogame.html';
+                    }
+                }
+    
+                getData() {
+                    return this.participantData;
+                }
+            }
+    
+            class Timer {
+                constructor() {
+                    this.timers = new Set();
+                }
+    
+                setTimeout(callback, delay) {
+                    const timer = window.setTimeout(() => {
+                        this.timers.delete(timer);
+                        callback();
+                    }, delay);
+                    this.timers.add(timer);
+                    return timer;
+                }
+    
+                clearAll() {
+                    this.timers.forEach(timer => {
+                        window.clearTimeout(timer);
+                    });
+                    this.timers.clear();
+                }
+            }
+    
+            const gameState = {
+                participant: null,
+                currentBlock: '1-back',
+                isPractice: true,
+                trialCount: 0,
+                mainTrials: 30,
+                practiceTrials: 10,
+                currentLetter: '',
+                previousLetters: [],
+                trialData: [],
+                startTime: null,
+                hasResponded: false,
+                isAnimating: false,
+                feedbackShowing: false,
+                timer: new Timer()
+            };
+    
+            const letters = ['B', 'C', 'D', 'F', 'G', 'H', 'J', 'K', 'L', 'M', 'N', 'P', 'Q', 'R', 'S', 'T'];
+            
+            const TIMING = {
+                FIXATION_DURATION: 200,
+                LETTER_DURATION: 1000,
+                FEEDBACK_DURATION: 500
+            };
+    
+            const PERFORMANCE_LEVELS = {
+                EXCELLENT: { threshold: 90, level: '特别好！', color: '#4CAF50' },
+                GOOD: { threshold: 80, level: '良好', color: '#2196F3' },
+                AVERAGE: { threshold: 70, level: '平均水平', color: '#FF9800' },
+                NEEDS_PRACTICE: { threshold: 0, level: '平时需要练习', color: '#F44336' }
+            };
+    
+            const screens = {
+                instruction1Back: document.getElementById('instruction-1back'),
+                instruction2Back: document.getElementById('instruction-2back'),
+                task: document.getElementById('task-screen'),
+                complete: document.getElementById('task-complete')
+            };
+    
+            function hideAllScreens() {
+                Object.values(screens).forEach(screen => screen.classList.add('hidden'));
+            }
+    
+            function getRandomLetter() {
+                return letters[Math.floor(Math.random() * letters.length)];
+            }
+    
+            function shouldBeMatch() {
+                return Math.random() < 0.3;
+            }
+    
+            function generateNextLetter() {
+                const nback = gameState.currentBlock === '1-back' ? 1 : 2;
+                if (gameState.previousLetters.length < nback) {
+                    return getRandomLetter();
+                }
+    
+                const shouldMatch = shouldBeMatch();
+                if (shouldMatch) {
+                    return gameState.previousLetters[nback - 1];
+                }
+    
+                let newLetter;
+                do {
+                    newLetter = getRandomLetter();
+                } while (newLetter === gameState.previousLetters[nback - 1]);
+                return newLetter;
+            }
+    
+            function showFeedback(isCorrect) {
+                const letterDisplay = document.getElementById('letter-display');
+                letterDisplay.classList.remove('letter-correct', 'letter-incorrect');
+                letterDisplay.classList.add(isCorrect ? 'letter-correct' : 'letter-incorrect');
+                gameState.feedbackShowing = true;
+            }
+    
+            function calculateAccuracy(trials) {
+                if (!trials || trials.length === 0) return 0;
+                return (trials.filter(t => t.isCorrect).length / trials.length) * 100;
+            }
+    
+            function recordTrial(letter, response, isMatch, isCorrect, rt) {
+                const trial = {
+                    participantId: gameState.participant.participantId,
+                    name: gameState.participant.name,
+                    age: gameState.participant.age,
+                    gender: gameState.participant.gender,
+                    education: gameState.participant.education,
+                    block: gameState.currentBlock,
+                    phase: gameState.isPractice ? 'practice' : 'main',
+                    trialNumber: gameState.trialCount + 1,
+                    letter: letter,
+                    response: response,
+                    isMatch: isMatch,
+                    isCorrect: isCorrect,
+                    reactionTime: rt,
+                    previousLetters: [...gameState.previousLetters],
+                    timestamp: new Date().toISOString()
+                };
+    
+                gameState.trialData.push(trial);
+            }
+    
+            function checkPracticeAccuracy() {
+                const practiceTrials = gameState.trialData.filter(t =>
+                    t.phase === 'practice' && t.block === gameState.currentBlock);
+                const accuracy = calculateAccuracy(practiceTrials);
+                
+                if (accuracy >= 80) {
+                    gameState.isPractice = false;
+                    gameState.trialCount = 0;
+                    gameState.previousLetters = [];
+                    document.getElementById('current-block').textContent = '正式实验';
+                    startTrial();
+                } else {
+                    alert(`练习正确率为${accuracy.toFixed(1)}%，需要达到80%才能继续。请重新练习。`);
+                    gameState.trialCount = 0;
+                    gameState.previousLetters = [];
+                    startTrial();
+                }
+            }
+    
+            function handleResponse(isResponse) {
+                if (!gameState.startTime || gameState.hasResponded || 
+                    gameState.isAnimating || gameState.feedbackShowing) return;
+    
+                const rt = Date.now() - gameState.startTime;
+                const nback = gameState.currentBlock === '1-back' ? 1 : 2;
+                const isMatch = gameState.previousLetters.length >= nback &&
+                    gameState.currentLetter === gameState.previousLetters[nback - 1];
+    
+                const isCorrect = (isResponse && isMatch) || (!isResponse && !isMatch);
+    
+                gameState.hasResponded = true;
+                showFeedback(isCorrect);
+                recordTrial(gameState.currentLetter, isResponse ? 'response' : 'no-response',
+                    isMatch, isCorrect, isResponse ? rt : null);
+    
+                if (gameState.previousLetters.length >= nback) {
+                    gameState.previousLetters.pop();
+                }
+                gameState.previousLetters.unshift(gameState.currentLetter);
+                gameState.trialCount++;
+    
+                gameState.timer.clearAll();
+                gameState.timer.setTimeout(() => {
+                    gameState.feedbackShowing = false;
+                    const maxTrials = gameState.isPractice ? gameState.practiceTrials : gameState.mainTrials;
+                    
+                    if (gameState.trialCount >= maxTrials) {
+                        if (gameState.isPractice) {
+                            checkPracticeAccuracy();
+                        } else if (gameState.currentBlock === '1-back') {
+                            // Switch to 2-back instructions
+                            hideAllScreens();
+                            screens.instruction2Back.classList.remove('hidden');
+                            gameState.currentBlock = '2-back';
+                            gameState.isPractice = true;
+                            gameState.trialCount = 0;
+                            gameState.previousLetters = [];
+                        } else {
+                            endTask();
+                        }
+                    } else {
+                        startTrial();
+                    }
+                }, TIMING.FEEDBACK_DURATION);
+            }
+    
+            function startTrial() {
+                gameState.timer.clearAll();
+                
+                const letterDisplay = document.getElementById('letter-display');
+                letterDisplay.classList.remove('letter-correct', 'letter-incorrect');
+    
+                letterDisplay.textContent = '+';
+                letterDisplay.classList.add('fixation');
+                gameState.hasResponded = false;
+                gameState.isAnimating = true;
+                gameState.feedbackShowing = false;
+    
+                gameState.timer.setTimeout(() => {
+                    letterDisplay.classList.remove('fixation');
+                    gameState.currentLetter = generateNextLetter();
+                    letterDisplay.textContent = gameState.currentLetter;
+                    gameState.startTime = Date.now();
+                    gameState.isAnimating = false;
+    
+                    gameState.timer.setTimeout(() => {
+                        if (!gameState.hasResponded) {
+                            handleResponse(false);
+                        }
+                    }, TIMING.LETTER_DURATION);
+                }, TIMING.FIXATION_DURATION);
+            }
+    
+            function downloadData() {
+                try {
+                    const headers = [
+                        'participantId',
+                        'name',
+                        'age',
+                        'gender',
+                        'education',
+                        'block',
+                        'phase',
+                        'trialNumber',
+                        'letter',
+                        'response',
+                        'isMatch',
+                        'isCorrect',
+                        'reactionTime',
+                        'previousLetters',
+                        'timestamp'
+                    ];
+    
+                    const BOM = '\uFEFF';
+                    const csvContent = BOM + [
+                        headers.join(','),
+                        ...gameState.trialData.map(trial => {
+                            const row = headers.map(header => {
+                                const value = trial[header];
+                                return value && (typeof value === 'string' &&
+                                    (value.includes(',') || value.includes('"') || value.includes('\n'))) ?
+                                    `"${value.replace(/"/g, '""')}"` : value;
+                            });
+                            return row.join(',');
+                        })
+                    ].join('\n');
+    
+                    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+                    const url = URL.createObjectURL(blob);
+                    const link = document.createElement('a');
+                    link.href = url;
+                    const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+                    link.download = `nback_task_${gameState.participant.name}_${gameState.participant.participantId}_${timestamp}.csv`;
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    URL.revokeObjectURL(url);
+                } catch (error) {
+                    console.error('Error downloading data:', error);
+                }
+            }
+    
+            function startBlock(block) {
+                hideAllScreens();
+                screens.task.classList.remove('hidden');
+                
+                gameState.currentBlock = block;
+                gameState.isPractice = true;
+                gameState.trialCount = 0;
+                gameState.previousLetters = [];
+                
+                document.getElementById('block-type').textContent = block === '1-back' ? '1-回合' : '2-回合';
+                document.getElementById('current-block').textContent = '练习';
+                document.getElementById('instruction-text').textContent = block === '1-back' ? '前一个' : '前两个';
+                
+                if (block === '2-back') {
+                    document.getElementById('block-type').classList.remove('text-blue-400');
+                    document.getElementById('block-type').classList.add('text-purple-400');
+                }
+                
+                startTrial();
+            }
+    
+            function endTask() {
+                hideAllScreens();
+                screens.complete.classList.remove('hidden');
+    
+                const mainTrials1Back = gameState.trialData.filter(t =>
+                    t.phase === 'main' && t.block === '1-back');
+                const mainTrials2Back = gameState.trialData.filter(t =>
+                    t.phase === 'main' && t.block === '2-back');
+    
+                const accuracy1Back = calculateAccuracy(mainTrials1Back);
+                const accuracy2Back = calculateAccuracy(mainTrials2Back);
+    
+                const overallAccuracy = (accuracy1Back + accuracy2Back) / 2;
+                const overallPerformance = calculatePerformanceLevel(overallAccuracy);
+    
+                document.getElementById('performance-level').innerHTML = `
+                    <div class="text-center p-4" style="background-color: ${overallPerformance.color}">
+                        <div class="font-bold text-xl mb-2">总体表现</div>
+                        <div>${overallPerformance.level}</div>
+                        <div class="text-sm mt-2">平均正确率: ${overallAccuracy.toFixed(1)}%</div>
+                    </div>
+                `;
+    
+                // Auto download data
+                downloadData();
+            }
+    
+            function calculatePerformanceLevel(accuracy) {
+                if (accuracy >= PERFORMANCE_LEVELS.EXCELLENT.threshold)
+                    return PERFORMANCE_LEVELS.EXCELLENT;
+                if (accuracy >= PERFORMANCE_LEVELS.GOOD.threshold)
+                    return PERFORMANCE_LEVELS.GOOD;
+                if (accuracy >= PERFORMANCE_LEVELS.AVERAGE.threshold)
+                    return PERFORMANCE_LEVELS.AVERAGE;
+                return PERFORMANCE_LEVELS.NEEDS_PRACTICE;
+            }
+    
+            // Initialize
+            document.addEventListener('DOMContentLoaded', () => {
+                try {
+                    const participantManager = new ParticipantManager();
+                    gameState.participant = participantManager.getData();
+    
+                    document.body.insertAdjacentHTML('afterbegin', `
+                        <div class="fixed top-4 right-4 bg-gray-800 rounded-lg p-4 text-sm text-white">
+                            <p>参与者: ${gameState.participant.name}</p>
+                            <p>ID: ${gameState.participant.participantId}</p>
+                        </div>
+                    `);
+    
+                    // Event listeners for start buttons
+                    document.getElementById('start-practice-1back').addEventListener('click', () => {
+                        startBlock('1-back');
+                    });
+    
+                    document.getElementById('start-practice-2back').addEventListener('click', () => {
+                        startBlock('2-back');
+                    });
+    
+                    // Space bar response
+                    document.addEventListener('keydown', (e) => {
+                        if ((e.code === 'Space' || e.key === ' ') && !gameState.isAnimating) {
+                            e.preventDefault();
+                            handleResponse(true);
+                        }
+                    });
+    
+                    // Cleanup
+                    window.addEventListener('beforeunload', () => {
+                        gameState.timer.clearAll();
+                    });
+                } catch (error) {
+                    console.error('Error during initialization:', error);
+                    alert('初始化错误，请刷新页面重试');
+                }
+            });
+        </script>
+    </body>
+    </html>
+    

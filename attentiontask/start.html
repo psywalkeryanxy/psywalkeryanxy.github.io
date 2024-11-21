@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>认知任务平台 - 登录</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const LoginForm = () => {
+            const [formData, setFormData] = React.useState({
+                name: '',
+                age: '',
+                gender: '',
+                education: ''
+            });
+
+            const handleSubmit = (e) => {
+                e.preventDefault();
+                if (validateForm()) {
+                    const participantData = {
+                        ...formData,
+                        startTime: new Date().toISOString(),
+                        experimentId: Date.now()
+                    };
+                    
+                    // 保存到 localStorage
+                    localStorage.setItem('participantData', JSON.stringify(participantData));
+                    
+                    // 构建查询参数
+                    const queryParams = new URLSearchParams({
+                        participantId: participantData.experimentId,
+                        name: participantData.name,
+                        age: participantData.age,
+                        gender: participantData.gender,
+                        education: participantData.education
+                    }).toString();
+
+                    // 重定向到主页
+                    window.location.href = `homepage_cogame.html?${queryParams}`;
+                }
+            };
+
+            const validateForm = () => {
+                if (!formData.name.trim()) {
+                    alert('请输入姓名');
+                    return false;
+                }
+                if (!formData.age || formData.age < 1 || formData.age > 120) {
+                    alert('请输入有效年龄');
+                    return false;
+                }
+                if (!formData.gender) {
+                    alert('请选择性别');
+                    return false;
+                }
+                if (!formData.education) {
+                    alert('请选择教育程度');
+                    return false;
+                }
+                return true;
+            };
+
+            return (
+                <div className="container mx-auto px-4 py-12">
+                    <div className="max-w-md mx-auto bg-white rounded-lg shadow-lg p-8">
+                        <div className="text-center mb-8">
+                            <h1 className="text-2xl font-bold text-gray-800">认知任务平台</h1>
+                            <p className="text-gray-600 mt-2">请填写基本信息后开始实验</p>
+                        </div>
+
+                        <form onSubmit={handleSubmit} className="space-y-6">
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">
+                                    姓名 <span className="text-red-500">*</span>
+                                </label>
+                                <input
+                                    type="text"
+                                    value={formData.name}
+                                    onChange={(e) => setFormData({...formData, name: e.target.value})}
+                                    className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                    placeholder="请输入您的姓名"
+                                    required
+                                />
+                            </div>
+
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">
+                                    年龄 <span className="text-red-500">*</span>
+                                </label>
+                                <input
+                                    type="number"
+                                    value={formData.age}
+                                    onChange={(e) => setFormData({...formData, age: e.target.value})}
+                                    className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                    placeholder="请输入您的年龄"
+                                    min="1"
+                                    max="120"
+                                    required
+                                />
+                            </div>
+
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">
+                                    性别 <span className="text-red-500">*</span>
+                                </label>
+                                <div className="flex space-x-4">
+                                    <label className="flex items-center">
+                                        <input
+                                            type="radio"
+                                            name="gender"
+                                            value="male"
+                                            checked={formData.gender === 'male'}
+                                            onChange={(e) => setFormData({...formData, gender: e.target.value})}
+                                            className="mr-2"
+                                            required
+                                        />
+                                        <span>男</span>
+                                    </label>
+                                    <label className="flex items-center">
+                                        <input
+                                            type="radio"
+                                            name="gender"
+                                            value="female"
+                                            checked={formData.gender === 'female'}
+                                            onChange={(e) => setFormData({...formData, gender: e.target.value})}
+                                            className="mr-2"
+                                        />
+                                        <span>女</span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">
+                                    教育程度 <span className="text-red-500">*</span>
+                                </label>
+                                <select
+                                    value={formData.education}
+                                    onChange={(e) => setFormData({...formData, education: e.target.value})}
+                                    className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                    required
+                                >
+                                    <option value="">请选择教育程度</option>
+                                    <option value="初中及以下">初中及以下</option>
+                                    <option value="高中/中专">高中/中专</option>
+                                    <option value="本科">本科</option>
+                                    <option value="硕士">硕士</option>
+                                    <option value="博士及以上">博士及以上</option>
+                                </select>
+                            </div>
+
+                            <button
+                                type="submit"
+                                className="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 transition duration-200"
+                            >
+                                开始实验
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            );
+        };
+
+        ReactDOM.render(<LoginForm />, document.getElementById('root'));
+    </script>
+</body>
+</html>

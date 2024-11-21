@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>认知任务平台</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const TaskCard = ({ title, description, duration, image, onClick }) => (
+            <div 
+                className="cursor-pointer hover:scale-105 transition-all bg-white rounded-lg shadow-md overflow-hidden"
+                onClick={onClick}
+            >
+                <div className="p-6">
+                    <h3 className="text-lg font-bold mb-3">{title}</h3>
+                    <div className="h-32 bg-gray-50 rounded-lg flex items-center justify-center mb-3">
+                        {image}
+                    </div>
+                    <p className="text-sm text-gray-600 mb-2">{description}</p>
+                    <div className="text-sm font-medium text-gray-500">预计时长: {duration}</div>
+                </div>
+            </div>
+        );
+
+        const CognitiveTasksHub = () => {
+            const [participantData, setParticipantData] = React.useState(null);
+            const [loading, setLoading] = React.useState(true);
+
+            React.useEffect(() => {
+                const checkAuth = () => {
+                    // 从 URL 获取参数
+                    const urlParams = new URLSearchParams(window.location.search);
+                    const urlData = {
+                        participantId: urlParams.get('participantId'),
+                        name: urlParams.get('name'),
+                        age: urlParams.get('age'),
+                        gender: urlParams.get('gender'),
+                        education: urlParams.get('education')
+                    };
+
+                    // 从 localStorage 获取数据
+                    const storedData = JSON.parse(localStorage.getItem('participantData'));
+
+                    // 使用 URL 参数或 localStorage 数据
+                    const data = urlData.participantId ? urlData : storedData;
+
+                    if (!data) {
+                        // 如果没有用户数据，重定向到登录页
+                        window.location.href = 'index.html';
+                        return;
+                    }
+
+                    setParticipantData(data);
+                    setLoading(false);
+                };
+
+                checkAuth();
+            }, []);
+
+            const tasks = [
+                {
+                    id: 'whack-a-mole',
+                    title: '打地鼠游戏',
+                    description: '打击红色生气的地鼠，但是保护绿色开心的地鼠.',
+                    duration: '~30秒',
+                    path: 'tasks/whack-a-mole.html',
+                    image: (
+                        <svg viewBox="0 0 100 100" className="w-24 h-24">
+                            <circle cx="50" cy="50" r="40" fill="#90EE90"/>
+                            <circle cx="50" cy="45" r="15" fill="#654321"/>
+                            <circle cx="43" cy="40" r="3" fill="white"/>
+                            <circle cx="57" cy="40" r="3" fill="white"/>
+                            <path d="M 40 55 Q 50 65 60 55" stroke="#000" fill="none" strokeWidth="2"/>
+                        </svg>
+                    )
+                },
+                
+                {
+                    id: 'ballon',
+                    title: '打气球任务',
+                    description: '气球越大奖励越大，但是当心气球爆炸！',
+                    duration: '~2分钟',
+                    path: 'tasks/ballonrisk.html',
+                    image: (
+                        <svg viewBox="0 0 100 100" className="w-24 h-24">
+                            <circle cx="50" cy="45" r="35" fill="#FF69B4"/>
+                            <path d="M 48 80 L 52 80 L 50 85 Z" fill="#666"/>
+                        </svg>
+                    )
+                },
+                
+               
+
+                {
+                    id: 'attentioncues',
+                    title: '注意力',
+                    description: '判断图形的位置',
+                    duration: '~15分钟',
+                    path: 'tasks/attentioncues.html',
+                    image: (
+                        <svg viewBox="0 0 100 100" className="w-24 h-24">
+                            <circle cx="30" cy="50" r="15" fill="#FFD700"/>
+                            <circle cx="70" cy="50" r="15" fill="#FFD700"/>
+                            <path d="M 50 20 L 50 80" stroke="#FF0000" strokeWidth="3"/>
+                        </svg>
+                    )
+                }
+
+                
+
+            ];
+
+            const navigateToTask = (task) => {
+                // 将参与者信息附加到任务URL
+                const queryParams = new URLSearchParams({
+                    participantId: participantData.participantId,
+                    name: participantData.name,
+                    age: participantData.age,
+                    gender: participantData.gender,
+                    education: participantData.education
+                }).toString();
+                window.location.href = `${task.path}?${queryParams}`;
+            };
+
+            if (loading) {
+                return (
+                    <div className="min-h-screen flex items-center justify-center">
+                        <div className="text-center">
+                            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto"></div>
+                            <p className="mt-4 text-gray-600">加载中...</p>
+                        </div>
+                    </div>
+                );
+            }
+
+            return (
+                <div className="container mx-auto p-6 bg-gray-50 min-h-screen">
+                    <header className="text-center mb-12">
+                        <div className="flex justify-between items-center mb-4">
+                            <h1 className="text-4xl font-bold">认知任务评估平台</h1>
+                            <div className="text-right">
+                                <p className="text-sm text-gray-600">欢迎, {participantData.name}</p>
+                                <button 
+                                    onClick={() => {
+                                        localStorage.removeItem('participantData');
+                                        window.location.href = 'start.html';
+                                    }}
+                                    className="text-sm text-red-500 hover:text-red-700"
+                                >
+                                    退出登录
+                                </button>
+                            </div>
+                        </div>
+                        <p className="text-gray-600 max-w-2xl mx-auto">
+                            探索人类认知、决策和社会行为的多个维度
+                        </p>
+                    </header>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
+                        {tasks.map(task => (
+                            <TaskCard
+                                key={task.id}
+                                {...task}
+                                onClick={() => navigateToTask(task)}
+                            />
+                        ))}
+                    </div>
+
+                    <footer className="mt-12 text-center text-gray-500">
+                        <p>总预计完成时间: ~30分钟</p>
+                        <p>所有任务数据将自动保存，您可以按任意顺序完成</p>
+                        <p className="mt-2 text-sm">
+                            实验编号: {participantData.participantId}
+                        </p>
+                    </footer>
+                </div>
+            );
+        };
+
+        ReactDOM.render(<CognitiveTasksHub />, document.getElementById('root'));
+    </script>
+</body>
+</html>
