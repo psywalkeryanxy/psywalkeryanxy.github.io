@@ -33,38 +33,16 @@
         );
 
         const CognitiveTasksHub = () => {
-            const [participantData, setParticipantData] = React.useState(null);
-            const [loading, setLoading] = React.useState(true);
+            const [participantId, setParticipantId] = React.useState(null);
 
             React.useEffect(() => {
-                const checkAuth = () => {
-                    // 从 URL 获取参数
-                    const urlParams = new URLSearchParams(window.location.search);
-                    const urlData = {
-                        participantId: urlParams.get('participantId'),
-                        name: urlParams.get('name'),
-                        age: urlParams.get('age'),
-                        gender: urlParams.get('gender'),
-                        education: urlParams.get('education')
-                    };
-
-                    // 从 localStorage 获取数据
-                    const storedData = JSON.parse(localStorage.getItem('participantData'));
-
-                    // 使用 URL 参数或 localStorage 数据
-                    const data = urlData.participantId ? urlData : storedData;
-
-                     //if (!data) {
-                        // 如果没有用户数据，重定向到登录页
-                       //  window.location.href = 'index.html';
-                        // return;
-                    // }
-
-                    setParticipantData(data);
-                    setLoading(false);
-                };
-
-                checkAuth();
+                // 生成随机参与者ID或使用已存在的
+                let id = localStorage.getItem('generatedParticipantId');
+                if (!id) {
+                    id = Math.random().toString(36).substring(2, 10);
+                    localStorage.setItem('generatedParticipantId', id);
+                }
+                setParticipantId(id);
             }, []);
 
             const tasks = [
@@ -220,7 +198,7 @@
                         <svg viewBox="0 0 100 100" className="w-24 h-24">
                             <rect x="30" y="20" width="40" height="60" fill="none" stroke="#000" strokeWidth="2" />
                             {[0, 1, 2, 3, 4].map(i =>
-                                <line x1="30" y1={32 + i * 12} x2="70" y2={32 + i * 12} stroke="#000" strokeWidth="2" />
+                                <line key={i} x1="30" y1={32 + i * 12} x2="70" y2={32 + i * 12} stroke="#000" strokeWidth="2" />
                             )}
                         </svg>
                     )
@@ -299,22 +277,17 @@
                         </svg>
                     )
                 }
-
             ];
 
             const navigateToTask = (task) => {
-                // 将参与者信息附加到任务URL
+                // 将随机生成的参与者ID附加到任务URL
                 const queryParams = new URLSearchParams({
-                    participantId: participantData.participantId,
-                    name: participantData.name,
-                    age: participantData.age,
-                    gender: participantData.gender,
-                    education: participantData.education
+                    participantId: participantId
                 }).toString();
                 window.location.href = `${task.path}?${queryParams}`;
             };
 
-            if (loading) {
+            if (!participantId) {
                 return (
                     <div className="min-h-screen flex items-center justify-center">
                         <div className="text-center">
@@ -331,16 +304,7 @@
                         <div className="flex justify-between items-center mb-4">
                             <h1 className="text-4xl font-bold">认知任务评估平台</h1>
                             <div className="text-right">
-                                <p className="text-sm text-gray-600">欢迎, {participantData.name}</p>
-                                <button
-                                    onClick={() => {
-                                        localStorage.removeItem('participantData');
-                                        window.location.href = 'start.html';
-                                    }}
-                                    className="text-sm text-red-500 hover:text-red-700"
-                                >
-                                    退出登录
-                                </button>
+                                <p className="text-sm text-gray-600">实验编号: {participantId}</p>
                             </div>
                         </div>
                         <p className="text-gray-600 max-w-2xl mx-auto">
@@ -361,9 +325,7 @@
                     <footer className="mt-12 text-center text-gray-500">
                         <p>总预计完成时间: ~40分钟</p>
                         <p>所有任务数据将自动保存，您可以按任意顺序完成</p>
-                        <p className="mt-2 text-sm">
-                            实验编号: {participantData.participantId}
-                        </p>
+                        <p className="mt-2 text-sm">数据将以实验编号 {participantId} 进行匿名保存</p>
                     </footer>
                 </div>
             );
