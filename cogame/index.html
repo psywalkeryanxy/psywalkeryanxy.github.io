@@ -27,12 +27,14 @@
       background-color: var(--bg-primary);
       color: var(--text-primary);
       line-height: 1.6;
+      overflow-x: hidden;
     }
     
     .container {
+      width: 90%;
       max-width: 1200px;
       margin: 0 auto;
-      padding: 0 20px;
+      padding: 0 1rem;
     }
     
     /* Typography */
@@ -50,7 +52,7 @@
     
     /* Navigation */
     .navbar {
-      padding: 20px 0;
+      padding: 1rem 0;
       position: relative;
       background: var(--bg-primary);
       border-bottom: 1px solid var(--border);
@@ -65,13 +67,14 @@
     .logo {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 0.625rem;
+      z-index: 100;
     }
     
     .logo-icon {
-      width: 40px;
-      height: 40px;
-      border-radius: 10px;
+      width: 2.5rem;
+      height: 2.5rem;
+      border-radius: 0.625rem;
       background: linear-gradient(135deg, #5D3FD3, #A569BD);
       display: flex;
       align-items: center;
@@ -81,7 +84,7 @@
     }
     
     .logo-text {
-      font-size: 24px;
+      font-size: 1.5rem;
       font-weight: 800;
       background: linear-gradient(135deg, #5D3FD3, #A569BD);
       -webkit-background-clip: text;
@@ -92,7 +95,7 @@
     .nav-links {
       display: flex;
       list-style: none;
-      gap: 30px;
+      gap: 1.875rem;
     }
     
     .nav-link {
@@ -103,7 +106,62 @@
     
     .nav-cta {
       display: flex;
-      gap: 15px;
+      gap: 0.9375rem;
+    }
+    
+    /* Mobile Navigation */
+    .hamburger {
+      display: none;
+      cursor: pointer;
+      width: 2rem;
+      height: 1.5rem;
+      position: relative;
+      z-index: 100;
+    }
+    
+    .hamburger span {
+      display: block;
+      position: absolute;
+      height: 0.1875rem;
+      width: 100%;
+      background: var(--text-primary);
+      border-radius: 0.1875rem;
+      opacity: 1;
+      left: 0;
+      transform: rotate(0deg);
+      transition: .25s ease-in-out;
+    }
+    
+    .hamburger span:nth-child(1) {
+      top: 0;
+    }
+    
+    .hamburger span:nth-child(2), .hamburger span:nth-child(3) {
+      top: 0.625rem;
+    }
+    
+    .hamburger span:nth-child(4) {
+      top: 1.25rem;
+    }
+    
+    .hamburger.open span:nth-child(1) {
+      top: 0.625rem;
+      width: 0;
+      left: 50%;
+    }
+    
+    .hamburger.open span:nth-child(2) {
+      transform: rotate(45deg);
+    }
+    
+    .hamburger.open span:nth-child(3) {
+      transform: rotate(-45deg);
+    }
+    
+    .hamburger.open span:nth-child(4) {
+      top: 0.625rem;
+      width: 0;
+      left: 50%;
     }
     
     /* Buttons */
@@ -111,10 +169,10 @@
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      padding: 10px 20px;
-      border-radius: 8px;
+      padding: 0.625rem 1.25rem;
+      border-radius: 0.5rem;
       font-weight: 600;
-      font-size: 15px;
+      font-size: 0.9375rem;
       transition: all 0.2s ease;
       cursor: pointer;
       text-decoration: none;
@@ -134,53 +192,54 @@
     
     /* Hero Section */
     .hero {
-      padding: 80px 0;
+      padding: 3rem 0;
     }
     
     .hero-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 40px;
+      gap: 2.5rem;
       align-items: center;
     }
     
     .hero-headline {
-      font-size: 48px;
-      margin-bottom: 20px;
+      font-size: 3rem;
+      margin-bottom: 1.25rem;
     }
     
     .hero-description {
-      font-size: 18px;
+      font-size: 1.125rem;
       color: var(--text-secondary);
-      margin-bottom: 30px;
+      margin-bottom: 1.875rem;
     }
     
     .hero-cta {
       display: flex;
-      gap: 15px;
-      margin-top: 30px;
+      gap: 0.9375rem;
+      margin-top: 1.875rem;
     }
     
     /* Demo Interface */
     .demo-interface {
       background: var(--bg-secondary);
-      border-radius: 16px;
+      border-radius: 1rem;
       overflow: hidden;
       border: 1px solid var(--border);
+      width: 100%;
     }
     
     .demo-header {
-      padding: 15px;
+      padding: 0.9375rem;
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 0.625rem;
       border-bottom: 1px solid var(--border);
     }
     
     .demo-avatar {
-      width: 40px;
-      height: 40px;
-      border-radius: 10px;
+      width: 2.5rem;
+      height: 2.5rem;
+      border-radius: 0.625rem;
       background: rgba(93, 63, 211, 0.1);
       display: flex;
       align-items: center;
@@ -190,89 +249,89 @@
     }
     
     .demo-info h3 {
-      font-size: 16px;
+      font-size: 1rem;
       font-weight: 600;
-      margin-bottom: 4px;
+      margin-bottom: 0.25rem;
     }
     
     .demo-info p {
-      font-size: 13px;
+      font-size: 0.8125rem;
       color: var(--text-secondary);
     }
     
     .demo-status {
       margin-left: auto;
-      padding: 6px 12px;
-      border-radius: 30px;
+      padding: 0.375rem 0.75rem;
+      border-radius: 1.875rem;
       background: rgba(93, 63, 211, 0.1);
-      font-size: 13px;
+      font-size: 0.8125rem;
       font-weight: 500;
       color: var(--primary);
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 0.375rem;
     }
     
     .status-indicator {
-      width: 8px;
-      height: 8px;
+      width: 0.5rem;
+      height: 0.5rem;
       border-radius: 50%;
       background: var(--primary);
     }
     
     .demo-conversation {
-      height: 300px;
-      padding: 15px;
+      height: 18.75rem;
+      padding: 0.9375rem;
       overflow-y: auto;
       display: flex;
       flex-direction: column;
-      gap: 15px;
+      gap: 0.9375rem;
     }
     
     .demo-message {
       max-width: 80%;
-      padding: 15px;
-      border-radius: 12px;
+      padding: 0.9375rem;
+      border-radius: 0.75rem;
       line-height: 1.5;
-      font-size: 15px;
+      font-size: 0.9375rem;
     }
     
     .message-incoming {
       align-self: flex-start;
       background: var(--bg-secondary);
       border: 1px solid var(--border);
-      border-bottom-left-radius: 4px;
+      border-bottom-left-radius: 0.25rem;
     }
     
     .message-outgoing {
       align-self: flex-end;
       background: rgba(93, 63, 211, 0.1);
-      border-bottom-right-radius: 4px;
+      border-bottom-right-radius: 0.25rem;
     }
     
     .message-meta {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-top: 8px;
-      font-size: 12px;
+      margin-top: 0.5rem;
+      font-size: 0.75rem;
       color: var(--text-secondary);
     }
     
     .demo-input {
-      padding: 15px;
+      padding: 0.9375rem;
       display: flex;
-      gap: 10px;
+      gap: 0.625rem;
       border-top: 1px solid var(--border);
     }
     
     .input-field {
       flex: 1;
-      padding: 10px 15px;
+      padding: 0.625rem 0.9375rem;
       background: var(--bg-secondary);
       border: 1px solid var(--border);
-      border-radius: 8px;
-      font-size: 15px;
+      border-radius: 0.5rem;
+      font-size: 0.9375rem;
       color: var(--text-primary);
       outline: none;
     }
@@ -280,9 +339,9 @@
     .send-button {
       background: var(--primary);
       border: none;
-      width: 40px;
-      height: 40px;
-      border-radius: 8px;
+      width: 2.5rem;
+      height: 2.5rem;
+      border-radius: 0.5rem;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -292,83 +351,84 @@
     
     /* Features Section */
     .section {
-      padding: 80px 0;
+      padding: 3rem 0;
     }
     
     .section-header {
       text-align: center;
-      max-width: 700px;
-      margin: 0 auto 50px;
+      max-width: 43.75rem;
+      margin: 0 auto 3.125rem;
+      padding: 0 1rem;
     }
     
     .section-title {
-      font-size: 36px;
-      margin-bottom: 15px;
+      font-size: 2.25rem;
+      margin-bottom: 0.9375rem;
     }
     
     .section-subtitle {
-      font-size: 18px;
+      font-size: 1.125rem;
       color: var(--text-secondary);
     }
     
     .features-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 30px;
+      gap: 1.875rem;
     }
     
     .feature-card {
       background: var(--bg-secondary);
-      border-radius: 16px;
-      padding: 30px;
+      border-radius: 1rem;
+      padding: 1.875rem;
       border: 1px solid var(--border);
       height: 100%;
     }
     
     .feature-icon {
-      font-size: 24px;
-      margin-bottom: 20px;
+      font-size: 1.5rem;
+      margin-bottom: 1.25rem;
     }
     
     .feature-title {
-      font-size: 20px;
-      margin-bottom: 10px;
+      font-size: 1.25rem;
+      margin-bottom: 0.625rem;
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 0.5rem;
     }
     
     .feature-tag {
-      font-size: 12px;
-      padding: 4px 8px;
-      border-radius: 6px;
+      font-size: 0.75rem;
+      padding: 0.25rem 0.5rem;
+      border-radius: 0.375rem;
       background: rgba(93, 63, 211, 0.1);
       color: var(--primary);
     }
     
     .feature-description {
       color: var(--text-secondary);
-      font-size: 15px;
+      font-size: 0.9375rem;
       line-height: 1.6;
     }
     
     /* Pricing */
     .pricing-header {
       text-align: center;
-      max-width: 700px;
-      margin: 0 auto 50px;
+      max-width: 43.75rem;
+      margin: 0 auto 3.125rem;
     }
     
     .pricing-grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
-      gap: 30px;
+      gap: 1.875rem;
     }
     
     .pricing-card {
       background: var(--bg-secondary);
-      border-radius: 16px;
-      padding: 30px;
+      border-radius: 1rem;
+      padding: 1.875rem;
       border: 1px solid var(--border);
       position: relative;
       overflow: hidden;
@@ -382,54 +442,54 @@
     
     .popular-badge {
       position: absolute;
-      top: 20px;
-      right: -40px;
+      top: 1.25rem;
+      right: -2.5rem;
       background: var(--accent);
       color: white;
-      padding: 6px 40px;
+      padding: 0.375rem 2.5rem;
       transform: rotate(45deg);
-      font-size: 14px;
+      font-size: 0.875rem;
       font-weight: 600;
     }
     
     .plan-name {
-      font-size: 20px;
+      font-size: 1.25rem;
       font-weight: 600;
-      margin-bottom: 10px;
+      margin-bottom: 0.625rem;
     }
     
     .plan-price {
-      font-size: 36px;
+      font-size: 2.25rem;
       font-weight: 700;
-      margin-bottom: 10px;
+      margin-bottom: 0.625rem;
       color: var(--primary);
     }
     
     .plan-price span {
-      font-size: 16px;
+      font-size: 1rem;
       color: var(--text-secondary);
       font-weight: 500;
     }
     
     .plan-description {
       color: var(--text-secondary);
-      font-size: 15px;
-      margin-bottom: 25px;
-      padding-bottom: 20px;
+      font-size: 0.9375rem;
+      margin-bottom: 1.5625rem;
+      padding-bottom: 1.25rem;
       border-bottom: 1px solid var(--border);
     }
     
     .plan-features {
       list-style: none;
-      margin-bottom: 25px;
+      margin-bottom: 1.5625rem;
     }
     
     .plan-features li {
       display: flex;
       align-items: flex-start;
-      gap: 10px;
-      margin-bottom: 15px;
-      font-size: 15px;
+      gap: 0.625rem;
+      margin-bottom: 0.9375rem;
+      font-size: 0.9375rem;
       color: var(--text-secondary);
     }
     
@@ -438,40 +498,154 @@
       flex-shrink: 0;
     }
     
+    /* Business Applications Section */
+    .business-card {
+      background: var(--bg-primary);
+      border-radius: 1rem;
+      padding: 1.875rem;
+      border: 1px solid var(--border);
+    }
+    
+    .business-emoji {
+      font-size: 2rem;
+      margin-bottom: 1.25rem;
+    }
+    
+    .business-title {
+      font-size: 1.25rem;
+      margin-bottom: 0.9375rem;
+    }
+    
+    .business-description {
+      font-size: 0.9375rem;
+      color: var(--text-secondary);
+      margin-bottom: 1.25rem;
+    }
+    
+    .business-features {
+      list-style: none;
+      margin-bottom: 1.25rem;
+    }
+    
+    .business-features li {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.625rem;
+      margin-bottom: 0.625rem;
+      font-size: 0.875rem;
+      color: var(--text-secondary);
+    }
+    
+    /* Technology Section */
+    .tech-container {
+      background: var(--bg-secondary);
+      border-radius: 1rem;
+      padding: 1.875rem;
+      border: 1px solid var(--border);
+      margin-bottom: 2.5rem;
+    }
+    
+    .tech-title {
+      font-size: 1.375rem;
+      margin-bottom: 1.25rem;
+    }
+    
+    .tech-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(15.625rem, 1fr));
+      gap: 1.25rem;
+    }
+    
+    .tech-step {
+      padding: 1.25rem;
+      background: rgba(93, 63, 211, 0.05);
+      border-radius: 0.75rem;
+    }
+    
+    .tech-step-title {
+      font-size: 1.125rem;
+      margin-bottom: 0.625rem;
+      color: var(--primary);
+    }
+    
+    .tech-step-description {
+      font-size: 0.875rem;
+      color: var(--text-secondary);
+    }
+    
+    .tech-advantages {
+      margin-top: 1.875rem;
+      border-top: 1px solid var(--border);
+      padding-top: 1.875rem;
+    }
+    
+    .tech-advantages-title {
+      font-size: 1.125rem;
+      margin-bottom: 0.9375rem;
+    }
+    
+    .advantages-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(15.625rem, 1fr));
+      gap: 1.25rem;
+    }
+    
+    .advantage-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.625rem;
+    }
+    
+    .advantage-icon {
+      color: var(--primary);
+      font-size: 1.25rem;
+      line-height: 1;
+    }
+    
+    .advantage-title {
+      font-size: 1rem;
+      margin-bottom: 0.3125rem;
+    }
+    
+    .advantage-description {
+      font-size: 0.875rem;
+      color: var(--text-secondary);
+    }
+    
     /* Footer */
     .footer {
-      padding: 60px 0 40px;
-      margin-top: 60px;
+      padding: 3.75rem 0 2.5rem;
+      margin-top: 3.75rem;
       border-top: 1px solid var(--border);
     }
     
     .footer-grid {
       display: grid;
       grid-template-columns: 2fr 1fr 1fr 1fr;
-      gap: 40px;
-      margin-bottom: 40px;
+      gap: 2.5rem;
+      margin-bottom: 2.5rem;
     }
     
     .footer-brand {
       display: flex;
       flex-direction: column;
-      gap: 20px;
+      gap: 1.25rem;
     }
     
     .footer-description {
       color: var(--text-secondary);
-      font-size: 15px;
+      font-size: 0.9375rem;
       line-height: 1.7;
     }
     
     .footer-social {
       display: flex;
-      gap: 15px;
+      gap: 0.9375rem;
     }
     
     .social-link {
-      width: 36px;
-      height: 36px;
+      width: 2.25rem;
+      height: 2.25rem;
       border-radius: 50%;
       background: var(--bg-secondary);
       display: flex;
@@ -481,9 +655,9 @@
     }
     
     .footer-links h4 {
-      font-size: 16px;
+      font-size: 1rem;
       font-weight: 600;
-      margin-bottom: 20px;
+      margin-bottom: 1.25rem;
       color: var(--text-primary);
     }
     
@@ -492,63 +666,159 @@
     }
     
     .footer-links li {
-      margin-bottom: 10px;
+      margin-bottom: 0.625rem;
     }
     
     .footer-links a {
       color: var(--text-secondary);
       text-decoration: none;
-      font-size: 15px;
+      font-size: 0.9375rem;
     }
     
     .footer-bottom {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding-top: 30px;
+      padding-top: 1.875rem;
       border-top: 1px solid var(--border);
     }
     
     .copyright {
       color: var(--text-secondary);
-      font-size: 14px;
+      font-size: 0.875rem;
     }
     
     .footer-legal {
       display: flex;
-      gap: 20px;
+      gap: 1.25rem;
     }
     
     .legal-link {
       color: var(--text-secondary);
       text-decoration: none;
-      font-size: 14px;
+      font-size: 0.875rem;
+    }
+    
+    /* Mobile Menu */
+    .mobile-menu {
+      position: fixed;
+      top: 0;
+      right: -100%;
+      width: 80%;
+      max-width: 25rem;
+      height: 100vh;
+      background: var(--bg-secondary);
+      padding: 5rem 2rem 2rem;
+      z-index: 99;
+      transition: right 0.3s ease;
+      box-shadow: -5px 0 15px rgba(0, 0, 0, 0.3);
+    }
+    
+    .mobile-menu.open {
+      right: 0;
+    }
+    
+    .mobile-menu ul {
+      list-style: none;
+      margin-bottom: 2rem;
+    }
+    
+    .mobile-menu li {
+      margin-bottom: 1rem;
+    }
+    
+    .mobile-menu a {
+      color: var(--text-primary);
+      text-decoration: none;
+      font-size: 1.125rem;
+      display: block;
+      padding: 0.5rem 0;
+      border-bottom: 1px solid var(--border);
+    }
+    
+    .overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.7);
+      opacity: 0;
+      visibility: hidden;
+      z-index: 98;
+      transition: opacity 0.3s ease, visibility 0.3s ease;
+    }
+    
+    .overlay.active {
+      opacity: 1;
+      visibility: visible;
     }
     
     /* Responsive */
-    @media (max-width: 991px) {
-      .hero-grid, .features-grid, .pricing-grid {
-        grid-template-columns: 1fr;
-        gap: 30px;
+    @media (max-width: 1200px) {
+      .pricing-grid {
+        grid-template-columns: repeat(2, 1fr);
       }
       
       .popular-plan {
         transform: scale(1);
       }
+    }
+    
+    @media (max-width: 991px) {
+      .hero-grid {
+        grid-template-columns: 1fr;
+        text-align: center;
+      }
+      
+      .hero-cta {
+        justify-content: center;
+      }
+      
+      .features-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+      
+      .tech-grid, .advantages-grid {
+        grid-template-columns: 1fr 1fr;
+      }
       
       .footer-grid {
         grid-template-columns: 1fr 1fr;
-        gap: 30px;
       }
     }
     
     @media (max-width: 768px) {
+      html {
+        font-size: 14px;
+      }
+      
+      .nav-links, .nav-cta {
+        display: none;
+      }
+      
+      .hamburger {
+        display: block;
+      }
+      
       .hero-headline {
-        font-size: 36px;
+        font-size: 2.5rem;
       }
       
       .section-title {
-        font-size: 30px;
+        font-size: 2rem;
+      }
+      
+      .features-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .pricing-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .tech-grid, .advantages-grid {
+        grid-template-columns: 1fr;
       }
       
       .footer-grid {
@@ -557,12 +827,36 @@
       
       .footer-bottom {
         flex-direction: column;
-        gap: 20px;
+        gap: 1.25rem;
         text-align: center;
       }
       
-      .nav-links {
+      .demo-status {
         display: none;
+      }
+      
+      .demo-conversation {
+        height: 15.625rem;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      html {
+        font-size: 12px;
+      }
+      
+      .demo-header {
+        flex-wrap: wrap;
+      }
+      
+      .send-button {
+        width: 2.25rem;
+        height: 2.25rem;
+      }
+      
+      .mobile-menu {
+        width: 100%;
+        max-width: 100%;
       }
     }
   </style>
@@ -584,11 +878,30 @@
       </ul>
       
       <div class="nav-cta">
- <!-- <a href="#demo" class="btn btn-primary">预约免费演示</a>-->
         <a href="startdata.html" class="btn btn-primary">开始体验</a>
+      </div>
+      
+      <div class="hamburger" id="hamburger-btn">
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
       </div>
     </div>
   </nav>
+  
+  <!-- Mobile Menu -->
+  <div class="mobile-menu" id="mobile-menu">
+    <ul>
+      <li><a href="#features">产品特点</a></li>
+      <li><a href="#applications">应用场景</a></li>
+      <li><a href="#pricing">定价方案</a></li>
+      <li><a href="#about">关于我们</a></li>
+    </ul>
+    <a href="startdata.html" class="btn btn-primary" style="width: 100%;">开始体验</a>
+  </div>
+  
+  <div class="overlay" id="overlay"></div>
   
   <!-- Hero Section -->
   <section class="hero">
@@ -604,7 +917,6 @@
           </p>
           
           <div class="hero-cta">
-           <!-- <a href="#demo" class="btn btn-primary">预约免费演示</a>-->
             <a href="#technology" class="btn btn-primary">了解技术原理</a>
           </div>
         </div>
@@ -656,86 +968,6 @@
     </div>
   </section>
   
-
-  <script>
-    // 动态聊天功能
-    document.addEventListener('DOMContentLoaded', function() {
-      const chatInput = document.getElementById('chat-input');
-      const sendBtn = document.getElementById('send-btn');
-      const chatContainer = document.getElementById('dynamic-chat');
-      
-      // 预设的陈教授回复内容
-      const professorResponses = [
-        "神经可塑性是大脑适应环境变化的关键机制。我的研究表明，认知干预与非侵入式脑刺激的结合能够产生协同效应，特别是在老年认知功能恢复方面。",
-        "我们在2019年完成的一项研究发现，TDCS结合工作记忆训练可以显著提高阿尔茨海默症早期患者的执行功能，效果持续时间超过传统单一干预。",
-        "从理论上讲，脑刺激技术能够增强突触可塑性，为认知训练创造一个更加有利的神经环境。但需要注意的是，参数设置和个体差异会显著影响效果。",
-        "我建议你们考虑将功能性近红外光谱技术(fNIRS)整合到研究中，它可以提供实时的神经活动监测，帮助优化刺激参数，我在2021年发表的论文详细讨论了这点。",
-        "数字分身技术正是基于神经可塑性的原理，通过模拟大脑的学习机制，实现思维模式的数字化复刻。这与你们研究的方向有许多共通之处。"
-      ];
-      
-      // 随机获取回复
-      function getRandomResponse() {
-        const randomIndex = Math.floor(Math.random() * professorResponses.length);
-        return professorResponses[randomIndex];
-      }
-      
-      // 获取当前时间
-      function getCurrentTime() {
-        const now = new Date();
-        const hours = now.getHours().toString().padStart(2, '0');
-        const minutes = now.getMinutes().toString().padStart(2, '0');
-        return `${hours}:${minutes}`;
-      }
-      
-      // 添加消息到聊天框
-      function addMessage(content, isOutgoing = false) {
-        const messageDiv = document.createElement('div');
-        messageDiv.className = `demo-message ${isOutgoing ? 'message-outgoing' : 'message-incoming'}`;
-        
-        const currentTime = getCurrentTime();
-        
-        messageDiv.innerHTML = `
-          ${content}
-          <div class="message-meta">
-            <span>${currentTime}</span>
-          </div>
-        `;
-        
-        chatContainer.appendChild(messageDiv);
-        chatContainer.scrollTop = chatContainer.scrollHeight;
-      }
-      
-      // 发送消息处理
-      function sendMessage() {
-        const message = chatInput.value.trim();
-        if (message) {
-          // 添加用户消息
-          addMessage(message, true);
-          chatInput.value = '';
-          
-          // 模拟"正在输入"延迟
-          setTimeout(() => {
-            // 添加陈教授回复
-            const response = getRandomResponse();
-            addMessage(response, false);
-          }, 1500);
-        }
-      }
-      
-      // 绑定发送按钮点击事件
-      sendBtn.addEventListener('click', sendMessage);
-      
-      // 绑定输入框回车事件
-      chatInput.addEventListener('keypress', function(e) {
-        if (e.key === 'Enter') {
-          sendMessage();
-        }
-      });
-    });
-  </script>
-</body>
-</html>
-  
   <section id="pricing" class="section">
     <div class="container">
       <div class="pricing-header">
@@ -750,14 +982,6 @@
           <p class="plan-description">适合希望保存基本生活经历和价值观的个人</p>
           
           <ul class="plan-features">
-            <li>
-              <span class="feature-check">✓</span>
-              <span>2小时深度访谈记录</span>
-            </li>
-            <li>
-              <span class="feature-check">✓</span>
-              <span>基础认知模型构建</span>
-            </li>
             <li>
               <span class="feature-check">✓</span>
               <span>5年免费云存储</span>
@@ -857,118 +1081,118 @@
   </section>
   
   <!-- Business Applications Section -->
-  <section class="section" id="applications" style="background: var(--bg-secondary); padding: 60px 0;">
+  <section class="section" id="applications" style="background: var(--bg-secondary); padding: 3.75rem 0;">
     <div class="container">
       <div class="section-header">
         <h2 class="section-title">多元<span class="gradient-text">商业应用</span>场景</h2>
         <p class="section-subtitle">脑岛的创新技术在多个行业领域展现出变革性的商业价值</p>
       </div>
       
-      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; margin-top: 40px;">
-        <div style="background: var(--bg-primary); border-radius: 16px; padding: 30px; border: 1px solid var(--border);">
-          <div style="font-size: 32px; margin-bottom: 20px;">👪</div>
-          <h3 style="font-size: 20px; margin-bottom: 15px;">高端纪念服务</h3>
-          <p style="font-size: 15px; color: var(--text-secondary); margin-bottom: 20px;">
+      <div class="business-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(18.75rem, 1fr)); gap: 1.875rem; margin-top: 2.5rem;">
+        <div class="business-card">
+          <div class="business-emoji">👪</div>
+          <h3 class="business-title">高端纪念服务</h3>
+          <p class="business-description">
             为高净值家庭提供已故亲人的数字分身，让后代能与先辈"对话"，了解他们的人生智慧和故事。这类服务采用高价位的一次性付费模式，类似于高端葬礼服务的延伸。
           </p>
-          <ul style="list-style: none; margin-bottom: 20px;">
-            <li style="display: flex; align-items: flex-start; gap: 10px; margin-bottom: 10px; font-size: 14px; color: var(--text-secondary);">
+          <ul class="business-features">
+            <li>
               <span style="color: var(--primary);">✓</span>
               <span>预计市场规模：百亿级</span>
             </li>
-            <li style="display: flex; align-items: flex-start; gap: 10px; margin-bottom: 10px; font-size: 14px; color: var(--text-secondary);">
+            <li>
               <span style="color: var(--primary);">✓</span>
               <span>目标客户：高净值家庭、名人</span>
             </li>
-            <li style="display: flex; align-items: flex-start; gap: 10px; font-size: 14px; color: var(--text-secondary);">
+            <li>
               <span style="color: var(--primary);">✓</span>
               <span>收费模式：一次性+存储维护费</span>
             </li>
           </ul>
         </div>
         
-        <div style="background: var(--bg-primary); border-radius: 16px; padding: 30px; border: 1px solid var(--border);">
-          <div style="font-size: 32px; margin-bottom: 20px;">🏢</div>
-          <h3 style="font-size: 20px; margin-bottom: 15px;">企业知识传承</h3>
-          <p style="font-size: 15px; color: var(--text-secondary); margin-bottom: 20px;">
+        <div class="business-card">
+          <div class="business-emoji">🏢</div>
+          <h3 class="business-title">企业知识传承</h3>
+          <p class="business-description">
             为公司创始人、资深专家创建数字分身，使其经验和决策思维可以被保存并应用于未来的企业决策中。作为高价值B2B服务，按照规模和复杂度收费，解决企业核心人才流失问题。
           </p>
-          <ul style="list-style: none; margin-bottom: 20px;">
-            <li style="display: flex; align-items: flex-start; gap: 10px; margin-bottom: 10px; font-size: 14px; color: var(--text-secondary);">
+          <ul class="business-features">
+            <li>
               <span style="color: var(--primary);">✓</span>
               <span>预计市场规模：千亿级</span>
             </li>
-            <li style="display: flex; align-items: flex-start; gap: 10px; margin-bottom: 10px; font-size: 14px; color: var(--text-secondary);">
+            <li>
               <span style="color: var(--primary);">✓</span>
               <span>目标客户：大型企业、专业机构</span>
             </li>
-            <li style="display: flex; align-items: flex-start; gap: 10px; font-size: 14px; color: var(--text-secondary);">
+            <li>
               <span style="color: var(--primary);">✓</span>
               <span>收费模式：企业级订阅+定制服务</span>
             </li>
           </ul>
         </div>
         
-        <div style="background: var(--bg-primary); border-radius: 16px; padding: 30px; border: 1px solid var(--border);">
-          <div style="font-size: 32px; margin-bottom: 20px;">💕</div>
-          <h3 style="font-size: 20px; margin-bottom: 15px;">个性化匹配数字陪伴</h3>
-          <p style="font-size: 15px; color: var(--text-secondary); margin-bottom: 20px;">
+        <div class="business-card">
+          <div class="business-emoji">💕</div>
+          <h3 class="business-title">个性化匹配数字陪伴</h3>
+          <p class="business-description">
             基于心理学匹配算法，将一个人的数字分身与另一个有需求的个体匹配，提供高质量的情感陪伴与支持，双方需共同同意参与，创造有意义的数字关系。
           </p>
-          <ul style="list-style: none; margin-bottom: 20px;">
-            <li style="display: flex; align-items: flex-start; gap: 10px; margin-bottom: 10px; font-size: 14px; color: var(--text-secondary);">
+          <ul class="business-features">
+            <li>
               <span style="color: var(--primary);">✓</span>
               <span>预计市场规模：千亿级</span>
             </li>
-            <li style="display: flex; align-items: flex-start; gap: 10px; margin-bottom: 10px; font-size: 14px; color: var(--text-secondary);">
+            <li>
               <span style="color: var(--primary);">✓</span>
               <span>目标客户：需要情感支持的个人</span>
             </li>
-            <li style="display: flex; align-items: flex-start; gap: 10px; font-size: 14px; color: var(--text-secondary);">
+            <li>
               <span style="color: var(--primary);">✓</span>
               <span>收费模式：¥100/月订阅服务</span>
             </li>
           </ul>
         </div>
         
-        <div style="background: var(--bg-primary); border-radius: 16px; padding: 30px; border: 1px solid var(--border);">
-          <div style="font-size: 32px; margin-bottom: 20px;">🧠</div>
-          <h3 style="font-size: 20px; margin-bottom: 15px;">心理咨询培训</h3>
-          <p style="font-size: 15px; color: var(--text-secondary); margin-bottom: 20px;">
+        <div class="business-card">
+          <div class="business-emoji">🧠</div>
+          <h3 class="business-title">心理咨询培训</h3>
+          <p class="business-description">
             克隆不同的心理疾病个体，用于心理咨询师培训，打造安全的模拟环境，让专业人士能够练习各种复杂心理状态的治疗方案，大幅提升培训效率和治疗成功率。
           </p>
-          <ul style="list-style: none; margin-bottom: 20px;">
-            <li style="display: flex; align-items: flex-start; gap: 10px; margin-bottom: 10px; font-size: 14px; color: var(--text-secondary);">
+          <ul class="business-features">
+            <li>
               <span style="color: var(--primary);">✓</span>
               <span>预计市场规模：百亿级</span>
             </li>
-            <li style="display: flex; align-items: flex-start; gap: 10px; margin-bottom: 10px; font-size: 14px; color: var(--text-secondary);">
+            <li>
               <span style="color: var(--primary);">✓</span>
               <span>目标客户：医学院校、心理机构</span>
             </li>
-            <li style="display: flex; align-items: flex-start; gap: 10px; font-size: 14px; color: var(--text-secondary);">
+            <li>
               <span style="color: var(--primary);">✓</span>
               <span>收费模式：SaaS+专业版授权</span>
             </li>
           </ul>
         </div>
         
-        <div style="background: var(--bg-primary); border-radius: 16px; padding: 30px; border: 1px solid var(--border);">
-          <div style="font-size: 32px; margin-bottom: 20px;">🌍</div>
-          <h3 style="font-size: 20px; margin-bottom: 15px;">元宇宙历史体验</h3>
-          <p style="font-size: 15px; color: var(--text-secondary); margin-bottom: 20px;">
+        <div class="business-card">
+          <div class="business-emoji">🌍</div>
+          <h3 class="business-title">元宇宙历史体验</h3>
+          <p class="business-description">
             收集不同年代、不同文化背景的人物数字分身，构建沉浸式历史场景和教育平台，让用户能与各个时代的"真实"人物互动，创造如《西部世界》般的沉浸体验。
           </p>
-          <ul style="list-style: none; margin-bottom: 20px;">
-            <li style="display: flex; align-items: flex-start; gap: 10px; margin-bottom: 10px; font-size: 14px; color: var(--text-secondary);">
+          <ul class="business-features">
+            <li>
               <span style="color: var(--primary);">✓</span>
               <span>预计市场规模：千亿级</span>
             </li>
-            <li style="display: flex; align-items: flex-start; gap: 10px; margin-bottom: 10px; font-size: 14px; color: var(--text-secondary);">
+            <li>
               <span style="color: var(--primary);">✓</span>
               <span>目标客户：教育机构、游戏公司、文化产业</span>
             </li>
-            <li style="display: flex; align-items: flex-start; gap: 10px; font-size: 14px; color: var(--text-secondary);">
+            <li>
               <span style="color: var(--primary);">✓</span>
               <span>收费模式：IP授权+内容订阅+平台分成</span>
             </li>
@@ -985,13 +1209,13 @@
         <p class="section-subtitle">脑岛基于神经认知科学与前沿AI的融合，通过多阶段数据采集与建模，实现意识的数字化延续</p>
       </div>
       
-      <div style="background: var(--bg-secondary); border-radius: 16px; padding: 30px; border: 1px solid var(--border); margin-bottom: 40px;">
-        <h3 style="font-size: 22px; margin-bottom: 20px;">脑岛数字意识建模流程</h3>
+      <div class="tech-container">
+        <h3 class="tech-title">脑岛数字意识建模流程</h3>
         
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;">
-          <div style="padding: 20px; background: rgba(93, 63, 211, 0.05); border-radius: 12px;">
-            <h4 style="font-size: 18px; margin-bottom: 10px; color: var(--primary);">1. 多维数据采集</h4>
-            <p style="font-size: 14px; color: var(--text-secondary);">
+        <div class="tech-grid">
+          <div class="tech-step">
+            <h4 class="tech-step-title">1. 多维数据采集</h4>
+            <p class="tech-step-description">
               • 结构化深度访谈 (2~6小时)<br>
               • 认知功能测试矩阵<br>
               • 情感反应模式分析<br>
@@ -999,9 +1223,9 @@
             </p>
           </div>
           
-          <div style="padding: 20px; background: rgba(93, 63, 211, 0.05); border-radius: 12px;">
-            <h4 style="font-size: 18px; margin-bottom: 10px; color: var(--primary);">2. 神经认知建模</h4>
-            <p style="font-size: 14px; color: var(--text-secondary);">
+          <div class="tech-step">
+            <h4 class="tech-step-title">2. 神经认知建模</h4>
+            <p class="tech-step-description">
               • 个性化认知框架构建<br>
               • 深度学习知识图谱<br>
               • 思维模式分析与重建<br>
@@ -1010,9 +1234,9 @@
             </p>
           </div>
           
-          <div style="padding: 20px; background: rgba(93, 63, 211, 0.05); border-radius: 12px;">
-            <h4 style="font-size: 18px; margin-bottom: 10px; color: var(--primary);">3. 意识合成与优化</h4>
-            <p style="font-size: 14px; color: var(--text-secondary);">
+          <div class="tech-step">
+            <h4 class="tech-step-title">3. 意识合成与优化</h4>
+            <p class="tech-step-description">
               • 专有大规模语言模型训练<br>
               • 记忆权重与关联网络构建<br>
               • 思维逻辑推理系统校准<br>
@@ -1021,9 +1245,9 @@
             </p>
           </div>
           
-          <div style="padding: 20px; background: rgba(93, 63, 211, 0.05); border-radius: 12px;">
-            <h4 style="font-size: 18px; margin-bottom: 10px; color: var(--primary);">4. 数字分身部署</h4>
-            <p style="font-size: 14px; color: var(--text-secondary);">
+          <div class="tech-step">
+            <h4 class="tech-step-title">4. 数字分身部署</h4>
+            <p class="tech-step-description">
               • 军事级加密安全系统<br>
               • 多平台交互接口<br>
               • VR/AR沉浸式体验<br>
@@ -1033,112 +1257,224 @@
           </div>
         </div>
         
-        <div style="margin-top: 30px; border-top: 1px solid var(--border); padding-top: 30px;">
-          <h4 style="font-size: 18px; margin-bottom: 15px;">脑岛技术优势</h4>
-          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;">
-            <div style="display: flex; align-items: flex-start; gap: 10px;">
-              <div style="color: var(--primary); font-size: 20px; line-height: 1;">⚡</div>
+        <div class="tech-advantages">
+          <h4 class="tech-advantages-title">脑岛技术优势</h4>
+          <div class="advantages-grid">
+            <div class="advantage-item">
+              <div class="advantage-icon">⚡</div>
               <div>
-                <h5 style="font-size: 16px; margin-bottom: 5px;">99.7%意识还原率</h5>
-                <p style="font-size: 14px; color: var(--text-secondary);">独创的神经映射技术实现了近乎完美的思维模式复刻</p>
+                <h5 class="advantage-title">99.7%意识还原率</h5>
+                <p class="advantage-description">独创的神经映射技术实现了近乎完美的思维模式复刻</p>
               </div>
             </div>
             
-            <div style="display: flex; align-items: flex-start; gap: 10px;">
-              <div style="color: var(--primary); font-size: 20px; line-height: 1;">🔒</div>
+            <div class="advantage-item">
+              <div class="advantage-icon">🔒</div>
               <div>
-                <h5 style="font-size: 16px; margin-bottom: 5px;">军事级数据安全</h5>
-                <p style="font-size: 14px; color: var(--text-secondary);">多层加密与区块链存储确保个人意识数据绝对安全</p>
+                <h5 class="advantage-title">军事级数据安全</h5>
+                <p class="advantage-description">多层加密与区块链存储确保个人意识数据绝对安全</p>
               </div>
             </div>
             
-            <div style="display: flex; align-items: flex-start; gap: 10px;">
-              <div style="color: var(--primary); font-size: 20px; line-height: 1;">🧠</div>
+            <div class="advantage-item">
+              <div class="advantage-icon">🧠</div>
               <div>
-                <h5 style="font-size: 16px; margin-bottom: 5px;">动态学习系统</h5>
-                <p style="font-size: 14px; color: var(--text-secondary);">数字分身能够在有限范围内持续学习与适应新信息</p>
+                <h5 class="advantage-title">动态学习系统</h5>
+                <p class="advantage-description">数字分身能够在有限范围内持续学习与适应新信息</p>
               </div>
             </div>
             
-            <div style="display: flex; align-items: flex-start; gap: 10px;">
-              <div style="color: var(--primary); font-size: 20px; line-height: 1;">⚙️</div>
+            <div class="advantage-item">
+              <div class="advantage-icon">⚙️</div>
               <div>
-                <h5 style="font-size: 16px; margin-bottom: 5px;">全平台兼容</h5>
-                <p style="font-size: 14px; color: var(--text-secondary);">支持智能手机、电脑、VR/AR设备等多平台访问与交互</p>
+                <h5 class="advantage-title">全平台兼容</h5>
+                <p class="advantage-description">支持智能手机、电脑、VR/AR设备等多平台访问与交互</p>
               </div>
             </div>
           </div>
         </div>
       </div>
       
-      <div style="text-align: center; margin-top: 30px;">
-        <a href="#tech-whitepaper" class="btn btn-outline" style="margin-right: 15px;">下载技术白皮书</a>
+      <div style="text-align: center; margin-top: 1.875rem;">
+        <a href="#tech-whitepaper" class="btn btn-outline" style="margin-right: 0.9375rem;">下载技术白皮书</a>
         <a href="#tech-demo" class="btn btn-primary">预约技术演示</a>
       </div>
     </div>
   </section>
 
-
-    <!-- Footer -->
-    <footer class="footer" style="background: #0a0a0a; padding: 40px 0; margin-top: 0; border-top: 1px solid rgba(255, 255, 255, 0.1);">
-      <div class="container">
-        <div class="footer-grid" style="display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 40px; margin-bottom: 30px;">
-          <div class="footer-brand">
-            <div class="logo" style="display: flex; align-items: center; gap: 10px; margin-bottom: 15px;">
-              <div class="logo-icon" style="width: 36px; height: 36px; border-radius: 8px; background: #5D3FD3; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">B</div>
-              <div class="logo-text" style="font-size: 22px; font-weight: 800; background: linear-gradient(135deg, #5D3FD3, #A569BD); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;">脑岛</div>
-            </div>
-            
-            <p class="footer-description" style="color: rgba(255, 255, 255, 0.7); font-size: 14px; line-height: 1.6; margin-bottom: 20px;">
-              脑岛科技是全球领先的真人多模态数据提供商，致力于通过尖端人工智能与神经科学的融合，实现人类智慧的永久保存与传承。
-            </p>
-            
-            <div class="footer-social" style="display: flex; gap: 12px;">
-              <a href="#" class="social-link" style="width: 32px; height: 32px; border-radius: 50%; background: #111; display: flex; align-items: center; justify-content: center; color: rgba(255, 255, 255, 0.7); text-decoration: none;">微</a>
-              <a href="#" class="social-link" style="width: 32px; height: 32px; border-radius: 50%; background: #111; display: flex; align-items: center; justify-content: center; color: rgba(255, 255, 255, 0.7); text-decoration: none;">微</a>
-              <a href="#" class="social-link" style="width: 32px; height: 32px; border-radius: 50%; background: #111; display: flex; align-items: center; justify-content: center; color: rgba(255, 255, 255, 0.7); text-decoration: none;">知</a>
-              <a href="#" class="social-link" style="width: 32px; height: 32px; border-radius: 50%; background: #111; display: flex; align-items: center; justify-content: center; color: rgba(255, 255, 255, 0.7); text-decoration: none;">B</a>
-            </div>
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <div class="logo">
+            <div class="logo-icon">B</div>
+            <div class="logo-text">脑岛</div>
           </div>
           
-          <div class="footer-links">
-            <h4 style="font-size: 16px; font-weight: 600; margin-bottom: 15px; color: #fff;">解决方案</h4>
-            <ul style="list-style: none; padding: 0;">
-              <li style="margin-bottom: 8px;"><a href="#" style="color: rgba(255, 255, 255, 0.7); text-decoration: none; font-size: 14px;">个人传承</a></li>
-              <li style="margin-bottom: 8px;"><a href="#" style="color: rgba(255, 255, 255, 0.7); text-decoration: none; font-size: 14px;">家族历史保存</a></li>
-              <li style="margin-bottom: 8px;"><a href="#" style="color: rgba(255, 255, 255, 0.7); text-decoration: none; font-size: 14px;">企业知识银行</a></li>
-              <li style="margin-bottom: 8px;"><a href="#" style="color: rgba(255, 255, 255, 0.7); text-decoration: none; font-size: 14px;">教育专家复制</a></li>
-            </ul>
-          </div>
+          <p class="footer-description">
+            脑岛科技是全球领先的真人多模态数据提供商，致力于通过尖端人工智能与神经科学的融合，实现人类智慧的永久保存与传承。
+          </p>
           
-          <div class="footer-links">
-            <h4 style="font-size: 16px; font-weight: 600; margin-bottom: 15px; color: #fff;">关于我们</h4>
-            <ul style="list-style: none; padding: 0;">
-              <li style="margin-bottom: 8px;"><a href="#" style="color: rgba(255, 255, 255, 0.7); text-decoration: none; font-size: 14px;">公司简介</a></li>
-              <li style="margin-bottom: 8px;"><a href="#" style="color: rgba(255, 255, 255, 0.7); text-decoration: none; font-size: 14px;">核心技术</a></li>
-              <li style="margin-bottom: 8px;"><a href="#" style="color: rgba(255, 255, 255, 0.7); text-decoration: none; font-size: 14px;">研究团队</a></li>
-              <li style="margin-bottom: 8px;"><a href="#" style="color: rgba(255, 255, 255, 0.7); text-decoration: none; font-size: 14px;">加入我们</a></li>
-            </ul>
-          </div>
-          
-          <div class="footer-links">
-            <h4 style="font-size: 16px; font-weight: 600; margin-bottom: 15px; color: #fff;">资源中心</h4>
-            <ul style="list-style: none; padding: 0;">
-              <li style="margin-bottom: 8px;"><a href="#" style="color: rgba(255, 255, 255, 0.7); text-decoration: none; font-size: 14px;">技术白皮书</a></li>
-              <li style="margin-bottom: 8px;"><a href="#" style="color: rgba(255, 255, 255, 0.7); text-decoration: none; font-size: 14px;">用户案例</a></li>
-              <li style="margin-bottom: 8px;"><a href="#" style="color: rgba(255, 255, 255, 0.7); text-decoration: none; font-size: 14px;">常见问题</a></li>
-              <li style="margin-bottom: 8px;"><a href="#" style="color: rgba(255, 255, 255, 0.7); text-decoration: none; font-size: 14px;">联系我们</a></li>
-            </ul>
+          <div class="footer-social">
+            <a href="#" class="social-link">微</a>
+            <a href="#" class="social-link">微</a>
+            <a href="#" class="social-link">知</a>
+            <a href="#" class="social-link">B</a>
           </div>
         </div>
         
-        <div class="footer-bottom" style="display: flex; justify-content: space-between; align-items: center; padding-top: 20px; border-top: 1px solid rgba(255, 255, 255, 0.1);">
-          <p class="copyright" style="color: rgba(255, 255, 255, 0.7); font-size: 14px;">© 2025 脑岛科技 Brain Island Technology. 保留所有权利。</p>
-          <div class="footer-legal" style="display: flex; gap: 20px;">
-            <a href="#" class="legal-link" style="color: rgba(255, 255, 255, 0.7); text-decoration: none; font-size: 14px;">隐私政策</a>
-            <a href="#" class="legal-link" style="color: rgba(255, 255, 255, 0.7); text-decoration: none; font-size: 14px;">服务条款</a>
-            <a href="#" class="legal-link" style="color: rgba(255, 255, 255, 0.7); text-decoration: none; font-size: 14px;">数据安全</a>
-          </div>
+        <div class="footer-links">
+          <h4>解决方案</h4>
+          <ul>
+            <li><a href="#">个人传承</a></li>
+            <li><a href="#">家族历史保存</a></li>
+            <li><a href="#">企业知识银行</a></li>
+            <li><a href="#">教育专家复制</a></li>
+          </ul>
+        </div>
+        
+        <div class="footer-links">
+          <h4>关于我们</h4>
+          <ul>
+            <li><a href="#">公司简介</a></li>
+            <li><a href="#">核心技术</a></li>
+            <li><a href="#">研究团队</a></li>
+            <li><a href="#">加入我们</a></li>
+          </ul>
+        </div>
+        
+        <div class="footer-links">
+          <h4>资源中心</h4>
+          <ul>
+            <li><a href="#">技术白皮书</a></li>
+            <li><a href="#">用户案例</a></li>
+            <li><a href="#">常见问题</a></li>
+            <li><a href="#">联系我们</a></li>
+          </ul>
         </div>
       </div>
-    </footer>
+      
+      <div class="footer-bottom">
+        <p class="copyright">© 2025 脑岛科技 Brain Island Technology. 保留所有权利。</p>
+        <div class="footer-legal">
+          <a href="#" class="legal-link">隐私政策</a>
+          <a href="#" class="legal-link">服务条款</a>
+          <a href="#" class="legal-link">数据安全</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // 动态聊天功能
+    document.addEventListener('DOMContentLoaded', function() {
+      const chatInput = document.getElementById('chat-input');
+      const sendBtn = document.getElementById('send-btn');
+      const chatContainer = document.getElementById('dynamic-chat');
+      
+      // 预设的陈教授回复内容
+      const professorResponses = [
+        "神经可塑性是大脑适应环境变化的关键机制。我的研究表明，认知干预与非侵入式脑刺激的结合能够产生协同效应，特别是在老年认知功能恢复方面。",
+        "我们在2019年完成的一项研究发现，TDCS结合工作记忆训练可以显著提高阿尔茨海默症早期患者的执行功能，效果持续时间超过传统单一干预。",
+        "从理论上讲，脑刺激技术能够增强突触可塑性，为认知训练创造一个更加有利的神经环境。但需要注意的是，参数设置和个体差异会显著影响效果。",
+        "我建议你们考虑将功能性近红外光谱技术(fNIRS)整合到研究中，它可以提供实时的神经活动监测，帮助优化刺激参数，我在2021年发表的论文详细讨论了这点。",
+        "数字分身技术正是基于神经可塑性的原理，通过模拟大脑的学习机制，实现思维模式的数字化复刻。这与你们研究的方向有许多共通之处。"
+      ];
+      
+      // 随机获取回复
+      function getRandomResponse() {
+        const randomIndex = Math.floor(Math.random() * professorResponses.length);
+        return professorResponses[randomIndex];
+      }
+      
+      // 获取当前时间
+      function getCurrentTime() {
+        const now = new Date();
+        const hours = now.getHours().toString().padStart(2, '0');
+        const minutes = now.getMinutes().toString().padStart(2, '0');
+        return `${hours}:${minutes}`;
+      }
+      
+      // 添加消息到聊天框
+      function addMessage(content, isOutgoing = false) {
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `demo-message ${isOutgoing ? 'message-outgoing' : 'message-incoming'}`;
+        
+        const currentTime = getCurrentTime();
+        
+        messageDiv.innerHTML = `
+          ${content}
+          <div class="message-meta">
+            <span>${currentTime}</span>
+          </div>
+        `;
+        
+        chatContainer.appendChild(messageDiv);
+        chatContainer.scrollTop = chatContainer.scrollHeight;
+      }
+      
+      // 发送消息处理
+      function sendMessage() {
+        const message = chatInput.value.trim();
+        if (message) {
+          // 添加用户消息
+          addMessage(message, true);
+          chatInput.value = '';
+          
+          // 模拟"正在输入"延迟
+          setTimeout(() => {
+            // 添加陈教授回复
+            const response = getRandomResponse();
+            addMessage(response, false);
+          }, 1500);
+        }
+      }
+      
+      // 绑定发送按钮点击事件
+      sendBtn.addEventListener('click', sendMessage);
+      
+      // 绑定输入框回车事件
+      chatInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+          sendMessage();
+        }
+      });
+      
+      // 移动端菜单功能
+      const hamburgerBtn = document.getElementById('hamburger-btn');
+      const mobileMenu = document.getElementById('mobile-menu');
+      const overlay = document.getElementById('overlay');
+      
+      hamburgerBtn.addEventListener('click', function() {
+        hamburgerBtn.classList.toggle('open');
+        mobileMenu.classList.toggle('open');
+        overlay.classList.toggle('active');
+        document.body.style.overflow = mobileMenu.classList.contains('open') ? 'hidden' : '';
+      });
+      
+      overlay.addEventListener('click', function() {
+        hamburgerBtn.classList.remove('open');
+        mobileMenu.classList.remove('open');
+        overlay.classList.remove('active');
+        document.body.style.overflow = '';
+      });
+      
+      // 移动端菜单链接点击事件
+      const mobileLinks = mobileMenu.querySelectorAll('a');
+      mobileLinks.forEach(link => {
+        link.addEventListener('click', function() {
+          hamburgerBtn.classList.remove('open');
+          mobileMenu.classList.remove('open');
+          overlay.classList.remove('active');
+          document.body.style.overflow = '';
+        });
+      });
+    });
+  </script>
+</body>
+</html>check">✓</span>
+              <span>2小时深度访谈记录</span>
+            </li>
+            <li>
+              <span class="feature-
