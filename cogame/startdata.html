@@ -67,17 +67,11 @@
             border-radius: 5px;
             transition: all 0.3s;
             box-shadow: 0 0 10px #6366f1;
+            text-decoration: none;
+            display: inline-block;
         }
         .neon-button:hover {
             box-shadow: 0 0 20px #a855f7;
-        }
-        iframe {
-            width: 100%;
-            height: 400px;
-            border: none;
-            border-radius: 10px;
-            margin-top: 20px;
-            background: rgba(0, 0, 0, 0.2);
         }
     </style>
 </head>
@@ -88,23 +82,19 @@
         
         <div class="tabs">
             <div class="tab active" data-tab="interview">语音访谈</div>
-        
             <div class="tab" data-tab="cognitive">认知测试</div>
         </div>
         
         <div class="content active" id="interview">
             <h2>语音访谈</h2>
             <p>通过对话收集您的人生经历、价值观和思考方式</p>
-            <button class="neon-button" onclick="startInterview()">🚀 开始AI访谈</button>
-            <div id="interview-content"></div>
+            <a href="https://example.com/interview" class="neon-button" target="_blank">🚀 开始AI访谈</a>
         </div>
-        
         
         <div class="content" id="cognitive">
             <h2>认知测试</h2>
             <p>评估您的思维模式、认知偏好和决策风格</p>
-            <button class="neon-button" onclick="startCognitiveTest()">⚡ 开始测试</button>
-            <div id="cognitive-content"></div>
+            <a href="https://psywalkeryanxy.github.io/cogame/homepage_psyquestionnaire.html" class="neon-button" target="_blank">⚡ 开始测试</a>
         </div>
     </div>
     
@@ -118,28 +108,6 @@
                 document.getElementById(this.dataset.tab).classList.add('active');
             });
         });
-
-        // 外部链接变量
-        const INTERVIEW_URL = "https://example.com/interview";
- 
-        const COGNITIVE_URL = "https://psywalkeryanxy.github.io/cogame/homepage_psyquestionnaire.html";
-
-        function loadExternalContent(url, containerId) {
-            const container = document.getElementById(containerId);
-            const iframe = document.createElement('iframe');
-            iframe.src = url;
-            iframe.allowFullscreen = true;
-            container.innerHTML = '';
-            container.appendChild(iframe);
-        }
-
-        function startInterview() {
-            loadExternalContent(INTERVIEW_URL, 'interview-content');
-        }
-
-        function startCognitiveTest() {
-            loadExternalContent(COGNITIVE_URL, 'cognitive-content');
-        }
     </script>
 </body>
 </html>
