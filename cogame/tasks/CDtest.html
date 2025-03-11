@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>库欣综合征症状测试 (Cushing Symptom Test)</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            color: #333;
+            background-color: #f9f9f9;
+        }
+        h1, h2 {
+            color: #2c3e50;
+            margin-top: 20px;
+            text-align: center;
+        }
+        .instructions {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            border: 1px solid #e9ecef;
+        }
+        form {
+            margin-top: 30px;
+            background-color: white;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .question {
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+        }
+        .question-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .options-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid #eee;
+        }
+        .option-header {
+            width: 18%;
+            text-align: center;
+            font-weight: bold;
+            font-size: 14px;
+        }
+        .options-grid {
+            display: flex;
+            justify-content: space-between;
+        }
+        .option-grid {
+            width: 18%;
+            text-align: center;
+        }
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 20px;
+            width: 100%;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        .results {
+            margin-top: 30px;
+            display: none;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .score-display {
+            text-align: center;
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+        .score-value {
+            font-weight: bold;
+            color: #3498db;
+        }
+        .interpretation {
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 20px;
+            text-align: center;
+        }
+        .severity {
+            font-weight: bold;
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+        .mild {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .moderate {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+        .severe {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+        .participant-info {
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .participant-details {
+            color: #718096;
+        }
+        .return-btn {
+            color: #3182ce;
+            font-size: 0.875rem;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+            width: auto;
+        }
+        .download-btn {
+            background-color: #10b981;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 20px;
+            transition: background-color 0.3s;
+            display: none;
+        }
+        .download-btn:hover {
+            background-color: #059669;
+        }
+        .summary-table {
+            width: 100%;
+            margin-top: 20px;
+        }
+        .domain-name {
+            font-weight: bold;
+        }
+        .domain-score {
+            text-align: center;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <!-- 参与者信息显示 -->
+    <div class="participant-info">
+        <div class="participant-details">
+            <p>参与者: <span id="participant-name" style="font-weight: 500;"></span></p>
+            <p>ID: <span id="participant-id" style="font-weight: 500;"></span></p>
+        </div>
+        <button class="return-btn" id="return-home" onclick="window.location.href='../homepage_cogame.html'">
+            返回主页
+        </button>
+    </div>
+
+    <h1>库欣综合征症状测试 (Cushing Symptom Test)</h1>
+    
+    <div class="instructions">
+        <p>这是一个12个问题组成的量表，请仔细阅读每个条目，然后根据最近一个月之内的情况对你影响的实际感觉，选择最符合的一项。答案没有对错之分，不要对每个陈述花太多时间去考虑，但所给的回答应该是最恰当地体现你现在的感觉。请注意不要漏题。</p>
+    </div>
+    
+    <form id="cushingForm">
+        <div class="options-header">
+            <div class="option-header" style="width: 44%;"></div>
+            <div class="option-header">总是</div>
+            <div class="option-header">经常</div>
+            <div class="option-header">有时</div>
+            <div class="option-header">很少</div>
+            <div class="option-header">没有</div>
+        </div>
+
+        <div class="question">
+            <div class="question-title">1. 我有睡眠障碍（入睡困难、夜间易醒等等）</div>
+            <div class="options-grid">
+                <div class="option-grid" style="width: 44%;"></div>
+                <div class="option-grid"><input type="radio" name="q1" value="4" required></div>
+                <div class="option-grid"><input type="radio" name="q1" value="3"></div>
+                <div class="option-grid"><input type="radio" name="q1" value="2"></div>
+                <div class="option-grid"><input type="radio" name="q1" value="1"></div>
+                <div class="option-grid"><input type="radio" name="q1" value="0"></div>
+            </div>
+        </div>
+
+        <div class="question">
+            <div class="question-title">2. 我有疼痛，使我无法过正常的生活</div>
+            <div class="options-grid">
+                <div class="option-grid" style="width: 44%;"></div>
+                <div class="option-grid"><input type="radio" name="q2" value="4" required></div>
+                <div class="option-grid"><input type="radio" name="q2" value="3"></div>
+                <div class="option-grid"><input type="radio" name="q2" value="2"></div>
+                <div class="option-grid"><input type="radio" name="q2" value="1"></div>
+                <div class="option-grid"><input type="radio" name="q2" value="0"></div>
+            </div>
+        </div>
+
+        <div class="question">
+            <div class="question-title">3. 我的伤口不容易愈合</div>
+            <div class="options-grid">
+                <div class="option-grid" style="width: 44%;"></div>
+                <div class="option-grid"><input type="radio" name="q3" value="4" required></div>
+                <div class="option-grid"><input type="radio" name="q3" value="3"></div>
+                <div class="option-grid"><input type="radio" name="q3" value="2"></div>
+                <div class="option-grid"><input type="radio" name="q3" value="1"></div>
+                <div class="option-grid"><input type="radio" name="q3" value="0"></div>
+            </div>
+        </div>
+
+        <div class="question">
+            <div class="question-title">4. 我身上常有瘀斑</div>
+            <div class="options-grid">
+                <div class="option-grid" style="width: 44%;"></div>
+                <div class="option-grid"><input type="radio" name="q4" value="4" required></div>
+                <div class="option-grid"><input type="radio" name="q4" value="3"></div>
+                <div class="option-grid"><input type="radio" name="q4" value="2"></div>
+                <div class="option-grid"><input type="radio" name="q4" value="1"></div>
+                <div class="option-grid"><input type="radio" name="q4" value="0"></div>
+            </div>
+        </div>
+
+        <div class="question">
+            <div class="question-title">5. 我容易烦躁，情绪较波动、易发怒</div>
+            <div class="options-grid">
+                <div class="option-grid" style="width: 44%;"></div>
+                <div class="option-grid"><input type="radio" name="q5" value="4" required></div>
+                <div class="option-grid"><input type="radio" name="q5" value="3"></div>
+                <div class="option-grid"><input type="radio" name="q5" value="2"></div>
+                <div class="option-grid"><input type="radio" name="q5" value="1"></div>
+                <div class="option-grid"><input type="radio" name="q5" value="0"></div>
+            </div>
+        </div>
+
+        <div class="question">
+            <div class="question-title">6. 我缺乏自信和安全感</div>
+            <div class="options-grid">
+                <div class="option-grid" style="width: 44%;"></div>
+                <div class="option-grid"><input type="radio" name="q6" value="4" required></div>
+                <div class="option-grid"><input type="radio" name="q6" value="3"></div>
+                <div class="option-grid"><input type="radio" name="q6" value="2"></div>
+                <div class="option-grid"><input type="radio" name="q6" value="1"></div>
+                <div class="option-grid"><input type="radio" name="q6" value="0"></div>
+            </div>
+        </div>
+
+        <div class="question">
+            <div class="question-title">7. 我很担心因疾病导致的容貌和身体的变化</div>
+            <div class="options-grid">
+                <div class="option-grid" style="width: 44%;"></div>
+                <div class="option-grid"><input type="radio" name="q7" value="4" required></div>
+                <div class="option-grid"><input type="radio" name="q7" value="3"></div>
+                <div class="option-grid"><input type="radio" name="q7" value="2"></div>
+                <div class="option-grid"><input type="radio" name="q7" value="1"></div>
+                <div class="option-grid"><input type="radio" name="q7" value="0"></div>
+            </div>
+        </div>
+
+        <div class="question">
+            <div class="question-title">8. 我觉得不太想出门，或见亲戚或朋友</div>
+            <div class="options-grid">
+                <div class="option-grid" style="width: 44%;"></div>
+                <div class="option-grid"><input type="radio" name="q8" value="4" required></div>
+                <div class="option-grid"><input type="radio" name="q8" value="3"></div>
+                <div class="option-grid"><input type="radio" name="q8" value="2"></div>
+                <div class="option-grid"><input type="radio" name="q8" value="1"></div>
+                <div class="option-grid"><input type="radio" name="q8" value="0"></div>
+            </div>
+        </div>
+
+        <div class="question">
+            <div class="question-title">9. 由于我的疾病，我不得不放弃我的社交或休闲活动</div>
+            <div class="options-grid">
+                <div class="option-grid" style="width: 44%;"></div>
+                <div class="option-grid"><input type="radio" name="q9" value="4" required></div>
+                <div class="option-grid"><input type="radio" name="q9" value="3"></div>
+                <div class="option-grid"><input type="radio" name="q9" value="2"></div>
+                <div class="option-grid"><input type="radio" name="q9" value="1"></div>
+                <div class="option-grid"><input type="radio" name="q9" value="0"></div>
+            </div>
+        </div>
+
+        <div class="question">
+            <div class="question-title">10. 我的日常活动（如工作或学习），受到疾病影响</div>
+            <div class="options-grid">
+                <div class="option-grid" style="width: 44%;"></div>
+                <div class="option-grid"><input type="radio" name="q10" value="4" required></div>
+                <div class="option-grid"><input type="radio" name="q10" value="3"></div>
+                <div class="option-grid"><input type="radio" name="q10" value="2"></div>
+                <div class="option-grid"><input type="radio" name="q10" value="1"></div>
+                <div class="option-grid"><input type="radio" name="q10" value="0"></div>
+            </div>
+        </div>
+
+        <div class="question">
+            <div class="question-title">11. 我很难记住事情</div>
+            <div class="options-grid">
+                <div class="option-grid" style="width: 44%;"></div>
+                <div class="option-grid"><input type="radio" name="q11" value="4" required></div>
+                <div class="option-grid"><input type="radio" name="q11" value="3"></div>
+                <div class="option-grid"><input type="radio" name="q11" value="2"></div>
+                <div class="option-grid"><input type="radio" name="q11" value="1"></div>
+                <div class="option-grid"><input type="radio" name="q11" value="0"></div>
+            </div>
+        </div>
+
+        <div class="question">
+            <div class="question-title">12. 我很担心自己未来的健康</div>
+            <div class="options-grid">
+                <div class="option-grid" style="width: 44%;"></div>
+                <div class="option-grid"><input type="radio" name="q12" value="4" required></div>
+                <div class="option-grid"><input type="radio" name="q12" value="3"></div>
+                <div class="option-grid"><input type="radio" name="q12" value="2"></div>
+                <div class="option-grid"><input type="radio" name="q12" value="1"></div>
+                <div class="option-grid"><input type="radio" name="q12" value="0"></div>
+            </div>
+        </div>
+
+        <button type="button" id="calculateBtn">计算结果</button>
+    </form>
+
+    <div class="results" id="resultsSection">
+        <h2>Cushing Symptom Test 得分结果</h2>
+        
+        <div class="score-display">
+            总分: <span id="totalScore" class="score-value"></span> / 48
+        </div>
+        
+        <table class="summary-table">
+            <tr>
+                <th>领域</th>
+                <th>分数</th>
+                <th>最高可能分</th>
+            </tr>
+            <tr>
+                <td class="domain-name">身体症状 (问题1-4)</td>
+                <td class="domain-score" id="physicalScore"></td>
+                <td class="domain-score">16</td>
+            </tr>
+            <tr>
+                <td class="domain-name">心理症状 (问题5-7, 11-12)</td>
+                <td class="domain-score" id="psychScore"></td>
+                <td class="domain-score">20</td>
+            </tr>
+            <tr>
+                <td class="domain-name">社会功能 (问题8-10)</td>
+                <td class="domain-score" id="socialScore"></td>
+                <td class="domain-score">12</td>
+            </tr>
+        </table>
+        
+        <div id="interpretationBox" class="interpretation">
+            <div id="severityLabel" class="severity"></div>
+            <div id="interpretationText"></div>
+        </div>
+        
+        <button type="button" id="downloadBtn" class="download-btn">下载数据</button>
+    </div>
+
+    <script>
+        // 用户数据管理类
+        class ParticipantManager {
+            constructor() {
+                this.participantData = this.getParticipantData();
+                this.validateParticipant();
+                this.displayParticipantInfo();
+            }
+
+            getParticipantData() {
+                const urlParams = new URLSearchParams(window.location.search);
+                const urlData = {
+                    participantId: urlParams.get('participantId'),
+                    name: urlParams.get('name'),
+                    age: urlParams.get('age'),
+                    gender: urlParams.get('gender'),
+                    education: urlParams.get('education')
+                };
+
+                const storedData = JSON.parse(localStorage.getItem('participantData'));
+                return urlData.participantId ? urlData : storedData;
+            }
+
+            validateParticipant() {
+                if (!this.participantData || !this.participantData.participantId) {
+                    // 如果没有参与者信息，创建一个默认ID
+                    this.participantData = {
+                        participantId: 'CST_' + Math.floor(Math.random() * 10000),
+                        name: '匿名参与者'
+                    };
+                }
+            }
+
+            displayParticipantInfo() {
+                document.getElementById('participant-name').textContent = this.participantData.name;
+                document.getElementById('participant-id').textContent = this.participantData.participantId;
+            }
+
+            getData() {
+                return this.participantData;
+            }
+        }
+
+        // 初始化参与者管理器
+        const participantManager = new ParticipantManager();
+        
+        // 问卷数据
+        const surveyData = {
+            participant: participantManager.getData(),
+            startTime: new Date().toISOString(),
+            completionTime: null,
+            RT: null,
+            results: {
+                totalScore: null,
+                physicalScore: null,
+                psychScore: null,
+                socialScore: null,
+                interpretation: null,
+                severity: null
+            },
+            answers: {}
+        };
+
+        // 下载数据函数
+function downloadData() {
+    try {
+        const BOM = '\uFEFF';  // 添加BOM，确保中文字符编码正确
+        
+        // 添加基本信息
+        const headers = [
+            'participantId',
+            'name',
+            'age',
+            'gender',
+            'education',
+            'startTime',
+            'completionTime',
+            'RT_ms',
+            'totalScore',
+            'physicalScore',
+            'psychScore',
+            'socialScore',
+            'severity',
+            'interpretation'
+        ];
+
+        // 添加所有问题的答案和题目文本
+        const questionTexts = [
+            '我有睡眠障碍（入睡困难、夜间易醒等等）',
+            '我有疼痛，使我无法过正常的生活',
+            '我的伤口不容易愈合',
+            '我身上常有瘀斑',
+            '我容易烦躁，情绪较波动、易发怒',
+            '我缺乏自信和安全感',
+            '我很担心因疾病导致的容貌和身体的变化',
+            '我觉得不太想出门，或见亲戚或朋友',
+            '由于我的疾病，我不得不放弃我的社交或休闲活动',
+            '我的日常活动（如工作或学习），受到疾病影响',
+            '我很难记住事情',
+            '我很担心自己未来的健康'
+        ];
+
+        for (let i = 1; i <= 12; i++) {
+            headers.push(`q${i}_题目`);
+            headers.push(`q${i}_得分`);
+        }
+
+        // 获取所有值
+        const values = [
+            surveyData.participant.participantId,
+            surveyData.participant.name,
+            surveyData.participant.age || '',
+            surveyData.participant.gender || '',
+            surveyData.participant.education || '',
+            surveyData.startTime,
+            surveyData.completionTime,
+            surveyData.RT,
+            surveyData.results.totalScore,
+            surveyData.results.physicalScore,
+            surveyData.results.psychScore,
+            surveyData.results.socialScore,
+            surveyData.results.severity,
+            surveyData.results.interpretation
+        ];
+
+        // 添加所有问题的题目和答案
+        for (let i = 1; i <= 12; i++) {
+            values.push(questionTexts[i-1]);
+            values.push(surveyData.answers[`q${i}`] || '');
+        }
+
+        const csvContent = BOM + [
+            headers.join(','),
+            values.map(value => {
+                return value && (typeof value === 'string' &&
+                    (value.includes(',') || value.includes('"') || value.includes('\n'))) ?
+                    `"${value.replace(/"/g, '""')}"` : value;
+            }).join(',')
+        ].join('\n');
+
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+        link.download = `CushingSymptomTest_${surveyData.participant.name}_${surveyData.participant.participantId}_${timestamp}.csv`;
+        
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+    } catch (error) {
+        console.error('Error downloading data:', error);
+        alert('下载数据时出错: ' + error.message);
+    }
+}
+
+        // 计算结果函数
+        document.getElementById('calculateBtn').addEventListener('click', function() {
+            // 检查所有必填项
+            const form = document.getElementById('cushingForm');
+            const requiredInputs = form.querySelectorAll('[required]');
+            let allFilled = true;
+            
+            requiredInputs.forEach(input => {
+                if (!input.checked) {
+                    const name = input.name;
+                    const radioGroup = form.querySelectorAll(`input[name="${name}"]:checked`);
+                    if (radioGroup.length === 0) {
+                        allFilled = false;
+                    }
+                }
+            });
+            
+            if (!allFilled) {
+                alert('请回答所有问题');
+                return;
+            }
+            
+            // 记录完成时间和响应时间
+            surveyData.completionTime = new Date().toISOString();
+            surveyData.RT = new Date(surveyData.completionTime) - new Date(surveyData.startTime);
+            
+            // 计算分数
+            let totalScore = 0;
+            let physicalScore = 0;
+            let psychScore = 0;
+            let socialScore = 0;
+            
+            // 记录所有问题的答案
+            for (let i = 1; i <= 12; i++) {
+                const value = parseInt(document.querySelector(`input[name="q${i}"]:checked`).value);
+                surveyData.answers[`q${i}`] = value;
+                totalScore += value;
+                
+                // 计算各领域得分
+                if (i <= 4) {
+                    physicalScore += value; // 身体症状 (问题1-4)
+                } else if (i >= 8 && i <= 10) {
+                    socialScore += value; // 社会功能 (问题8-10)
+                } else {
+                    psychScore += value; // 心理症状 (问题5-7, 11-12)
+                }
+            }
+            
+            // 确定严重程度
+            let interpretation = '';
+            let severity = '';
+            let interpretationClass = '';
+            
+            if (totalScore <= 12) {
+                interpretation = '您的症状水平很低，表明目前库欣综合征的症状对您的影响很小。';
+                severity = '轻微';
+                interpretationClass = 'mild';
+            } else if (totalScore <= 24) {
+                interpretation = '您有中等程度的症状，可能会对日常生活造成一定影响。建议关注症状变化，并定期咨询医生。';
+                severity = '中度';
+                interpretationClass = 'moderate';
+            } else {
+                interpretation = '您的症状水平较高，可能会显著影响您的生活质量。强烈建议尽快咨询专科医生进行全面评估和管理。';
+                severity = '重度';
+                interpretationClass = 'severe';
+            }
+            
+            // 存储结果
+            surveyData.results = {
+                totalScore: totalScore,
+                physicalScore: physicalScore,
+                psychScore: psychScore,
+                socialScore: socialScore,
+                interpretation: interpretation,
+                severity: severity
+            };
+            
+            // 显示结果
+            document.getElementById('totalScore').textContent = totalScore;
+            document.getElementById('physicalScore').textContent = physicalScore;
+            document.getElementById('psychScore').textContent = psychScore;
+            document.getElementById('socialScore').textContent = socialScore;
+            document.getElementById('severityLabel').textContent = severity + '症状';
+            document.getElementById('interpretationText').textContent = interpretation;
+            
+            // 设置解释区域的样式
+            const interpretationBox = document.getElementById('interpretationBox');
+            interpretationBox.className = 'interpretation ' + interpretationClass;
+            
+            // 显示结果区域和下载按钮
+            document.getElementById('resultsSection').style.display = 'block';
+            document.getElementById('downloadBtn').style.display = 'block';
+            
+            // 自动下载数据
+            downloadData();
+            
+            // 滚动到结果部分
+            document.getElementById('resultsSection').scrollIntoView({ behavior: 'smooth' });
+        });
+
+        // 添加下载按钮事件监听器
+        document.getElementById('downloadBtn').addEventListener('click', downloadData);
+    </script>
+</body>
+</html>

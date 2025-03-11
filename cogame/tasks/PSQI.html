@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>匹兹堡睡眠质量指数量表 (PSQI)</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            color: #333;
+        }
+        h1, h2 {
+            color: #2c3e50;
+            margin-top: 20px;
+        }
+        .instructions {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        form {
+            margin-top: 30px;
+        }
+        .question {
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+        }
+        .question-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .options {
+            margin-left: 20px;
+        }
+        label {
+            display: block;
+            margin: 8px 0;
+        }
+        input[type="radio"], input[type="text"], input[type="number"] {
+            margin-right: 10px;
+        }
+        input[type="text"], input[type="number"] {
+            padding: 5px;
+            width: 50px;
+        }
+        textarea {
+            width: 100%;
+            height: 60px;
+            padding: 8px;
+            margin-top: 10px;
+        }
+        .time-input {
+            display: flex;
+            align-items: center;
+            margin: 8px 0;
+        }
+        .time-input label {
+            display: inline;
+            margin-right: 10px;
+        }
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 20px;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        .results {
+            margin-top: 30px;
+            display: none;
+            padding: 15px;
+            background-color: #e8f4fd;
+            border-radius: 5px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+        th, td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <!-- 参与者信息显示 -->
+    <div id="participant-info" class="max-w-2xl mx-auto mb-4 bg-white rounded-lg p-4" style="border: 1px solid #e2e8f0; margin-bottom: 20px;">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <div>
+                <p style="color: #718096;">参与者: <span id="participant-name" style="font-weight: 500;"></span></p>
+                <p style="color: #718096;">ID: <span id="participant-id" style="font-weight: 500;"></span></p>
+            </div>
+            <button id="return-home" 
+                    style="color: #3182ce; font-size: 0.875rem;"
+                    onclick="window.location.href='../homepage_cogame.html'">
+                返回主页
+            </button>
+        </div>
+    </div>
+
+    <h1>匹兹堡睡眠质量指数量表 (PSQI)</h1>
+    
+    <div class="instructions">
+        <p>这份问卷用于评估您在过去一个月内的睡眠质量。请尽可能准确地回答所有问题。</p>
+    </div>
+    
+    <form id="psqiForm">
+        <div class="question">
+            <div class="question-title">1. 在过去一个月中，您通常何时上床睡觉？</div>
+            <div class="time-input">
+                <input type="number" id="bedHour" min="0" max="23" required> 点
+                <input type="number" id="bedMinute" min="0" max="59" required> 分
+            </div>
+        </div>
+
+        <div class="question">
+            <div class="question-title">2. 在过去一个月中，您从上床到入睡通常需要多长时间？</div>
+            <div class="time-input">
+                <input type="number" id="sleepLatency" min="0" required> 分钟
+            </div>
+        </div>
+
+        <div class="question">
+            <div class="question-title">3. 在过去一个月中，您通常何时起床？</div>
+            <div class="time-input">
+                <input type="number" id="wakeHour" min="0" max="23" required> 点
+                <input type="number" id="wakeMinute" min="0" max="59" required> 分
+            </div>
+        </div>
+
+        <div class="question">
+            <div class="question-title">4. 在过去一个月中，您每晚实际睡眠了多少小时？（这可能与您在床上度过的时间不同）</div>
+            <div class="time-input">
+                <input type="number" id="sleepHours" min="0" max="24" step="0.1" required> 小时
+            </div>
+        </div>
+
+        <div class="question">
+            <div class="question-title">5. 在过去一个月中，您有多频繁地因以下原因而睡眠困扰？</div>
+            
+            <div class="sub-question">
+                <div class="question-title">a. 无法在30分钟内入睡</div>
+                <div class="options">
+                    <label><input type="radio" name="q5a" value="0" required> 从不</label>
+                    <label><input type="radio" name="q5a" value="1"> 每周不到1次</label>
+                    <label><input type="radio" name="q5a" value="2"> 每周1-2次</label>
+                    <label><input type="radio" name="q5a" value="3"> 每周3次或更多</label>
+                </div>
+            </div>
+
+            <div class="sub-question">
+                <div class="question-title">b. 夜间或凌晨醒来</div>
+                <div class="options">
+                    <label><input type="radio" name="q5b" value="0" required> 从不</label>
+                    <label><input type="radio" name="q5b" value="1"> 每周不到1次</label>
+                    <label><input type="radio" name="q5b" value="2"> 每周1-2次</label>
+                    <label><input type="radio" name="q5b" value="3"> 每周3次或更多</label>
+                </div>
+            </div>
+
+            <div class="sub-question">
+                <div class="question-title">c. 需要起床上厕所</div>
+                <div class="options">
+                    <label><input type="radio" name="q5c" value="0" required> 从不</label>
+                    <label><input type="radio" name="q5c" value="1"> 每周不到1次</label>
+                    <label><input type="radio" name="q5c" value="2"> 每周1-2次</label>
+                    <label><input type="radio" name="q5c" value="3"> 每周3次或更多</label>
+                </div>
+            </div>
+
+            <div class="sub-question">
+                <div class="question-title">d. 呼吸不畅</div>
+                <div class="options">
+                    <label><input type="radio" name="q5d" value="0" required> 从不</label>
+                    <label><input type="radio" name="q5d" value="1"> 每周不到1次</label>
+                    <label><input type="radio" name="q5d" value="2"> 每周1-2次</label>
+                    <label><input type="radio" name="q5d" value="3"> 每周3次或更多</label>
+                </div>
+            </div>
+
+            <div class="sub-question">
+                <div class="question-title">e. 咳嗽或鼾声高</div>
+                <div class="options">
+                    <label><input type="radio" name="q5e" value="0" required> 从不</label>
+                    <label><input type="radio" name="q5e" value="1"> 每周不到1次</label>
+                    <label><input type="radio" name="q5e" value="2"> 每周1-2次</label>
+                    <label><input type="radio" name="q5e" value="3"> 每周3次或更多</label>
+                </div>
+            </div>
+
+            <div class="sub-question">
+                <div class="question-title">f. 感觉太冷</div>
+                <div class="options">
+                    <label><input type="radio" name="q5f" value="0" required> 从不</label>
+                    <label><input type="radio" name="q5f" value="1"> 每周不到1次</label>
+                    <label><input type="radio" name="q5f" value="2"> 每周1-2次</label>
+                    <label><input type="radio" name="q5f" value="3"> 每周3次或更多</label>
+                </div>
+            </div>
+
+            <div class="sub-question">
+                <div class="question-title">g. 感觉太热</div>
+                <div class="options">
+                    <label><input type="radio" name="q5g" value="0" required> 从不</label>
+                    <label><input type="radio" name="q5g" value="1"> 每周不到1次</label>
+                    <label><input type="radio" name="q5g" value="2"> 每周1-2次</label>
+                    <label><input type="radio" name="q5g" value="3"> 每周3次或更多</label>
+                </div>
+            </div>
+
+            <div class="sub-question">
+                <div class="question-title">h. 做恶梦</div>
+                <div class="options">
+                    <label><input type="radio" name="q5h" value="0" required> 从不</label>
+                    <label><input type="radio" name="q5h" value="1"> 每周不到1次</label>
+                    <label><input type="radio" name="q5h" value="2"> 每周1-2次</label>
+                    <label><input type="radio" name="q5h" value="3"> 每周3次或更多</label>
+                </div>
+            </div>
+
+            <div class="sub-question">
+                <div class="question-title">i. 疼痛</div>
+                <div class="options">
+                    <label><input type="radio" name="q5i" value="0" required> 从不</label>
+                    <label><input type="radio" name="q5i" value="1"> 每周不到1次</label>
+                    <label><input type="radio" name="q5i" value="2"> 每周1-2次</label>
+                    <label><input type="radio" name="q5i" value="3"> 每周3次或更多</label>
+                </div>
+            </div>
+
+            <div class="sub-question">
+                <div class="question-title">j. 其他原因，请描述：</div>
+                <textarea id="q5j_reason"></textarea>
+                <div class="options">
+                    <label><input type="radio" name="q5j" value="0" required> 从不</label>
+                    <label><input type="radio" name="q5j" value="1"> 每周不到1次</label>
+                    <label><input type="radio" name="q5j" value="2"> 每周1-2次</label>
+                    <label><input type="radio" name="q5j" value="3"> 每周3次或更多</label>
+                </div>
+            </div>
+        </div>
+
+        <div class="question">
+            <div class="question-title">6. 在过去一个月中，您如何评价您的睡眠质量总体上？</div>
+            <div class="options">
+                <label><input type="radio" name="q6" value="0" required> 很好</label>
+                <label><input type="radio" name="q6" value="1"> 较好</label>
+                <label><input type="radio" name="q6" value="2"> 较差</label>
+                <label><input type="radio" name="q6" value="3"> 很差</label>
+            </div>
+        </div>
+
+        <div class="question">
+            <div class="question-title">7. 在过去一个月中，您有多频繁地服用药物（处方药或非处方药）来帮助睡眠？</div>
+            <div class="options">
+                <label><input type="radio" name="q7" value="0" required> 从不</label>
+                <label><input type="radio" name="q7" value="1"> 每周不到1次</label>
+                <label><input type="radio" name="q7" value="2"> 每周1-2次</label>
+                <label><input type="radio" name="q7" value="3"> 每周3次或更多</label>
+            </div>
+        </div>
+
+        <div class="question">
+            <div class="question-title">8. 在过去一个月中，您感到困倦吗？</div>
+            <div class="options">
+                <label><input type="radio" name="q8" value="0" required> 从不</label>
+                <label><input type="radio" name="q8" value="1"> 每周不到1次</label>
+                <label><input type="radio" name="q8" value="2"> 每周1-2次</label>
+                <label><input type="radio" name="q8" value="3"> 每周3次或更多</label>
+            </div>
+        </div>
+
+        <div class="question">
+            <div class="question-title">9. 在过去一个月中，您感到做事的精力不足吗？</div>
+            <div class="options">
+                <label><input type="radio" name="q9" value="0" required> 没有</label>
+                <label><input type="radio" name="q9" value="1"> 偶尔有</label>
+                <label><input type="radio" name="q9" value="2"> 有时有</label>
+                <label><input type="radio" name="q9" value="3"> 经常有</label>
+            </div>
+        </div>
+
+
+
+        <button type="button" id="calculateBtn">计算结果</button>
+    </form>
+
+    <div class="results" id="resultsSection">
+        <h2>PSQI 得分结果</h2>
+        <div id="scoreBreakdown"></div>
+        <table>
+            <tr>
+                <th>组成部分</th>
+                <th>得分</th>
+            </tr>
+            <tr>
+                <td>组成部分 1：主观睡眠质量</td>
+                <td id="comp1"></td>
+            </tr>
+            <tr>
+                <td>组成部分 2：入睡延迟</td>
+                <td id="comp2"></td>
+            </tr>
+            <tr>
+                <td>组成部分 3：睡眠时间</td>
+                <td id="comp3"></td>
+            </tr>
+            <tr>
+                <td>组成部分 4：睡眠效率</td>
+                <td id="comp4"></td>
+            </tr>
+            <tr>
+                <td>组成部分 5：睡眠障碍</td>
+                <td id="comp5"></td>
+            </tr>
+            <tr>
+                <td>组成部分 6：催眠药物使用</td>
+                <td id="comp6"></td>
+            </tr>
+            <tr>
+                <td>组成部分 7：日间功能障碍</td>
+                <td id="comp7"></td>
+            </tr>
+            <tr>
+                <th>总分</th>
+                <th id="totalScore"></th>
+            </tr>
+        </table>
+        <div id="interpretation" style="margin-top: 20px;"></div>
+        
+        <button type="button" id="downloadBtn" style="background-color: #10B981; margin-top: 20px; display: none;">
+            下载数据
+        </button>
+    </div>
+
+    <script>
+        // 用户数据管理类
+        class ParticipantManager {
+            constructor() {
+                this.participantData = this.getParticipantData();
+                this.validateParticipant();
+                this.displayParticipantInfo();
+            }
+
+            getParticipantData() {
+                const urlParams = new URLSearchParams(window.location.search);
+                const urlData = {
+                    participantId: urlParams.get('participantId'),
+                    name: urlParams.get('name'),
+                    age: urlParams.get('age'),
+                    gender: urlParams.get('gender'),
+                    education: urlParams.get('education')
+                };
+
+                const storedData = JSON.parse(localStorage.getItem('participantData'));
+                return urlData.participantId ? urlData : storedData;
+            }
+
+            validateParticipant() {
+                if (!this.participantData || !this.participantData.participantId) {
+                    // 如果没有参与者信息，可以创建一个默认ID
+                    this.participantData = {
+                        participantId: 'PSQI_' + Math.floor(Math.random() * 10000),
+                        name: '匿名参与者'
+                    };
+                }
+            }
+
+            displayParticipantInfo() {
+                document.getElementById('participant-name').textContent = this.participantData.name;
+                document.getElementById('participant-id').textContent = this.participantData.participantId;
+            }
+
+            getData() {
+                return this.participantData;
+            }
+        }
+
+        // 初始化参与者管理器
+        const participantManager = new ParticipantManager();
+        
+        // 问卷数据
+        const surveyData = {
+            participant: participantManager.getData(),
+            startTime: new Date().toISOString(),
+            completionTime: null,
+            RT: null,
+            results: {
+                comp1: null,
+                comp2: null,
+                comp3: null,
+                comp4: null,
+                comp5: null,
+                comp6: null,
+                comp7: null,
+                totalScore: null,
+                bedTime: null,
+                wakeTime: null,
+                sleepLatency: null,
+                sleepHours: null,
+                sleepEfficiency: null
+            },
+            answers: {}
+        };
+
+        // 下载数据函数
+        function downloadData() {
+            try {
+                const BOM = '\uFEFF';  // 添加BOM，确保中文字符编码正确
+                
+                // 添加基本信息
+                const headers = [
+                    'participantId',
+                    'name',
+                    'age',
+                    'gender',
+                    'education',
+                    'startTime',
+                    'completionTime',
+                    'RT_ms',
+                    'bedTime',
+                    'wakeTime',
+                    'sleepLatency',
+                    'sleepHours',
+                    'sleepEfficiency',
+                    'comp1_subjective',
+                    'comp2_latency',
+                    'comp3_duration',
+                    'comp4_efficiency',
+                    'comp5_disturbance',
+                    'comp6_medication',
+                    'comp7_dysfunction',
+                    'totalScore'
+                ];
+
+                // 添加问题5的各项子问题
+                for (let i = 'a'.charCodeAt(0); i <= 'j'.charCodeAt(0); i++) {
+                    const letter = String.fromCharCode(i);
+                    headers.push(`q5${letter}`);
+                }
+                
+                // 添加问题6-9
+                headers.push('q6', 'q7', 'q8', 'q9');
+                
+                // 添加其他描述信息
+                headers.push('q5j_reason');
+
+                // 获取所有值
+                const values = [
+                    surveyData.participant.participantId,
+                    surveyData.participant.name,
+                    surveyData.participant.age || '',
+                    surveyData.participant.gender || '',
+                    surveyData.participant.education || '',
+                    surveyData.startTime,
+                    surveyData.completionTime,
+                    surveyData.RT,
+                    surveyData.results.bedTime,
+                    surveyData.results.wakeTime,
+                    surveyData.results.sleepLatency,
+                    surveyData.results.sleepHours,
+                    surveyData.results.sleepEfficiency,
+                    surveyData.results.comp1,
+                    surveyData.results.comp2,
+                    surveyData.results.comp3,
+                    surveyData.results.comp4,
+                    surveyData.results.comp5,
+                    surveyData.results.comp6,
+                    surveyData.results.comp7,
+                    surveyData.results.totalScore
+                ];
+
+                // 添加问题5的各项子问题答案
+                for (let i = 'a'.charCodeAt(0); i <= 'j'.charCodeAt(0); i++) {
+                    const letter = String.fromCharCode(i);
+                    values.push(surveyData.answers[`q5${letter}`] || '');
+                }
+                
+                // 添加问题6-9答案
+                values.push(
+                    surveyData.answers.q6 || '',
+                    surveyData.answers.q7 || '',
+                    surveyData.answers.q8 || '',
+                    surveyData.answers.q9 || ''
+                );
+                
+                // 添加其他描述信息
+                values.push(surveyData.answers.q5j_reason || '');
+
+                const csvContent = BOM + [
+                    headers.join(','),
+                    values.map(value => {
+                        return value && (typeof value === 'string' &&
+                            (value.includes(',') || value.includes('"') || value.includes('\n'))) ?
+                            `"${value.replace(/"/g, '""')}"` : value;
+                    }).join(',')
+                ].join('\n');
+
+                const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.href = url;
+                const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+                link.download = `PSQI_${surveyData.participant.name}_${surveyData.participant.participantId}_${timestamp}.csv`;
+                
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                URL.revokeObjectURL(url);
+            } catch (error) {
+                console.error('Error downloading data:', error);
+                alert('下载数据时出错: ' + error.message);
+            }
+        }
+
+        document.getElementById('calculateBtn').addEventListener('click', function() {
+            // 检查所有必填项
+            const form = document.getElementById('psqiForm');
+            const requiredInputs = form.querySelectorAll('[required]');
+            let allFilled = true;
+            
+            requiredInputs.forEach(input => {
+                if (!input.value && !input.checked) {
+                    if (input.type === 'radio') {
+                        const name = input.name;
+                        const radioGroup = form.querySelectorAll(`input[name="${name}"]:checked`);
+                        if (radioGroup.length === 0) {
+                            allFilled = false;
+                        }
+                    } else {
+                        allFilled = false;
+                    }
+                }
+            });
+            
+            if (!allFilled) {
+                alert('请填写所有必填项目');
+                return;
+            }
+            
+            // 记录完成时间和响应时间
+            surveyData.completionTime = new Date().toISOString();
+            surveyData.RT = new Date(surveyData.completionTime) - new Date(surveyData.startTime);
+            
+            // 保存所有答案
+            const bedHour = parseInt(document.getElementById('bedHour').value);
+            const bedMinute = parseInt(document.getElementById('bedMinute').value);
+            const wakeHour = parseInt(document.getElementById('wakeHour').value);
+            const wakeMinute = parseInt(document.getElementById('wakeMinute').value);
+            const sleepLatency = parseInt(document.getElementById('sleepLatency').value);
+            const sleepHours = parseFloat(document.getElementById('sleepHours').value);
+            
+            // 保存问题5 a-j的答案
+            for (let i = 'a'.charCodeAt(0); i <= 'j'.charCodeAt(0); i++) {
+                const letter = String.fromCharCode(i);
+                const radioValue = document.querySelector(`input[name="q5${letter}"]:checked`);
+                if (radioValue) {
+                    surveyData.answers[`q5${letter}`] = radioValue.value;
+                }
+            }
+            
+            // 保存问题5j的描述
+            surveyData.answers.q5j_reason = document.getElementById('q5j_reason').value;
+            
+            // 保存问题6-9的答案
+            surveyData.answers.q6 = document.querySelector('input[name="q6"]:checked').value;
+            surveyData.answers.q7 = document.querySelector('input[name="q7"]:checked').value;
+            surveyData.answers.q8 = document.querySelector('input[name="q8"]:checked').value;
+            surveyData.answers.q9 = document.querySelector('input[name="q9"]:checked').value;
+            
+            // 计算组成部分 1：主观睡眠质量
+            const comp1 = parseInt(document.querySelector('input[name="q6"]:checked').value);
+            
+            // 计算组成部分 2：入睡延迟
+            let q2Score;
+            if (sleepLatency <= 15) q2Score = 0;
+            else if (sleepLatency <= 30) q2Score = 1;
+            else if (sleepLatency <= 60) q2Score = 2;
+            else q2Score = 3;
+            
+            const q5a = parseInt(document.querySelector('input[name="q5a"]:checked').value);
+            const comp2 = Math.min(3, Math.floor((q2Score + q5a) / 2));
+            
+            // 计算组成部分 3：睡眠时间
+            let comp3;
+            if (sleepHours > 7) comp3 = 0;
+            else if (sleepHours >= 6) comp3 = 1;
+            else if (sleepHours >= 5) comp3 = 2;
+            else comp3 = 3;
+            
+            // 计算组成部分 4：睡眠效率
+            // 计算在床上的总分钟数
+            let bedTimeMinutes = bedHour * 60 + bedMinute;
+            let wakeTimeMinutes = wakeHour * 60 + wakeMinute;
+            
+            // 如果起床时间在上床时间之前（跨越了午夜），调整计算
+            if (wakeTimeMinutes < bedTimeMinutes) {
+                wakeTimeMinutes += 24 * 60; // 增加24小时
+            }
+            
+            const timeInBed = (wakeTimeMinutes - bedTimeMinutes) / 60; // 转换为小时
+            const sleepEfficiency = (sleepHours / timeInBed) * 100;
+            
+            let comp4;
+            if (sleepEfficiency >= 85) comp4 = 0;
+            else if (sleepEfficiency >= 75) comp4 = 1;
+            else if (sleepEfficiency >= 65) comp4 = 2;
+            else comp4 = 3;
+            
+            // 计算组成部分 5：睡眠障碍
+            const q5b = parseInt(document.querySelector('input[name="q5b"]:checked').value);
+            const q5c = parseInt(document.querySelector('input[name="q5c"]:checked').value);
+            const q5d = parseInt(document.querySelector('input[name="q5d"]:checked').value);
+            const q5e = parseInt(document.querySelector('input[name="q5e"]:checked').value);
+            const q5f = parseInt(document.querySelector('input[name="q5f"]:checked').value);
+            const q5g = parseInt(document.querySelector('input[name="q5g"]:checked').value);
+            const q5h = parseInt(document.querySelector('input[name="q5h"]:checked').value);
+            const q5i = parseInt(document.querySelector('input[name="q5i"]:checked').value);
+            const q5j = parseInt(document.querySelector('input[name="q5j"]:checked').value);
+            
+            const sleepDisturbanceSum = q5b + q5c + q5d + q5e + q5f + q5g + q5h + q5i + q5j;
+            
+            let comp5;
+            if (sleepDisturbanceSum === 0) comp5 = 0;
+            else if (sleepDisturbanceSum <= 9) comp5 = 1;
+            else if (sleepDisturbanceSum <= 18) comp5 = 2;
+            else comp5 = 3;
+            
+            // 计算组成部分 6：催眠药物使用
+            const comp6 = parseInt(document.querySelector('input[name="q7"]:checked').value);
+            
+            // 计算组成部分 7：日间功能障碍
+            const q8 = parseInt(document.querySelector('input[name="q8"]:checked').value);
+            const q9 = parseInt(document.querySelector('input[name="q9"]:checked').value);
+            const comp7 = Math.min(3, Math.floor((q8 + q9) / 2));
+            
+            // 计算总分
+            const totalScore = comp1 + comp2 + comp3 + comp4 + comp5 + comp6 + comp7;
+            
+            // 存储计算结果
+            surveyData.results = {
+                comp1: comp1,
+                comp2: comp2,
+                comp3: comp3,
+                comp4: comp4,
+                comp5: comp5,
+                comp6: comp6,
+                comp7: comp7,
+                totalScore: totalScore,
+                bedTime: `${bedHour}:${bedMinute.toString().padStart(2, '0')}`,
+                wakeTime: `${wakeHour}:${wakeMinute.toString().padStart(2, '0')}`,
+                sleepLatency: sleepLatency,
+                sleepHours: sleepHours,
+                sleepEfficiency: sleepEfficiency.toFixed(2)
+            };
+            
+            // 显示结果
+            document.getElementById('comp1').textContent = comp1;
+            document.getElementById('comp2').textContent = comp2;
+            document.getElementById('comp3').textContent = comp3;
+            document.getElementById('comp4').textContent = comp4;
+            document.getElementById('comp5').textContent = comp5;
+            document.getElementById('comp6').textContent = comp6;
+            document.getElementById('comp7').textContent = comp7;
+            document.getElementById('totalScore').textContent = totalScore;
+            
+            // 解释结果
+            let interpretation = '';
+            if (totalScore <= 5) {
+                interpretation = '您的睡眠质量良好。PSQI总分≤5表示"良好睡眠者"。';
+            } else {
+                interpretation = '您的睡眠质量较差。PSQI总分>5表示"睡眠质量差"，分数越高表示睡眠质量越差。';
+            }
+            
+            document.getElementById('interpretation').textContent = interpretation;
+            document.getElementById('resultsSection').style.display = 'block';
+            
+            // 显示下载按钮
+            const downloadBtn = document.getElementById('downloadBtn');
+            downloadBtn.style.display = 'block';
+            
+            // 自动下载数据
+            downloadData();
+            
+            // 滚动到结果部分
+            document.getElementById('resultsSection').scrollIntoView({ behavior: 'smooth' });
+        });
+
+        // 添加下载按钮事件监听器
+        document.getElementById('downloadBtn').addEventListener('click', downloadData);
+    </script>
+</body>
+</html>

@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>焦虑自评量表(SAS)</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            color: #333;
+            background-color: #f9f9f9;
+        }
+        h1, h2 {
+            color: #2c3e50;
+            margin-top: 20px;
+            text-align: center;
+        }
+        .instructions {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            border: 1px solid #e9ecef;
+        }
+        form {
+            margin-top: 30px;
+            background-color: white;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .question {
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+        }
+        .question-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .options-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid #eee;
+        }
+        .option-header {
+            width: 22%;
+            text-align: center;
+            font-weight: bold;
+            font-size: 14px;
+        }
+        .options-grid {
+            display: flex;
+            justify-content: space-between;
+        }
+        .option-grid {
+            width: 22%;
+            text-align: center;
+        }
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 20px;
+            width: 100%;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        .results {
+            margin-top: 30px;
+            display: none;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .score-display {
+            text-align: center;
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+        .score-value {
+            font-weight: bold;
+            color: #3498db;
+        }
+        .interpretation {
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 20px;
+            text-align: center;
+        }
+        .severity {
+            font-weight: bold;
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+        .normal {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .mild {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+        .moderate {
+            background-color: #ffebcd;
+            color: #8b4513;
+        }
+        .severe {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+        .participant-info {
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .participant-details {
+            color: #718096;
+        }
+        .return-btn {
+            color: #3182ce;
+            font-size: 0.875rem;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+            width: auto;
+        }
+        .download-btn {
+            background-color: #10b981;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 20px;
+            transition: background-color 0.3s;
+            display: none;
+        }
+        .download-btn:hover {
+            background-color: #059669;
+        }
+        .legend {
+            margin-top: 10px;
+            font-size: 0.9em;
+            color: #666;
+            font-style: italic;
+        }
+        .reverse-item {
+            color: #3182ce;
+            font-size: 0.8em;
+            margin-left: 5px;
+        }
+    </style>
+</head>
+<body>
+    <!-- 参与者信息显示 -->
+    <div class="participant-info">
+        <div class="participant-details">
+            <p>参与者: <span id="participant-name" style="font-weight: 500;"></span></p>
+            <p>ID: <span id="participant-id" style="font-weight: 500;"></span></p>
+        </div>
+        <button class="return-btn" id="return-home" onclick="window.location.href='../homepage_cogame.html'">
+            返回主页
+        </button>
+    </div>
+
+    <h1>焦虑自评量表 (SAS)</h1>
+    
+    <div class="instructions">
+        <p>请仔细阅读每一条，根据你最近一个星期的实际情况，在适当的选项上进行选择。</p>
+        
+    </div>
+    
+    <form id="sasForm">
+        <div class="options-header">
+            <div class="option-header" style="width: 40%;"></div>
+            <div class="option-header">无或很少有</div>
+            <div class="option-header">有时有</div>
+            <div class="option-header">大部分时间有</div>
+            <div class="option-header">绝大多数时间有</div>
+        </div>
+
+        <div class="question">
+            <div class="question-title">1. 我觉得比平常容易紧张和着急</div>
+            <div class="options-grid">
+                <div class="option-grid" style="width: 40%;"></div>
+                <div class="option-grid"><input type="radio" name="q1" value="1" required></div>
+                <div class="option-grid"><input type="radio" name="q1" value="2"></div>
+                <div class="option-grid"><input type="radio" name="q1" value="3"></div>
+                <div class="option-grid"><input type="radio" name="q1" value="4"></div>
+            </div>
+        </div>
+
+        <div class="question">
+            <div class="question-title">2. 我无缘无故感到担心</div>
+            <div class="options-grid">
+                <div class="option-grid" style="width: 40%;"></div>
+                <div class="option-grid"><input type="radio" name="q2" value="1" required></div>
+                <div class="option-grid"><input type="radio" name="q2" value="2"></div>
+                <div class="option-grid"><input type="radio" name="q2" value="3"></div>
+                <div class="option-grid"><input type="radio" name="q2" value="4"></div>
+            </div>
+        </div>
+
+        <div class="question">
+            <div class="question-title">3. 我容易心里烦乱或觉得恐慌</div>
+            <div class="options-grid">
+                <div class="option-grid" style="width: 40%;"></div>
+                <div class="option-grid"><input type="radio" name="q3" value="1" required></div>
+                <div class="option-grid"><input type="radio" name="q3" value="2"></div>
+                <div class="option-grid"><input type="radio" name="q3" value="3"></div>
+                <div class="option-grid"><input type="radio" name="q3" value="4"></div>
+            </div>
+        </div>
+
+        <div class="question">
+            <div class="question-title">4. 我感到我的身体好像被分成几块，支离破碎</div>
+            <div class="options-grid">
+                <div class="option-grid" style="width: 40%;"></div>
+                <div class="option-grid"><input type="radio" name="q4" value="1" required></div>
+                <div class="option-grid"><input type="radio" name="q4" value="2"></div>
+                <div class="option-grid"><input type="radio" name="q4" value="3"></div>
+                <div class="option-grid"><input type="radio" name="q4" value="4"></div>
+            </div>
+        </div>
+
+        <div class="question">
+            <div class="question-title">5. 我感到事事都很顺利，不会有倒霉的事情发生 <span class="reverse-item">*</span></div>
+            <div class="options-grid">
+                <div class="option-grid" style="width: 40%;"></div>
+                <div class="option-grid"><input type="radio" name="q5" value="4" required></div>
+                <div class="option-grid"><input type="radio" name="q5" value="3"></div>
+                <div class="option-grid"><input type="radio" name="q5" value="2"></div>
+                <div class="option-grid"><input type="radio" name="q5" value="1"></div>
+            </div>
+        </div>
+
+        <div class="question">
+            <div class="question-title">6. 我的四肢抖动和震颤</div>
+            <div class="options-grid">
+                <div class="option-grid" style="width: 40%;"></div>
+                <div class="option-grid"><input type="radio" name="q6" value="1" required></div>
+                <div class="option-grid"><input type="radio" name="q6" value="2"></div>
+                <div class="option-grid"><input type="radio" name="q6" value="3"></div>
+                <div class="option-grid"><input type="radio" name="q6" value="4"></div>
+            </div>
+        </div>
+
+        <div class="question">
+            <div class="question-title">7. 我因为头痛、颈痛、背痛而烦恼</div>
+            <div class="options-grid">
+                <div class="option-grid" style="width: 40%;"></div>
+                <div class="option-grid"><input type="radio" name="q7" value="1" required></div>
+                <div class="option-grid"><input type="radio" name="q7" value="2"></div>
+                <div class="option-grid"><input type="radio" name="q7" value="3"></div>
+                <div class="option-grid"><input type="radio" name="q7" value="4"></div>
+            </div>
+        </div>
+
+        <div class="question">
+            <div class="question-title">8. 我感到无力且容易疲劳</div>
+            <div class="options-grid">
+                <div class="option-grid" style="width: 40%;"></div>
+                <div class="option-grid"><input type="radio" name="q8" value="1" required></div>
+                <div class="option-grid"><input type="radio" name="q8" value="2"></div>
+                <div class="option-grid"><input type="radio" name="q8" value="3"></div>
+                <div class="option-grid"><input type="radio" name="q8" value="4"></div>
+            </div>
+        </div>
+
+        <div class="question">
+            <div class="question-title">9. 我感到很平静，能安静坐下来 <span class="reverse-item">*</span></div>
+            <div class="options-grid">
+                <div class="option-grid" style="width: 40%;"></div>
+                <div class="option-grid"><input type="radio" name="q9" value="4" required></div>
+                <div class="option-grid"><input type="radio" name="q9" value="3"></div>
+                <div class="option-grid"><input type="radio" name="q9" value="2"></div>
+                <div class="option-grid"><input type="radio" name="q9" value="1"></div>
+            </div>
+        </div>
+
+        <div class="question">
+            <div class="question-title">10. 我感到我的心跳较快</div>
+            <div class="options-grid">
+                <div class="option-grid" style="width: 40%;"></div>
+                <div class="option-grid"><input type="radio" name="q10" value="1" required></div>
+                <div class="option-grid"><input type="radio" name="q10" value="2"></div>
+                <div class="option-grid"><input type="radio" name="q10" value="3"></div>
+                <div class="option-grid"><input type="radio" name="q10" value="4"></div>
+            </div>
+        </div>
+
+        <div class="question">
+            <div class="question-title">11. 我因阵阵的眩晕而不舒服</div>
+            <div class="options-grid">
+                <div class="option-grid" style="width: 40%;"></div>
+                <div class="option-grid"><input type="radio" name="q11" value="1" required></div>
+                <div class="option-grid"><input type="radio" name="q11" value="2"></div>
+                <div class="option-grid"><input type="radio" name="q11" value="3"></div>
+                <div class="option-grid"><input type="radio" name="q11" value="4"></div>
+            </div>
+        </div>
+
+        <div class="question">
+            <div class="question-title">12. 我有阵阵要昏倒的感觉</div>
+            <div class="options-grid">
+                <div class="option-grid" style="width: 40%;"></div>
+                <div class="option-grid"><input type="radio" name="q12" value="1" required></div>
+                <div class="option-grid"><input type="radio" name="q12" value="2"></div>
+                <div class="option-grid"><input type="radio" name="q12" value="3"></div>
+                <div class="option-grid"><input type="radio" name="q12" value="4"></div>
+            </div>
+        </div>
+
+        <div class="question">
+            <div class="question-title">13. 我呼吸时进气和出气都不费力 <span class="reverse-item">*</span></div>
+            <div class="options-grid">
+                <div class="option-grid" style="width: 40%;"></div>
+                <div class="option-grid"><input type="radio" name="q13" value="4" required></div>
+                <div class="option-grid"><input type="radio" name="q13" value="3"></div>
+                <div class="option-grid"><input type="radio" name="q13" value="2"></div>
+                <div class="option-grid"><input type="radio" name="q13" value="1"></div>
+            </div>
+        </div>
+
+        <div class="question">
+            <div class="question-title">14. 我的手指和脚趾感到麻木和刺痛</div>
+            <div class="options-grid">
+                <div class="option-grid" style="width: 40%;"></div>
+                <div class="option-grid"><input type="radio" name="q14" value="1" required></div>
+                <div class="option-grid"><input type="radio" name="q14" value="2"></div>
+                <div class="option-grid"><input type="radio" name="q14" value="3"></div>
+                <div class="option-grid"><input type="radio" name="q14" value="4"></div>
+            </div>
+        </div>
+
+        <div class="question">
+            <div class="question-title">15. 我因为胃痛和消化不良而苦恼</div>
+            <div class="options-grid">
+                <div class="option-grid" style="width: 40%;"></div>
+                <div class="option-grid"><input type="radio" name="q15" value="1" required></div>
+                <div class="option-grid"><input type="radio" name="q15" value="2"></div>
+                <div class="option-grid"><input type="radio" name="q15" value="3"></div>
+                <div class="option-grid"><input type="radio" name="q15" value="4"></div>
+            </div>
+        </div>
+
+        <div class="question">
+            <div class="question-title">16. 我必须时常排尿</div>
+            <div class="options-grid">
+                <div class="option-grid" style="width: 40%;"></div>
+                <div class="option-grid"><input type="radio" name="q16" value="1" required></div>
+                <div class="option-grid"><input type="radio" name="q16" value="2"></div>
+                <div class="option-grid"><input type="radio" name="q16" value="3"></div>
+                <div class="option-grid"><input type="radio" name="q16" value="4"></div>
+            </div>
+        </div>
+
+        <div class="question">
+            <div class="question-title">17. 我的手总是很温暖而干燥 <span class="reverse-item">*</span></div>
+            <div class="options-grid">
+                <div class="option-grid" style="width: 40%;"></div>
+                <div class="option-grid"><input type="radio" name="q17" value="4" required></div>
+                <div class="option-grid"><input type="radio" name="q17" value="3"></div>
+                <div class="option-grid"><input type="radio" name="q17" value="2"></div>
+                <div class="option-grid"><input type="radio" name="q17" value="1"></div>
+            </div>
+        </div>
+
+        <div class="question">
+            <div class="question-title">18. 我觉得脸发烧发红</div>
+            <div class="options-grid">
+                <div class="option-grid" style="width: 40%;"></div>
+                <div class="option-grid"><input type="radio" name="q18" value="1" required></div>
+                <div class="option-grid"><input type="radio" name="q18" value="2"></div>
+                <div class="option-grid"><input type="radio" name="q18" value="3"></div>
+                <div class="option-grid"><input type="radio" name="q18" value="4"></div>
+            </div>
+        </div>
+
+        <div class="question">
+            <div class="question-title">19. 我容易入睡，晚上休息很好 <span class="reverse-item">*</span></div>
+            <div class="options-grid">
+                <div class="option-grid" style="width: 40%;"></div>
+                <div class="option-grid"><input type="radio" name="q19" value="4" required></div>
+                <div class="option-grid"><input type="radio" name="q19" value="3"></div>
+                <div class="option-grid"><input type="radio" name="q19" value="2"></div>
+                <div class="option-grid"><input type="radio" name="q19" value="1"></div>
+            </div>
+        </div>
+
+        <div class="question">
+            <div class="question-title">20. 我做恶梦</div>
+            <div class="options-grid">
+                <div class="option-grid" style="width: 40%;"></div>
+                <div class="option-grid"><input type="radio" name="q20" value="1" required></div>
+                <div class="option-grid"><input type="radio" name="q20" value="2"></div>
+                <div class="option-grid"><input type="radio" name="q20" value="3"></div>
+                <div class="option-grid"><input type="radio" name="q20" value="4"></div>
+            </div>
+        </div>
+
+        <button type="button" id="calculateBtn">计算结果</button>
+    </form>
+
+    <div class="results" id="resultsSection">
+        <h2>SAS 得分结果</h2>
+        
+        <div class="score-display">
+            原始分: <span id="rawScore" class="score-value"></span>
+            <br>
+            标准分（指数分）: <span id="standardScore" class="score-value"></span>
+        </div>
+        
+        <div id="interpretationBox" class="interpretation">
+            <div id="severityLabel" class="severity"></div>
+            <div id="interpretationText"></div>
+        </div>
+        
+        <button type="button" id="downloadBtn" class="download-btn">下载数据</button>
+    </div>
+
+    <script>
+        // 用户数据管理类
+        class ParticipantManager {
+            constructor() {
+                this.participantData = this.getParticipantData();
+                this.validateParticipant();
+                this.displayParticipantInfo();
+            }
+
+            getParticipantData() {
+                const urlParams = new URLSearchParams(window.location.search);
+                const urlData = {
+                    participantId: urlParams.get('participantId'),
+                    name: urlParams.get('name'),
+                    age: urlParams.get('age'),
+                    gender: urlParams.get('gender'),
+                    education: urlParams.get('education')
+                };
+
+                const storedData = JSON.parse(localStorage.getItem('participantData'));
+                return urlData.participantId ? urlData : storedData;
+            }
+
+            validateParticipant() {
+                if (!this.participantData || !this.participantData.participantId) {
+                    // 如果没有参与者信息，创建一个默认ID
+                    this.participantData = {
+                        participantId: 'SAS_' + Math.floor(Math.random() * 10000),
+                        name: '匿名参与者'
+                    };
+                }
+            }
+
+            displayParticipantInfo() {
+                document.getElementById('participant-name').textContent = this.participantData.name;
+                document.getElementById('participant-id').textContent = this.participantData.participantId;
+            }
+
+            getData() {
+                return this.participantData;
+            }
+        }
+
+        // 初始化参与者管理器
+        const participantManager = new ParticipantManager();
+        
+        // 问卷数据
+        const surveyData = {
+            participant: participantManager.getData(),
+            startTime: new Date().toISOString(),
+            completionTime: null,
+            RT: null,
+            results: {
+                rawScore: null,
+                standardScore: null,
+                interpretation: null,
+                severity: null
+            },
+            answers: {}
+        };
+
+        // 下载数据函数
+        function downloadData() {
+            try {
+                const BOM = '\uFEFF';  // 添加BOM，确保中文字符编码正确
+                
+                // 添加基本信息
+                const headers = [
+                    'participantId',
+                    'name',
+                    'age',
+                    'gender',
+                    'education',
+                    'startTime',
+                    'completionTime',
+                    'RT_ms',
+                    'rawScore',
+                    'standardScore',
+                    'interpretation',
+                    'severity'
+                ];
+
+                // 添加所有问题的答案
+                for (let i = 1; i <= 20; i++) {
+                    headers.push(`q${i}`);
+                }
+
+                // 获取所有值
+                const values = [
+                    surveyData.participant.participantId,
+                    surveyData.participant.name,
+                    surveyData.participant.age || '',
+                    surveyData.participant.gender || '',
+                    surveyData.participant.education || '',
+                    surveyData.startTime,
+                    surveyData.completionTime,
+                    surveyData.RT,
+                    surveyData.results.rawScore,
+                    surveyData.results.standardScore,
+                    surveyData.results.interpretation,
+                    surveyData.results.severity
+                ];
+
+                // 添加所有问题的答案
+                for (let i = 1; i <= 20; i++) {
+                    values.push(surveyData.answers[`q${i}`] || '');
+                }
+
+                const csvContent = BOM + [
+                    headers.join(','),
+                    values.map(value => {
+                        return value && (typeof value === 'string' &&
+                            (value.includes(',') || value.includes('"') || value.includes('\n'))) ?
+                            `"${value.replace(/"/g, '""')}"` : value;
+                    }).join(',')
+                ].join('\n');
+
+                const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.href = url;
+                const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+                link.download = `SAS_${surveyData.participant.name}_${surveyData.participant.participantId}_${timestamp}.csv`;
+                
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                URL.revokeObjectURL(url);
+            } catch (error) {
+                console.error('Error downloading data:', error);
+                alert('下载数据时出错: ' + error.message);
+            }
+        }
+
+        // 计算结果函数
+        document.getElementById('calculateBtn').addEventListener('click', function() {
+            // 检查所有必填项
+            const form = document.getElementById('sasForm');
+            const requiredInputs = form.querySelectorAll('[required]');
+            let allFilled = true;
+            
+            requiredInputs.forEach(input => {
+                if (!input.checked) {
+                    const name = input.name;
+                    const radioGroup = form.querySelectorAll(`input[name="${name}"]:checked`);
+                    if (radioGroup.length === 0) {
+                        allFilled = false;
+                    }
+                }
+            });
+            
+            if (!allFilled) {
+                alert('请回答所有问题');
+                return;
+            }
+            
+            // 记录完成时间和响应时间
+            surveyData.completionTime = new Date().toISOString();
+            surveyData.RT = new Date(surveyData.completionTime) - new Date(surveyData.startTime);
+            
+            // 计算原始分数
+            let rawScore = 0;
+            
+            // 记录所有问题的答案
+            for (let i = 1; i <= 20; i++) {
+                const value = parseInt(document.querySelector(`input[name="q${i}"]:checked`).value);
+                surveyData.answers[`q${i}`] = value;
+                rawScore += value;
+            }
+            
+            // 计算标准分（指数分）= 原始分 * 1.25（四舍五入取整）
+            const standardScore = Math.round(rawScore * 1.25);
+            
+            // 确定焦虑程度
+            let interpretation = '';
+            let severity = '';
+            let interpretationClass = '';
+            
+            if (standardScore < 50) {
+                interpretation = '您的焦虑水平在正常范围内。';
+                severity = '正常范围';
+                interpretationClass = 'normal';
+            } else if (standardScore >= 50 && standardScore < 60) {
+                interpretation = '您有轻度焦虑，可能会在一些特定情境下感到不适。建议关注自己的情绪变化，学习一些放松技巧。';
+                severity = '轻度焦虑';
+                interpretationClass = 'mild';
+            } else if (standardScore >= 60 && standardScore < 70) {
+                interpretation = '您有中度焦虑，这可能会影响您的日常生活和工作。建议寻求专业心理咨询师的帮助，学习应对焦虑的技巧。';
+                severity = '中度焦虑';
+                interpretationClass = 'moderate';
+            } else {
+                interpretation = '您的焦虑水平较高，可能严重影响您的生活质量。强烈建议尽快咨询专业的心理医生或精神科医生进行评估和治疗。';
+                severity = '重度焦虑';
+                interpretationClass = 'severe';
+            }
+            
+            // 存储结果
+            surveyData.results = {
+                rawScore: rawScore,
+                standardScore: standardScore,
+                interpretation: interpretation,
+                severity: severity
+            };
+            
+            // 显示结果
+            document.getElementById('rawScore').textContent = rawScore;
+            document.getElementById('standardScore').textContent = standardScore;
+            document.getElementById('severityLabel').textContent = severity;
+            document.getElementById('interpretationText').textContent = interpretation;
+            
+            // 设置解释区域的样式
+            const interpretationBox = document.getElementById('interpretationBox');
+            interpretationBox.className = 'interpretation ' + interpretationClass;
+            
+            // 显示结果区域和下载按钮
+            document.getElementById('resultsSection').style.display = 'block';
+            document.getElementById('downloadBtn').style.display = 'block';
+            
+            // 自动下载数据
+            downloadData();
+            
+            // 滚动到结果部分
+            document.getElementById('resultsSection').scrollIntoView({ behavior: 'smooth' });
+        });
+
+        // 添加下载按钮事件监听器
+        document.getElementById('downloadBtn').addEventListener('click', downloadData);
+    </script>
+</body>
+</html>
