@@ -54,11 +54,11 @@
                     // 使用 URL 参数或 localStorage 数据
                     const data = urlData.participantId ? urlData : storedData;
 
-                    if (!data) {
+                     //if (!data) {
                         // 如果没有用户数据，重定向到登录页
-                        window.location.href = 'index.html';
-                        return;
-                    }
+                       //  window.location.href = 'index.html';
+                        // return;
+                    // }
 
                     setParticipantData(data);
                     setLoading(false);
