@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pac-Man Task Experiment with Predator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 20px;
+            background-color: #f0f0f0;
+        }
+        #gameContainer {
+            position: relative;
+            width: 800px;
+            height: 600px;
+            margin: 0 auto;
+            background-color: gray;
+            overflow: hidden;
+        }
+        #gameCanvas {
+            display: block;
+        }
+        #instructions {
+            margin: 20px auto;
+            max-width: 600px;
+            text-align: left;
+            padding: 15px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 10px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        #results {
+            display: none;
+            margin: 20px auto;
+            max-width: 800px;
+            text-align: left;
+            padding: 15px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        #downloadLink {
+            display: inline-block;
+            margin: 10px;
+            padding: 10px 20px;
+            background-color: #2196F3;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+        .status {
+            font-weight: bold;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Pac-Man Goal Pursuit Experiment</h1>
+    
+    <div id="instructions">
+        <h2>Instructions</h2>
+        <p>In this task, you will control a yellow circle using your mouse. Your goal is to catch the colored square(s) on the screen.</p>
+        <p>Each colored square represents a different reward value:</p>
+        <ul>
+            <li>Red square: $1</li>
+            <li>Green square: $3</li>
+            <li>Blue square: $5</li>
+        </ul>
+        <p><strong>Watch out for the predator!</strong> A white ghost will chase you throughout the trial. If it catches you, the trial ends with no reward.</p>
+        <p>You have 20 seconds to catch a target. The experiment consists of 20 trials.</p>
+        <p>Click the Start button when you're ready to begin.</p>
+    </div>
+    
+    <button id="startButton">Start Experiment</button>
+    
+    <div id="gameContainer">
+        <canvas id="gameCanvas" width="800" height="600"></canvas>
+    </div>
+    
+    <div class="status" id="statusText">Trial: 0/20 | Time: 20s</div>
+    <div class="status" id="rewardText">Current Reward: $0</div>
+    
+    <div id="results">
+        <h2>Experiment Completed</h2>
+        <p>Thank you for participating! The data has been recorded.</p>
+        <p>You can download your data by clicking the button below:</p>
+        <a id="downloadLink" href="#" download="pacman_experiment_data.csv">Download Data</a>
+    </div>
+
+    <script>
+        // Canvas and context
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        const containerWidth = canvas.width;
+        const containerHeight = canvas.height;
+        
+        // Game parameters
+        const avatarRadius = 10;
+        const preySize = 30; // 30 pixels square
+        const predatorSize = 40; // 40 pixels for predator (ghost)
+        const maxAvatarSpeed = 23; // pixels per frame
+        const frameTime = 16.67; // ms per frame (60 fps)
+        const trialDuration = 20000; // 20 seconds in ms
+        const minInitialDistance = 400; // minimum initial distance between avatar and prey
+        const totalTrials = 20;
+        
+        // Prey parameters
+        const preyMaxSpeed = 5;
+        const preyMinSpeed = 2;
+        
+        // Predator parameters
+        const predatorMaxSpeed = 6;
+        const predatorMinSpeed = 4;
+        const predatorColor = 'white';
+        
+        // Data collection
+        let data = [];
+        let trajectoryData = []; // New array for detailed movement data
+        let currentTrial = 0;
+        let trialStartTime;
+        let currentTime = 0;
+        let gameRunning = false;
+        let totalReward = 0;
+        
+        // Game objects
+        let avatar = {
+            x: containerWidth / 2,
+            y: containerHeight / 2,
+            radius: avatarRadius,
+            color: 'yellow',
+            trajectory: [] // Store trajectory for this entity
+        };
+        
+        let prey = [];
+        
+        let predator = {
+            x: 0,
+            y: 0,
+            size: predatorSize,
+            color: predatorColor,
+            speed: 0,
+            trajectory: [] // Store trajectory for this entity
+        };
+        
+        // Event listeners
+        document.getElementById('startButton').addEventListener('click', startExperiment);
+        document.getElementById('downloadLink').addEventListener('click', prepareDownload);
+        
+        canvas.addEventListener('mousemove', function(e) {
+            if (!gameRunning) return;
+            
+            // Get mouse position relative to canvas
+            const rect = canvas.getBoundingClientRect();
+            const mouseX = e.clientX - rect.left;
+            const mouseY = e.clientY - rect.top;
+            
+            // Calculate direction vector
+            const dx = mouseX - avatar.x;
+            const dy = mouseY - avatar.y;
+            
+            // Calculate distance
+            const distance = Math.sqrt(dx * dx + dy * dy);
+            
+            if (distance > 0) {
+                // Previous position for trajectory
+                const prevX = avatar.x;
+                const prevY = avatar.y;
+                
+                // Normalize and apply speed
+                const moveX = (dx / distance) * maxAvatarSpeed;
+                const moveY = (dy / distance) * maxAvatarSpeed;
+                
+                // Update avatar position with bounds checking
+                avatar.x = Math.max(avatar.radius, Math.min(containerWidth - avatar.radius, avatar.x + moveX));
+                avatar.y = Math.max(avatar.radius, Math.min(containerHeight - avatar.radius, avatar.y + moveY));
+                
+                // Record data
+                recordData();
+                
+                // Record trajectory data if position changed significantly
+                const movedDistance = Math.sqrt(Math.pow(avatar.x - prevX, 2) + Math.pow(avatar.y - prevY, 2));
+                if (movedDistance > 1) {
+                    recordTrajectory('avatar', avatar.x, avatar.y);
+                }
+            }
+        });
+        
+        // Game functions
+        function startExperiment() {
+            document.getElementById('startButton').style.display = 'none';
+            data = [];
+            trajectoryData = [];
+            currentTrial = 0;
+            totalReward = 0;
+            startTrial();
+        }
+        
+        function startTrial() {
+            if (currentTrial >= totalTrials) {
+                endExperiment();
+                return;
+            }
+            
+            currentTrial++;
+            updateStatusText();
+            
+            // Reset avatar to center
+            avatar.x = containerWidth / 2;
+            avatar.y = containerHeight / 2;
+            avatar.trajectory = [];
+            
+            // Create two prey items with random positions
+            const rewardTypes = [
+                { value: 1, color: 'red' },
+                { value: 3, color: 'green' },
+                { value: 5, color: 'blue' }
+            ];
+            
+            // Randomly select two different reward types
+            let pairOptions = [
+                [0, 1], // red & green
+                [1, 2], // green & blue
+                [0, 2]  // red & blue
+            ];
+            
+            let selectedPair = pairOptions[Math.floor(Math.random() * pairOptions.length)];
+            let rewards = [rewardTypes[selectedPair[0]], rewardTypes[selectedPair[1]]];
+            
+            // Initialize array for prey
+            prey = [];
+            
+            // Create two prey with minimum distance from avatar and from each other
+            for (let i = 0; i < 2; i++) {
+                let newPrey;
+                let validPosition = false;
+                let attempts = 0;
+                
+                while (!validPosition && attempts < 100) {
+                    attempts++;
+                    
+                    let preyX = Math.random() * (containerWidth - preySize - 20) + 10;
+                    let preyY = Math.random() * (containerHeight - preySize - 20) + 10;
+                    
+                    // Check distance from avatar
+                    const dxAvatar = preyX - avatar.x;
+                    const dyAvatar = preyY - avatar.y;
+                    const distanceToAvatar = Math.sqrt(dxAvatar * dxAvatar + dyAvatar * dyAvatar);
+                    
+                    // If this is second prey, also check distance from first prey
+                    let distanceToOtherPrey = Infinity;
+                    if (i === 1 && prey.length > 0) {
+                        const dxPrey = preyX - prey[0].x;
+                        const dyPrey = preyY - prey[0].y;
+                        distanceToOtherPrey = Math.sqrt(dxPrey * dxPrey + dyPrey * dyPrey);
+                    }
+                    
+                    if (distanceToAvatar >= minInitialDistance && distanceToOtherPrey >= 200) {
+                        validPosition = true;
+                        
+                        newPrey = {
+                            x: preyX,
+                            y: preyY,
+                            size: preySize,
+                            color: rewards[i].color,
+                            reward: rewards[i].value,
+                            maxSpeed: preyMaxSpeed,
+                            minSpeed: preyMinSpeed,
+                            id: i + 1, // ID for trajectory tracking
+                            trajectory: [] // Store trajectory for this entity
+                        };
+                    }
+                }
+                
+                // If we couldn't find a valid position after many attempts, just place it somewhere
+                if (!validPosition) {
+                    let preyX = Math.random() * (containerWidth - preySize - 20) + 10;
+                    let preyY = Math.random() * (containerHeight - preySize - 20) + 10;
+                    
+                    newPrey = {
+                        x: preyX,
+                        y: preyY,
+                        size: preySize,
+                        color: rewards[i].color,
+                        reward: rewards[i].value,
+                        maxSpeed: preyMaxSpeed,
+                        minSpeed: preyMinSpeed,
+                        id: i + 1, // ID for trajectory tracking
+                        trajectory: [] // Store trajectory for this entity
+                    };
+                }
+                
+                prey.push(newPrey);
+                
+                // Record initial position in trajectory
+                recordTrajectory('prey' + newPrey.id, newPrey.x, newPrey.y);
+            }
+            
+            // Create predator on the opposite side of the screen from the avatar
+            createPredator();
+            
+            trialStartTime = Date.now();
+            currentTime = 0;
+            gameRunning = true;
+            
+            // Start game loop
+            requestAnimationFrame(gameLoop);
+        }
+        
+        function createPredator() {
+            // Place predator on opposite side of screen from avatar
+            const angleFromCenter = Math.atan2(avatar.y - containerHeight/2, avatar.x - containerWidth/2);
+            const oppositeAngle = angleFromCenter + Math.PI;
+            
+            // Calculate position at a distance from center
+            const distanceFromCenter = minInitialDistance * 0.8; // Slightly closer than prey
+            const predatorX = containerWidth/2 + Math.cos(oppositeAngle) * distanceFromCenter;
+            const predatorY = containerHeight/2 + Math.sin(oppositeAngle) * distanceFromCenter;
+            
+            // Initialize predator
+            predator = {
+                x: predatorX,
+                y: predatorY,
+                size: predatorSize,
+                color: predatorColor,
+                speed: predatorMinSpeed + Math.random() * (predatorMaxSpeed - predatorMinSpeed),
+                trajectory: []
+            };
+            
+            // Record initial position in trajectory
+            recordTrajectory('predator', predator.x, predator.y);
+        }
+        
+        function gameLoop() {
+            if (!gameRunning) return;
+            
+            // Update time
+            const elapsed = Date.now() - trialStartTime;
+            currentTime = elapsed;
+            
+            // Check if time is up
+            if (elapsed >= trialDuration) {
+                endTrial(false, 'timeout');
+                return;
+            }
+            
+            // Previous positions for tracking movement
+            const prevPreyPositions = prey.map(p => ({ id: p.id, x: p.x, y: p.y }));
+            const prevPredatorX = predator.x;
+            const prevPredatorY = predator.y;
+            
+            // Move prey using A* inspired algorithm
+            movePrey();
+            
+            // Move predator to chase avatar
+            movePredator();
+            
+            // Record trajectory if positions changed significantly
+            for (let i = 0; i < prey.length; i++) {
+                const prev = prevPreyPositions.find(p => p.id === prey[i].id);
+                if (prev) {
+                    const movedDistance = Math.sqrt(Math.pow(prey[i].x - prev.x, 2) + Math.pow(prey[i].y - prev.y, 2));
+                    if (movedDistance > 1) {
+                        recordTrajectory('prey' + prey[i].id, prey[i].x, prey[i].y);
+                    }
+                }
+            }
+            
+            const predatorMovedDistance = Math.sqrt(Math.pow(predator.x - prevPredatorX, 2) + Math.pow(predator.y - prevPredatorY, 2));
+            if (predatorMovedDistance > 1) {
+                recordTrajectory('predator', predator.x, predator.y);
+            }
+            
+            // Check for prey capture
+            if (checkCapture()) {
+                endTrial(true, 'prey_capture');
+                return;
+            }
+            
+            // Check for predator capture
+            if (checkPredatorCapture()) {
+                endTrial(false, 'predator_capture');
+                return;
+            }
+            
+            // Draw everything
+            draw();
+            
+            // Continue loop
+            requestAnimationFrame(gameLoop);
+        }
+        
+        function movePrey() {
+            // Move each prey independently
+            for (let p = 0; p < prey.length; p++) {
+                const currentPrey = prey[p];
+                
+                // Generate 15 possible positions for prey
+                const possiblePositions = [];
+                const numPositions = 15;
+                const radius = currentPrey.maxSpeed;
+                
+                for (let i = 0; i < numPositions; i++) {
+                    const angle = (i / numPositions) * 2 * Math.PI;
+                    const newX = currentPrey.x + radius * Math.cos(angle);
+                    const newY = currentPrey.y + radius * Math.sin(angle);
+                    
+                    // Check if position is within bounds
+                    if (newX < preySize/2 || newX > containerWidth - preySize/2 || 
+                        newY < preySize/2 || newY > containerHeight - preySize/2) {
+                        continue;
+                    }
+                    
+                    // Calculate cost based on distance from avatar and center bias
+                    const distToAvatar = Math.sqrt(
+                        Math.pow(newX - avatar.x, 2) + 
+                        Math.pow(newY - avatar.y, 2)
+                    );
+                    
+                    // Center bias calculation
+                    const distToCenter = Math.sqrt(
+                        Math.pow(newX - containerWidth/2, 2) + 
+                        Math.pow(newY - containerHeight/2, 2)
+                    );
+                    const centerBias = distToCenter / (Math.sqrt(Math.pow(containerWidth/2, 2) + Math.pow(containerHeight/2, 2)));
+                    
+                    // Sigmoid function for avatar distance cost
+                    const avatarCost = distToAvatar < 200 ? 
+                        1 / (1 + Math.exp((distToAvatar - 100) / 20)) : 0;
+                    
+                    // Total cost
+                    const cost = avatarCost + 0.3 * centerBias;
+                    
+                    possiblePositions.push({
+                        x: newX,
+                        y: newY,
+                        cost: cost
+                    });
+                }
+                
+                // Sort by cost and select the position with lowest cost
+                possiblePositions.sort((a, b) => a.cost - b.cost);
+                
+                if (possiblePositions.length > 0) {
+                    // Add some randomness to prey movement
+                    const randomFactor = Math.random();
+                    if (randomFactor < 0.2 && possiblePositions.length > 3) {
+                        // 20% chance to choose a random direction from the top 3
+                        const randomIndex = Math.floor(Math.random() * 3);
+                        currentPrey.x = possiblePositions[randomIndex].x;
+                        currentPrey.y = possiblePositions[randomIndex].y;
+                    } else {
+                        // 80% chance to choose optimal direction
+                        currentPrey.x = possiblePositions[0].x;
+                        currentPrey.y = possiblePositions[0].y;
+                    }
+                }
+            }
+        }
+        
+        function movePredator() {
+            // Direct chase toward avatar
+            const dx = avatar.x - predator.x;
+            const dy = avatar.y - predator.y;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+            
+            if (dist > 0) {
+                // Calculate direction
+                const dirX = dx / dist;
+                const dirY = dy / dist;
+                
+                // Speed increases as the trial progresses (creates more pressure)
+                const timeProgress = currentTime / trialDuration; // 0 to 1
+                const speedMultiplier = 1 + timeProgress * 0.5; // 1 to 1.5
+                const speed = predator.speed * speedMultiplier;
+                
+                // Update position
+                predator.x += dirX * speed;
+                predator.y += dirY * speed;
+                
+                // Keep predator within bounds
+                predator.x = Math.max(predator.size/2, Math.min(containerWidth - predator.size/2, predator.x));
+                predator.y = Math.max(predator.size/2, Math.min(containerHeight - predator.size/2, predator.y));
+            }
+        }
+        
+        function draw() {
+            // Clear canvas
+            ctx.fillStyle = 'gray';
+            ctx.fillRect(0, 0, containerWidth, containerHeight);
+            
+            // Draw all prey
+            for (let p = 0; p < prey.length; p++) {
+                const currentPrey = prey[p];
+                ctx.fillStyle = currentPrey.color;
+                ctx.fillRect(
+                    currentPrey.x - currentPrey.size/2,
+                    currentPrey.y - currentPrey.size/2,
+                    currentPrey.size,
+                    currentPrey.size
+                );
+                
+                // Add a "$" symbol with the value to make reward clearer
+                ctx.fillStyle = 'white';
+                ctx.font = 'bold 14px Arial';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText('$' + currentPrey.reward, currentPrey.x, currentPrey.y);
+            }
+            
+            // Draw predator (ghost-like shape)
+            drawPredator();
+            
+            // Draw avatar
+            ctx.fillStyle = avatar.color;
+            ctx.beginPath();
+            ctx.arc(avatar.x, avatar.y, avatar.radius, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // Update status text
+            updateStatusText();
+        }
+        
+        function drawPredator() {
+            const x = predator.x;
+            const y = predator.y;
+            const size = predator.size;
+            
+            // Body (semi-circle for top)
+            ctx.fillStyle = predator.color;
+            ctx.beginPath();
+            ctx.arc(x, y, size/2, Math.PI, 0, false);
+            
+            // Wavy bottom part (ghost-like)
+            ctx.lineTo(x + size/2, y + size/2);
+            ctx.lineTo(x + size/4, y + size/3);
+            ctx.lineTo(x, y + size/2);
+            ctx.lineTo(x - size/4, y + size/3);
+            ctx.lineTo(x - size/2, y + size/2);
+            ctx.lineTo(x - size/2, y);
+            ctx.closePath();
+            ctx.fill();
+            
+            // Eyes
+            ctx.fillStyle = 'black';
+            ctx.beginPath();
+            ctx.arc(x - size/6, y - size/8, size/10, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.beginPath();
+            ctx.arc(x + size/6, y - size/8, size/10, 0, Math.PI * 2);
+            ctx.fill();
+        }
+        
+        function checkCapture() {
+            // Check if avatar touches any prey
+            for (let p = 0; p < prey.length; p++) {
+                const currentPrey = prey[p];
+                const dx = avatar.x - currentPrey.x;
+                const dy = avatar.y - currentPrey.y;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+                
+                if (distance < (avatar.radius + currentPrey.size/2)) {
+                    // Save which prey was captured for data recording
+                    const capturedPrey = { ...currentPrey };
+                    prey.splice(p, 1);
+                    
+                    // Add reward
+                    totalReward += capturedPrey.reward;
+                    document.getElementById('rewardText').textContent = `Current Reward: $${totalReward}`;
+                    
+                    // Record capture in data
+                    recordOutcome('prey_capture', capturedPrey.reward, capturedPrey.color);
+                    
+                    return true;
+                }
+            }
+            
+            return false;
+        }
+        
+        function checkPredatorCapture() {
+            // Check if predator catches avatar
+            const dx = avatar.x - predator.x;
+            const dy = avatar.y - predator.y;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+            
+            // Predator capture radius
+            const captureRadius = avatar.radius + predator.size/3;
+            
+            if (distance < captureRadius) {
+                // Record predator capture in data
+                recordOutcome('predator_capture', 0, 'none');
+                
+                return true;
+            }
+            
+            return false;
+        }
+        
+        function endTrial(success, reason) {
+            gameRunning = false;
+            
+            // If timeout, record it
+            if (reason === 'timeout') {
+                recordOutcome('timeout', 0, 'none');
+            }
+            
+            // Short delay before starting next trial
+            setTimeout(() => {
+                startTrial();
+            }, 1000);
+        }
+        
+        function endExperiment() {
+            document.getElementById('gameContainer').style.display = 'none';
+            document.getElementById('results').style.display = 'block';
+        }
+        
+        function updateStatusText() {
+            const remainingTime = Math.max(0, Math.floor((trialDuration - currentTime) / 1000));
+            document.getElementById('statusText').textContent = 
+                `Trial: ${currentTrial}/${totalTrials} | Time: ${remainingTime}s`;
+        }
+        
+        function recordTrajectory(entityType, x, y) {
+            // Record trajectory data with timestamp
+            const timestamp = Date.now() - trialStartTime;
+            
+            trajectoryData.push({
+                trial: currentTrial,
+                time: timestamp,
+                entityType: entityType,
+                x: x,
+                y: y
+            });
+            
+            // Store in entity's trajectory array too
+            if (entityType === 'avatar') {
+                avatar.trajectory.push({ time: timestamp, x: x, y: y });
+            } else if (entityType === 'predator') {
+                predator.trajectory.push({ time: timestamp, x: x, y: y });
+            } else if (entityType.startsWith('prey')) {
+                const preyId = parseInt(entityType.substring(4));
+                const preyObj = prey.find(p => p.id === preyId);
+                if (preyObj) {
+                    preyObj.trajectory.push({ time: timestamp, x: x, y: y });
+                }
+            }
+        }
+        
+        function recordData() {
+            if (!gameRunning) return;
+            
+            // Calculate elapsed time since trial start
+            const timestamp = Date.now() - trialStartTime;
+            
+            // Base data point
+            const dataPoint = {
+                trial: currentTrial,
+                time: timestamp,
+                avatarX: avatar.x,
+                avatarY: avatar.y,
+                predatorX: predator.x,
+                predatorY: predator.y
+            };
+            
+            // Add data for each prey
+            for (let p = 0; p < prey.length; p++) {
+                const currentPrey = prey[p];
+                dataPoint[`prey${p+1}X`] = currentPrey.x;
+                dataPoint[`prey${p+1}Y`] = currentPrey.y;
+                dataPoint[`prey${p+1}RewardValue`] = currentPrey.reward;
+                dataPoint[`prey${p+1}RewardColor`] = currentPrey.color;
+            }
+            
+            // Fill in missing prey data with null values
+            if (prey.length < 2) {
+                for (let p = prey.length; p < 2; p++) {
+                    dataPoint[`prey${p+1}X`] = null;
+                    dataPoint[`prey${p+1}Y`] = null;
+                    dataPoint[`prey${p+1}RewardValue`] = null;
+                    dataPoint[`prey${p+1}RewardColor`] = null;
+                }
+            }
+            
+            // Record data point
+            data.push(dataPoint);
+        }
+        
+        function recordOutcome(outcome, reward, preyColor) {
+            // Record trial outcome data
+            const outcomeData = {
+                trial: currentTrial,
+                time: currentTime,
+                outcome: outcome,
+                reward: reward,
+                preyColor: preyColor,
+                avatarX: avatar.x,
+                avatarY: avatar.y,
+                predatorX: predator.x,
+                predatorY: predator.y
+            };
+            
+            // Add data for remaining prey
+            for (let p = 0; p < prey.length; p++) {
+                const currentPrey = prey[p];
+                outcomeData[`prey${p+1}X`] = currentPrey.x;
+                outcomeData[`prey${p+1}Y`] = currentPrey.y;
+                outcomeData[`prey${p+1}RewardValue`] = currentPrey.reward;
+                outcomeData[`prey${p+1}RewardColor`] = currentPrey.color;
+            }
+            
+            // Record outcome data
+            data.push({
+                ...outcomeData,
+                event: 'trial_outcome'
+            });
+        }
+        
+        function prepareDownload() {
+            // Create two CSV files: one for regular data and one for trajectory
+
+            // Main data CSV
+            let csv = 'Trial,Time,Event,Outcome,Reward,PreyColor,AvatarX,AvatarY,PredatorX,PredatorY,Prey1X,Prey1Y,Prey1RewardValue,Prey1RewardColor,Prey2X,Prey2Y,Prey2RewardValue,Prey2RewardColor\n';
+            
+            data.forEach(row => {
+                const event = row.event || 'movement';
+                const outcome = row.outcome || '';
+                const reward = row.reward !== undefined ? row.reward : '';
+                const preyColor = row.preyColor || '';
+                
+                csv += `${row.trial},${row.time},${event},${outcome},${reward},${preyColor},${row.avatarX},${row.avatarY},${row.predatorX || ''},${row.predatorY || ''},`;
+                csv += `${row.prey1X !== undefined ? row.prey1X : ''},${row.prey1Y !== undefined ? row.prey1Y : ''},${row.prey1RewardValue || ''},${row.prey1RewardColor || ''},`;
+                csv += `${row.prey2X !== undefined ? row.prey2X : ''},${row.prey2Y !== undefined ? row.prey2Y : ''},${row.prey2RewardValue || ''},${row.prey2RewardColor || ''}\n`;
+            });
+            
+            // Trajectory data CSV
+            let trajectoryCsv = 'Trial,Time,EntityType,X,Y\n';
+            
+            trajectoryData.forEach(row => {
+                trajectoryCsv += `${row.trial},${row.time},${row.entityType},${row.x},${row.y}\n`;
+            });
+            
+            // Combine both CSV files with a header
+            const combinedCsv = "MAIN DATA\n" + csv + "\n\nTRAJECTORY DATA\n" + trajectoryCsv;
+            
+            // Create download link
+            const blob = new Blob([combinedCsv], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const downloadLink = document.getElementById('downloadLink');
+            downloadLink.href = url;
+            downloadLink.download = "pacman_experiment_with_trajectory_data.csv";
+        }
+    </script>
+</body>
+</html>
