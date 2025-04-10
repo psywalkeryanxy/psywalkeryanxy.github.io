@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pac-Man Task Experiment v2 (Cognitive Effort)</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 20px;
+            background-color: #f0f0f0;
+        }
+        #gameContainer {
+            position: relative;
+            width: 800px;
+            height: 600px;
+            margin: 0 auto;
+            background-color: gray;
+            overflow: hidden;
+        }
+        #gameCanvas {
+            display: block;
+        }
+        #instructions {
+            margin: 20px auto;
+            max-width: 600px;
+            text-align: left;
+            padding: 15px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 10px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        #results {
+            display: none;
+            margin: 20px auto;
+            max-width: 800px;
+            text-align: left;
+            padding: 15px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        #downloadLink {
+            display: inline-block;
+            margin: 10px;
+            padding: 10px 20px;
+            background-color: #2196F3;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+        .status {
+            font-weight: bold;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Pac-Man Goal Pursuit Experiment v2 (Cognitive Effort)</h1>
+    
+    <div id="instructions">
+        <h2>Instructions</h2>
+        <p>In this task, you will control a yellow circle using your mouse. Your goal is to catch one of the colored squares on the screen.</p>
+        <p>Each trial includes two different types of targets:</p>
+        <ul>
+            <li><strong>Low value, easy-to-catch target (Red square, $1):</strong> This target moves in a more predictable pattern and is slower, making it easier to catch.</li>
+            <li><strong>High value, hard-to-catch target (Blue square, $5):</strong> This target moves faster and more unpredictably, making it harder to catch, but it's worth more points.</li>
+        </ul>
+        <p><strong>Time pressure:</strong> Half of the trials will give you 10 seconds, while the other half will only give you 5 seconds to make a decision and catch a target.</p>
+        <p>The trial will end immediately after you catch any target.</p>
+        <p>Your challenge is to decide which target to pursue under different time constraints.</p>
+        <p>Click the Start button when you're ready to begin.</p>
+    </div>
+    
+    <button id="startButton">Start Experiment</button>
+    
+    <div id="gameContainer">
+        <canvas id="gameCanvas" width="800" height="600"></canvas>
+    </div>
+    
+    <div class="status" id="statusText">Trial: 0/20 | Time: 0s</div>
+    <div class="status" id="rewardText">Current Reward: $0</div>
+    
+    <div id="results">
+        <h2>Experiment Completed</h2>
+        <p>Thank you for participating! The data has been recorded.</p>
+        <p>You can download your data by clicking the button below:</p>
+        <a id="downloadLink" href="#" download="pacman_experiment_data_v2.csv">Download Data</a>
+    </div>
+
+    <script>
+        // Canvas and context
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        const containerWidth = canvas.width;
+        const containerHeight = canvas.height;
+        
+        // Game parameters
+        const avatarRadius = 10;
+        const preySize = 30; // 30 pixels square
+        const maxAvatarSpeed = 23; // pixels per frame
+        const frameTime = 16.67; // ms per frame (60 fps)
+        const shortTrialDuration = 5000; // 5 seconds in ms
+        const longTrialDuration = 10000; // 10 seconds in ms
+        const minInitialDistance = 400; // minimum initial distance between avatar and prey
+        const totalTrials = 20;
+        
+        // Easy prey parameters (low value)
+        const easyPreyMaxSpeed = 4;
+        const easyPreyMinSpeed = 2;
+        const easyPreyValue = 1;
+        const easyPreyColor = 'red';
+        
+        // Hard prey parameters (high value)
+        const hardPreyMaxSpeed = 9;
+        const hardPreyMinSpeed = 6;
+        const hardPreyValue = 5;
+        const hardPreyColor = 'blue';
+        
+        // Game state variables
+        let data = [];
+        let currentTrial = 0;
+        let trialStartTime;
+        let currentTime = 0;
+        let gameRunning = false;
+        let totalReward = 0;
+        let currentTrialDuration = longTrialDuration; // Will be set in startTrial
+        
+        // Game objects
+        let avatar = {
+            x: containerWidth / 2,
+            y: containerHeight / 2,
+            radius: avatarRadius,
+            color: 'yellow'
+        };
+        
+        let prey = [];
+        
+        // Event listeners
+        document.getElementById('startButton').addEventListener('click', startExperiment);
+        document.getElementById('downloadLink').addEventListener('click', prepareDownload);
+        
+        canvas.addEventListener('mousemove', function(e) {
+            if (!gameRunning) return;
+            
+            // Get mouse position relative to canvas
+            const rect = canvas.getBoundingClientRect();
+            const mouseX = e.clientX - rect.left;
+            const mouseY = e.clientY - rect.top;
+            
+            // Calculate direction vector
+            const dx = mouseX - avatar.x;
+            const dy = mouseY - avatar.y;
+            
+            // Calculate distance
+            const distance = Math.sqrt(dx * dx + dy * dy);
+            
+            if (distance > 0) {
+                // Normalize and apply speed
+                const moveX = (dx / distance) * maxAvatarSpeed;
+                const moveY = (dy / distance) * maxAvatarSpeed;
+                
+                // Update avatar position with bounds checking
+                avatar.x = Math.max(avatar.radius, Math.min(containerWidth - avatar.radius, avatar.x + moveX));
+                avatar.y = Math.max(avatar.radius, Math.min(containerHeight - avatar.radius, avatar.y + moveY));
+                
+                // Record data
+                recordData();
+            }
+        });
+        
+        // Game functions
+        function startExperiment() {
+            document.getElementById('startButton').style.display = 'none';
+            data = [];
+            currentTrial = 0;
+            totalReward = 0;
+            startTrial();
+        }
+        
+        function startTrial() {
+            if (currentTrial >= totalTrials) {
+                endExperiment();
+                return;
+            }
+            
+            currentTrial++;
+            
+            // Determine if this is a short or long trial
+            // Odd trials are short, even trials are long
+            const isShortTrial = (currentTrial % 2 === 1);
+            currentTrialDuration = isShortTrial ? shortTrialDuration : longTrialDuration;
+            
+            // Reset avatar to center
+            avatar.x = containerWidth / 2;
+            avatar.y = containerHeight / 2;
+            
+            // Initialize prey array
+            prey = [];
+            
+            // Create easy (low value) prey
+            createPrey(easyPreyColor, easyPreyValue, easyPreyMaxSpeed, easyPreyMinSpeed, 'easy');
+            
+            // Create hard (high value) prey
+            createPrey(hardPreyColor, hardPreyValue, hardPreyMaxSpeed, hardPreyMinSpeed, 'hard');
+            
+            trialStartTime = Date.now();
+            currentTime = 0;
+            gameRunning = true;
+            
+            // Start game loop
+            requestAnimationFrame(gameLoop);
+        }
+        
+        function createPrey(color, value, maxSpeed, minSpeed, difficulty) {
+            let preyX, preyY, distance;
+            let validPosition = false;
+            let attempts = 0;
+            
+            while (!validPosition && attempts < 100) {
+                attempts++;
+                
+                preyX = Math.random() * (containerWidth - preySize - 20) + 10;
+                preyY = Math.random() * (containerHeight - preySize - 20) + 10;
+                
+                // Check distance from avatar
+                const dxAvatar = preyX - avatar.x;
+                const dyAvatar = preyY - avatar.y;
+                const distanceToAvatar = Math.sqrt(dxAvatar * dxAvatar + dyAvatar * dyAvatar);
+                
+                // If this is second prey, also check distance from first prey
+                let distanceToOtherPrey = Infinity;
+                if (prey.length > 0) {
+                    const dxPrey = preyX - prey[0].x;
+                    const dyPrey = preyY - prey[0].y;
+                    distanceToOtherPrey = Math.sqrt(dxPrey * dxPrey + dyPrey * dyPrey);
+                }
+                
+                if (distanceToAvatar >= minInitialDistance && distanceToOtherPrey >= 200) {
+                    validPosition = true;
+                }
+            }
+            
+            // If we couldn't find a valid position after many attempts, just place it somewhere
+            if (!validPosition) {
+                preyX = Math.random() * (containerWidth - preySize - 20) + 10;
+                preyY = Math.random() * (containerHeight - preySize - 20) + 10;
+            }
+            
+            prey.push({
+                x: preyX,
+                y: preyY,
+                size: preySize,
+                color: color,
+                reward: value,
+                maxSpeed: maxSpeed,
+                minSpeed: minSpeed,
+                difficulty: difficulty,
+                direction: Math.random() * Math.PI * 2, // Add direction for easy prey
+                dirChangeTimer: 0 // Timer for direction changes (easy prey)
+            });
+        }
+        
+        function gameLoop() {
+            if (!gameRunning) return;
+            
+            // Update time
+            const elapsed = Date.now() - trialStartTime;
+            currentTime = elapsed;
+            
+            // Check if time is up
+            if (elapsed >= currentTrialDuration) {
+                endTrial(false);
+                return;
+            }
+            
+            // Move prey
+            movePrey();
+            
+            // Check for capture - if true, the trial will already be ended by checkCapture
+            checkCapture();
+            
+            // Only continue if game is still running
+            if (gameRunning) {
+                // Draw everything
+                draw();
+                
+                // Continue loop
+                requestAnimationFrame(gameLoop);
+            }
+        }
+        
+        function movePrey() {
+            // Move each prey independently based on difficulty
+            for (let p = 0; p < prey.length; p++) {
+                const currentPrey = prey[p];
+                
+                if (currentPrey.difficulty === 'easy') {
+                    moveEasyPrey(currentPrey);
+                } else {
+                    moveHardPrey(currentPrey);
+                }
+            }
+        }
+        
+        function moveEasyPrey(currentPrey) {
+            // Easy prey moves in more predictable patterns
+            // Change direction occasionally
+            currentPrey.dirChangeTimer += frameTime;
+            
+            if (currentPrey.dirChangeTimer > 1000) { // Change direction every 1 second
+                currentPrey.direction += (Math.random() - 0.5) * Math.PI / 2; // Small direction change
+                currentPrey.dirChangeTimer = 0;
+            }
+            
+            // Move in current direction
+            const speed = currentPrey.minSpeed + Math.random() * (currentPrey.maxSpeed - currentPrey.minSpeed);
+            let newX = currentPrey.x + Math.cos(currentPrey.direction) * speed;
+            let newY = currentPrey.y + Math.sin(currentPrey.direction) * speed;
+            
+            // Bounce off walls
+            if (newX < currentPrey.size/2 || newX > containerWidth - currentPrey.size/2) {
+                currentPrey.direction = Math.PI - currentPrey.direction;
+                newX = currentPrey.x;
+            }
+            
+            if (newY < currentPrey.size/2 || newY > containerHeight - currentPrey.size/2) {
+                currentPrey.direction = -currentPrey.direction;
+                newY = currentPrey.y;
+            }
+            
+            // Move away from avatar if too close, but not very aggressively
+            const dx = avatar.x - currentPrey.x;
+            const dy = avatar.y - currentPrey.y;
+            const distToAvatar = Math.sqrt(dx * dx + dy * dy);
+            
+            if (distToAvatar < 120) {
+                // Calculate angle to avatar
+                const angleToAvatar = Math.atan2(dy, dx);
+                
+                // Move in opposite direction (away from avatar) but not too dramatically
+                const fleeWeight = 0.3; // Lower weight means less dramatic fleeing
+                currentPrey.direction = currentPrey.direction * (1 - fleeWeight) + 
+                                         (angleToAvatar + Math.PI) * fleeWeight;
+            }
+            
+            // Update position
+            currentPrey.x = newX;
+            currentPrey.y = newY;
+        }
+        
+        function moveHardPrey(currentPrey) {
+            // Hard prey uses A* inspired algorithm and more aggressive avoidance
+            // Generate possible positions
+            const possiblePositions = [];
+            const numPositions = 15;
+            const radius = currentPrey.maxSpeed;
+            
+            for (let i = 0; i < numPositions; i++) {
+                const angle = (i / numPositions) * 2 * Math.PI;
+                const newX = currentPrey.x + radius * Math.cos(angle);
+                const newY = currentPrey.y + radius * Math.sin(angle);
+                
+                // Check if position is within bounds
+                if (newX < currentPrey.size/2 || newX > containerWidth - currentPrey.size/2 || 
+                    newY < currentPrey.size/2 || newY > containerHeight - currentPrey.size/2) {
+                    continue;
+                }
+                
+                // Calculate cost based on distance from avatar and center bias
+                const distToAvatar = Math.sqrt(
+                    Math.pow(newX - avatar.x, 2) + 
+                    Math.pow(newY - avatar.y, 2)
+                );
+                
+                // Center bias calculation
+                const distToCenter = Math.sqrt(
+                    Math.pow(newX - containerWidth/2, 2) + 
+                    Math.pow(newY - containerHeight/2, 2)
+                );
+                const centerBias = distToCenter / (Math.sqrt(Math.pow(containerWidth/2, 2) + Math.pow(containerHeight/2, 2)));
+                
+                // Sigmoid function for avatar distance cost
+                // Hard prey flees more aggressively and from further away
+                const avatarCost = distToAvatar < 250 ? 
+                    1 / (1 + Math.exp((distToAvatar - 150) / 20)) : 0;
+                
+                // Total cost - more center bias than easy prey
+                const cost = avatarCost + 0.15 * centerBias;
+                
+                possiblePositions.push({
+                    x: newX,
+                    y: newY,
+                    cost: cost
+                });
+            }
+            
+            // Sort by cost and select position
+            possiblePositions.sort((a, b) => a.cost - b.cost);
+            
+            if (possiblePositions.length > 0) {
+                // Hard prey movements have some randomness but less than easy prey
+                const randomFactor = Math.random();
+                
+                if (randomFactor < 0.15 && possiblePositions.length > 3) {
+                    // 15% chance to choose a random direction from the top 3
+                    const randomIndex = Math.floor(Math.random() * 3);
+                    currentPrey.x = possiblePositions[randomIndex].x;
+                    currentPrey.y = possiblePositions[randomIndex].y;
+                } else {
+                    // 85% chance to choose optimal direction
+                    currentPrey.x = possiblePositions[0].x;
+                    currentPrey.y = possiblePositions[0].y;
+                }
+            }
+        }
+        
+        function draw() {
+            // Clear canvas
+            ctx.fillStyle = 'gray';
+            ctx.fillRect(0, 0, containerWidth, containerHeight);
+            
+            // Draw all prey
+            for (let p = 0; p < prey.length; p++) {
+                const currentPrey = prey[p];
+                ctx.fillStyle = currentPrey.color;
+                ctx.fillRect(
+                    currentPrey.x - currentPrey.size/2,
+                    currentPrey.y - currentPrey.size/2,
+                    currentPrey.size,
+                    currentPrey.size
+                );
+                
+                // Add a "$" symbol with the value to make reward clearer
+                ctx.fillStyle = 'white';
+                ctx.font = 'bold 14px Arial';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText('$' + currentPrey.reward, currentPrey.x, currentPrey.y);
+            }
+            
+            // Draw avatar
+            ctx.fillStyle = avatar.color;
+            ctx.beginPath();
+            ctx.arc(avatar.x, avatar.y, avatar.radius, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // Update status text
+            updateStatusText();
+        }
+        
+        function updateStatusText() {
+            const remainingTime = Math.max(0, Math.floor((currentTrialDuration - currentTime) / 1000));
+            const isShortTrial = (currentTrial % 2 === 1);
+            const timeLabel = isShortTrial ? " (Short)" : " (Long)";
+            
+            document.getElementById('statusText').textContent = 
+                `Trial: ${currentTrial}/${totalTrials} | Time: ${remainingTime}s${timeLabel}`;
+        }
+        
+        function checkCapture() {
+            // Check if avatar touches any prey
+            for (let p = 0; p < prey.length; p++) {
+                const currentPrey = prey[p];
+                const dx = avatar.x - currentPrey.x;
+                const dy = avatar.y - currentPrey.y;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+                
+                // Capture radius varies by difficulty - easy prey is easier to catch
+                const captureRadius = currentPrey.difficulty === 'easy' ? 
+                    (avatar.radius + currentPrey.size/2 + 10) : // Easy prey: larger capture radius
+                    (avatar.radius + currentPrey.size/2 + 3);   // Hard prey: smaller capture radius
+                
+                if (distance < captureRadius) {
+                    // Save which prey was captured
+                    const capturedPrey = { ...currentPrey };
+                    
+                    // Add reward
+                    totalReward += capturedPrey.reward;
+                    document.getElementById('rewardText').textContent = `Current Reward: ${totalReward}`;
+                    
+                    // Determine trial type
+                    const isShortTrial = (currentTrial % 2 === 1);
+                    const trialType = isShortTrial ? 'short' : 'long';
+                    
+                    // Record capture in data
+                    data.push({
+                        trial: currentTrial,
+                        trialType: trialType,
+                        trialDuration: currentTrialDuration / 1000, // in seconds
+                        time: currentTime,
+                        event: 'capture',
+                        avatarX: avatar.x,
+                        avatarY: avatar.y,
+                        preyX: capturedPrey.x,
+                        preyY: capturedPrey.y,
+                        preyCaptured: capturedPrey.difficulty,
+                        rewardValue: capturedPrey.reward,
+                        rewardColor: capturedPrey.color
+                    });
+                    
+                    // End the trial immediately with success
+                    endTrial(true);
+                    return true;
+                }
+            }
+            
+            return false;
+        }
+        
+        function endTrial(success) {
+            gameRunning = false;
+            
+            // Record trial end data
+            const isShortTrial = (currentTrial % 2 === 1);
+            const trialType = isShortTrial ? 'short' : 'long';
+            
+            data.push({
+                trial: currentTrial,
+                trialType: trialType,
+                trialDuration: currentTrialDuration / 1000, // in seconds
+                time: currentTime,
+                event: 'trial_end',
+                success: success,
+                avatarX: avatar.x,
+                avatarY: avatar.y
+            });
+            
+            // Short delay before starting next trial
+            setTimeout(() => {
+                startTrial();
+            }, 1000);
+        }
+        
+        function endExperiment() {
+            document.getElementById('gameContainer').style.display = 'none';
+            document.getElementById('results').style.display = 'block';
+        }
+        
+        function recordData() {
+            if (!gameRunning) return;
+            
+            // Calculate elapsed time since trial start
+            const timestamp = Date.now() - trialStartTime;
+            
+            // Determine trial type
+            const isShortTrial = (currentTrial % 2 === 1);
+            const trialType = isShortTrial ? 'short' : 'long';
+            
+            // Record movement data (less frequently to avoid huge data files)
+            if (timestamp % 50 === 0) { // Record every 50ms
+                // Base data point for avatar movement
+                const dataPoint = {
+                    trial: currentTrial,
+                    trialType: trialType,
+                    trialDuration: currentTrialDuration / 1000, // in seconds
+                    time: timestamp,
+                    event: 'movement',
+                    avatarX: avatar.x,
+                    avatarY: avatar.y
+                };
+                
+                // Add data for each prey
+                for (let p = 0; p < prey.length; p++) {
+                    const currentPrey = prey[p];
+                    dataPoint[`prey${p+1}Type`] = currentPrey.difficulty;
+                    dataPoint[`prey${p+1}X`] = currentPrey.x;
+                    dataPoint[`prey${p+1}Y`] = currentPrey.y;
+                    dataPoint[`prey${p+1}Value`] = currentPrey.reward;
+                    dataPoint[`prey${p+1}Color`] = currentPrey.color;
+                }
+                
+                // Fill in missing prey data with null values
+                if (prey.length < 2) {
+                    for (let p = prey.length; p < 2; p++) {
+                        dataPoint[`prey${p+1}Type`] = null;
+                        dataPoint[`prey${p+1}X`] = null;
+                        dataPoint[`prey${p+1}Y`] = null;
+                        dataPoint[`prey${p+1}Value`] = null;
+                        dataPoint[`prey${p+1}Color`] = null;
+                    }
+                }
+                
+                // Record data point
+                data.push(dataPoint);
+            }
+        }
+        
+        function prepareDownload() {
+            // Create column headers
+            const headers = [
+                'Trial', 'TrialType', 'TrialDuration', 'Time', 'Event', 'AvatarX', 'AvatarY', 
+                'Prey1Type', 'Prey1X', 'Prey1Y', 'Prey1Value', 'Prey1Color',
+                'Prey2Type', 'Prey2X', 'Prey2Y', 'Prey2Value', 'Prey2Color',
+                'PreyCaptured', 'RewardValue', 'RewardColor', 'Success'
+            ];
+            
+            // Convert data to CSV
+            let csv = headers.join(',') + '\n';
+            
+            data.forEach(row => {
+                const values = [
+                    row.trial,
+                    row.trialType || '',
+                    row.trialDuration || '',
+                    row.time,
+                    row.event || '',
+                    row.avatarX,
+                    row.avatarY,
+                    row.prey1Type || '',
+                    row.prey1X || '',
+                    row.prey1Y || '',
+                    row.prey1Value || '',
+                    row.prey1Color || '',
+                    row.prey2Type || '',
+                    row.prey2X || '',
+                    row.prey2Y || '',
+                    row.prey2Value || '',
+                    row.prey2Color || '',
+                    row.preyCaptured || '',
+                    row.rewardValue || '',
+                    row.rewardColor || '',
+                    row.success === undefined ? '' : row.success
+                ];
+                
+                csv += values.join(',') + '\n';
+            });
+            
+            // Create download link
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const downloadLink = document.getElementById('downloadLink');
+            downloadLink.href = url;
+        }
+    </script>
+</body>
+</html>
