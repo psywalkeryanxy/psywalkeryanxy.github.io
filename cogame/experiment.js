@@ -31,11 +31,15 @@ class EscapeAvoidanceExperiment {
         
         this.instructions = [
             "You will see different images followed by a choice to press or not press the SPACE bar.",
-            "Sometimes you will hear an unpleasant sound. Your goal is to learn which response leads to silence.",
-            "For some images, pressing SPACE will be the best choice. For others, NOT pressing will be better.",
-            "The correct response leads to silence 80% of the time, but not always.",
-            "Press SPACE when you see 'Choose: Press or Not Press' if you want to press.",
-            "Do nothing if you choose not to press.",
+            "There are TWO types of trials in this experiment:",
+            "1) ESCAPE trials: You will hear an unpleasant sound immediately when the image appears. Your goal is to learn which response (press or not press) makes the sound STOP.",
+            "2) AVOID trials: You will NOT hear any sound when the image appears. Your goal is to learn which response (press or not press) PREVENTS the sound from playing.",
+            "For each image, you need to learn whether pressing SPACE or NOT pressing is the better choice.",
+            "Important: The correct response will lead to silence 80% of the time, but not always. This means even correct responses sometimes result in hearing the sound.",
+            "When you see 'Choose: Press or Not Press', you have 2 seconds to respond:",
+            "- Press SPACE if you think that's the best choice",
+            "- Do nothing if you think NOT pressing is the best choice",
+            "Try to learn which response works best for each image through trial and error.",
             "Let's begin with some practice trials."
         ];
         
@@ -43,6 +47,62 @@ class EscapeAvoidanceExperiment {
         
         // Initialize audio as soon as the experiment object is created
         this.initializeAudio();
+        
+        // Create trial type indicator element
+        this.createTrialTypeIndicator();
+    }
+    
+    createTrialTypeIndicator() {
+        // Create a persistent trial type indicator element
+        const indicator = document.createElement('div');
+        indicator.id = 'trial-type-indicator';
+        indicator.style.cssText = `
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 15px 30px;
+            font-size: 24px;
+            font-weight: bold;
+            border-radius: 10px;
+            display: none;
+            z-index: 1000;
+            text-align: center;
+            min-width: 200px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        `;
+        document.body.appendChild(indicator);
+    }
+    
+    showTrialTypeIndicator(trialType) {
+        const indicator = document.getElementById('trial-type-indicator');
+        
+        if (trialType === 'escape') {
+            indicator.style.backgroundColor = '#ff6b6b';
+            indicator.style.color = 'white';
+            indicator.style.border = '3px solid #c92a2a';
+            indicator.innerHTML = `
+                <div style="font-size: 28px; margin-bottom: 5px;">ESCAPE TRIAL</div>
+                <div style="font-size: 16px; font-weight: normal;">Sound is playing - learn to make it stop</div>
+            `;
+        } else {
+            indicator.style.backgroundColor = '#51cf66';
+            indicator.style.color = 'white';
+            indicator.style.border = '3px solid #2f9e44';
+            indicator.innerHTML = `
+                <div style="font-size: 28px; margin-bottom: 5px;">AVOID TRIAL</div>
+                <div style="font-size: 16px; font-weight: normal;">No sound yet - learn to keep it that way</div>
+            `;
+        }
+        
+        indicator.style.display = 'block';
+    }
+    
+    hideTrialTypeIndicator() {
+        const indicator = document.getElementById('trial-type-indicator');
+        if (indicator) {
+            indicator.style.display = 'none';
+        }
     }
     
     setupEventListeners() {
@@ -218,6 +278,9 @@ class EscapeAvoidanceExperiment {
             feedback_type: null
         };
         
+        // Show trial type indicator
+        this.showTrialTypeIndicator(trial.condition);
+        
         // ITI with fixation
         await this.showFixation();
         
@@ -226,11 +289,11 @@ class EscapeAvoidanceExperiment {
             this.aversiveSound = this.createAversiveSound();
         }
         
-        // Show cue
-        await this.showCue(trial.cue);
+        // Show cue with trial-specific styling
+        await this.showCue(trial.cue, trial.condition);
         
         // Show target and collect response
-        const response = await this.showTarget();
+        const response = await this.showTarget(trial.condition);
         trialData.response = response.pressed ? 'go' : 'nogo';
         trialData.rt = response.rt;
         
@@ -267,7 +330,10 @@ class EscapeAvoidanceExperiment {
         trialData.feedback_type = playSound ? 'sound' : 'silence';
         
         // Show feedback
-        await this.showFeedback(playSound, response.pressed);
+        await this.showFeedback(playSound, response.pressed, trial.condition);
+        
+        // Hide trial type indicator
+        this.hideTrialTypeIndicator();
         
         // Save trial data
         this.data.push(trialData);
@@ -280,16 +346,36 @@ class EscapeAvoidanceExperiment {
         document.getElementById('fixation').classList.add('hidden');
     }
     
-    async showCue(cueImage) {
+    async showCue(cueImage, condition) {
         const cueElement = document.getElementById('cue');
-        cueElement.innerHTML = `<img src="${cueImage}" alt="cue">`;
+        
+        // Add condition-specific styling to the cue container
+        if (condition === 'escape') {
+            cueElement.style.border = '5px solid #ff6b6b';
+            cueElement.style.boxShadow = '0 0 20px rgba(255, 107, 107, 0.5)';
+        } else {
+            cueElement.style.border = '5px solid #51cf66';
+            cueElement.style.boxShadow = '0 0 20px rgba(81, 207, 102, 0.5)';
+        }
+        
+        cueElement.innerHTML = `<img src="${cueImage}" alt="cue" style="display: block;">`;
         cueElement.classList.remove('hidden');
         await this.wait(this.CUE_DURATION);
     }
     
-    async showTarget() {
+    async showTarget(condition) {
         return new Promise((resolve) => {
             const targetElement = document.getElementById('target');
+            
+            // Add visual indicator for trial type in the target phase
+            if (condition === 'escape') {
+                targetElement.style.backgroundColor = 'rgba(255, 107, 107, 0.1)';
+                targetElement.style.border = '2px solid #ff6b6b';
+            } else {
+                targetElement.style.backgroundColor = 'rgba(81, 207, 102, 0.1)';
+                targetElement.style.border = '2px solid #51cf66';
+            }
+            
             targetElement.classList.remove('hidden');
             
             this.responseWindow = true;
@@ -301,6 +387,11 @@ class EscapeAvoidanceExperiment {
                     responded = true;
                     this.responseWindow = false;
                     const rt = performance.now() - this.trialStartTime;
+                    
+                    // Reset target styling
+                    targetElement.style.backgroundColor = '';
+                    targetElement.style.border = '';
+                    
                     resolve({pressed, rt});
                 }
             };
@@ -311,22 +402,37 @@ class EscapeAvoidanceExperiment {
             // Timeout for no response
             setTimeout(() => {
                 if (!responded) {
+                    // Reset target styling
+                    targetElement.style.backgroundColor = '';
+                    targetElement.style.border = '';
                     responseHandler(false);
                 }
             }, this.TARGET_DURATION);
         });
     }
     
-    async showFeedback(playSound, pressed) {
+    async showFeedback(playSound, pressed, condition) {
         const feedbackElement = document.getElementById('feedback');
         document.getElementById('cue').classList.add('hidden');
         document.getElementById('target').classList.add('hidden');
         
+        // Reset cue styling
+        const cueElement = document.getElementById('cue');
+        cueElement.style.border = '';
+        cueElement.style.boxShadow = '';
+        
+        // Add condition context to feedback
+        const conditionLabel = condition === 'escape' ? 
+            '<span style="color: #ff6b6b; font-weight: bold;">ESCAPE</span>' : 
+            '<span style="color: #51cf66; font-weight: bold;">AVOID</span>';
+        
         if (playSound) {
             // Play aversive sound with visual feedback
             feedbackElement.innerHTML = `
+                <div style="margin-bottom: 10px;">Trial Type: ${conditionLabel}</div>
                 <img src="pink_wave.png" alt="sound" style="width: 300px; height: 100px;">
                 <p style="margin-top: 20px;">You chose: ${pressed ? 'Press' : 'Not Press'}</p>
+                <p style="color: #ff6b6b; font-weight: bold;">Sound Playing!</p>
             `;
             // Play the WAV file during feedback
             const feedbackSound = this.createAversiveSound();
@@ -336,7 +442,9 @@ class EscapeAvoidanceExperiment {
         } else {
             // Silence - no image
             feedbackElement.innerHTML = `
+                <div style="margin-bottom: 10px;">Trial Type: ${conditionLabel}</div>
                 <p style="font-size: 24px;">You chose: ${pressed ? 'Press' : 'Not Press'}</p>
+                <p style="color: #51cf66; font-weight: bold;">Silence!</p>
             `;
         }
         
@@ -370,10 +478,70 @@ class EscapeAvoidanceExperiment {
         
         // Optional: Add practice trials
         const practiceTrials = this.trials.slice(0, 8); // First 8 trials as practice
+        
+        // Show practice message
+        const taskScreen = document.getElementById('task-screen');
+        const practiceMessage = document.createElement('div');
+        practiceMessage.id = 'practice-message';
+        practiceMessage.style.cssText = `
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            font-size: 20px;
+            text-align: center;
+            z-index: 2000;
+        `;
+        practiceMessage.innerHTML = `
+            <h2>Practice Trials</h2>
+            <p>You will now complete 8 practice trials to familiarize yourself with the task.</p>
+            <p>Red borders = ESCAPE trials (sound starts immediately)</p>
+            <p>Green borders = AVOID trials (no sound initially)</p>
+            <button onclick="document.getElementById('practice-message').remove(); experiment.startPractice();" 
+                    style="padding: 10px 20px; font-size: 18px; margin-top: 20px;">Start Practice</button>
+        `;
+        taskScreen.appendChild(practiceMessage);
+    }
+    
+    async startPractice() {
+        const practiceTrials = this.trials.slice(0, 8);
         for (let trial of practiceTrials) {
             await this.runTrial(trial);
         }
         
+        // Show end of practice message
+        const taskScreen = document.getElementById('task-screen');
+        const endPracticeMessage = document.createElement('div');
+        endPracticeMessage.id = 'end-practice-message';
+        endPracticeMessage.style.cssText = `
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            font-size: 20px;
+            text-align: center;
+            z-index: 2000;
+        `;
+        endPracticeMessage.innerHTML = `
+            <h2>Practice Complete!</h2>
+            <p>You've completed the practice trials.</p>
+            <p>Remember: Your goal is to learn which response works best for each image.</p>
+            <p>The main experiment will now begin with ${this.trials.length - 8} trials.</p>
+            <button onclick="document.getElementById('end-practice-message').remove(); experiment.startMainExperiment();" 
+                    style="padding: 10px 20px; font-size: 18px; margin-top: 20px;">Start Main Experiment</button>
+        `;
+        taskScreen.appendChild(endPracticeMessage);
+    }
+    
+    async startMainExperiment() {
         // Main experiment
         for (let i = 8; i < this.trials.length; i++) {
             await this.runTrial(this.trials[i]);
@@ -381,6 +549,25 @@ class EscapeAvoidanceExperiment {
             // Optional: Add progress indicator
             if (i % 20 === 0 && i > 0) {
                 console.log(`Progress: ${i}/${this.trials.length} trials completed`);
+                
+                // Show brief progress message
+                const progressMessage = document.createElement('div');
+                progressMessage.style.cssText = `
+                    position: fixed;
+                    top: 50%;
+                    left: 50%;
+                    transform: translate(-50%, -50%);
+                    background: white;
+                    padding: 20px;
+                    border-radius: 10px;
+                    font-size: 18px;
+                    text-align: center;
+                    z-index: 2000;
+                `;
+                progressMessage.textContent = `Progress: ${i - 8}/${this.trials.length - 8} trials completed`;
+                document.body.appendChild(progressMessage);
+                await this.wait(1500);
+                progressMessage.remove();
             }
         }
         
