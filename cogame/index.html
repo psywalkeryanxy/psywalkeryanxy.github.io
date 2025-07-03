@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Escape-Avoidance Task</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="experiment-container">
+        <!-- Welcome Screen -->
+        <div id="welcome-screen" class="screen">
+            <h1>Welcome to the Experiment</h1>
+            <p>In this task, you will learn when to press or not press the SPACE bar.</p>
+            <p>Please wear headphones and ensure you're in a quiet environment.</p>
+            <button onclick="startCalibration()">Continue</button>
+        </div>
+
+        <!-- Volume Calibration -->
+        <div id="calibration-screen" class="screen hidden">
+            <h2>Volume Calibration</h2>
+            <p>Adjust your volume so the following sound is clearly audible but not painful:</p>
+            <button onclick="playTestSound()">Play Test Sound</button>
+            <p>Is the volume comfortable?</p>
+            <button onclick="startInstructions()">Yes, Continue</button>
+        </div>
+
+        <!-- Instructions -->
+        <div id="instruction-screen" class="screen hidden">
+            <h2>Instructions</h2>
+            <div id="instruction-text"></div>
+            <button onclick="nextInstruction()">Next</button>
+        </div>
+
+        <!-- Task Screen -->
+        <div id="task-screen" class="screen hidden">
+            <div id="fixation" class="stimulus">+</div>
+            <div id="cue" class="stimulus hidden"></div>
+            <div id="target" class="stimulus hidden">
+                <p>Choose: Press or Not Press</p>
+            </div>
+            <div id="feedback" class="stimulus hidden"></div>
+        </div>
+
+        <!-- End Screen -->
+        <div id="end-screen" class="screen hidden">
+            <h2>Thank You!</h2>
+            <p>The experiment is complete.</p>
+            <button onclick="downloadData()">Download Data</button>
+        </div>
+    </div>
+
+    <script src="experiment.js"></script>
+</body>
+</html>
