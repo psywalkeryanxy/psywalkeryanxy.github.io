@@ -39,6 +39,9 @@
             text-decoration: none;
             color: #007bff;
         }
+        nav ul li a:hover {
+            text-decoration: underline;
+        }
         section {
             margin-bottom: 40px;
         }
@@ -53,11 +56,35 @@
         .principles ul {
             padding-left: 20px;
         }
+        .cv-button {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+        .cv-button:hover {
+            background-color: #0056b3;
+        }
+        #my-light {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 5px;
+        }
+        footer {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid #ddd;
+            margin-top: 40px;
+            color: #666;
+        }
     </style>
 </head>
 <body>
     <header>
-        <img src="images/pic00.jpg" alt="Your Name" class="profile-photo">
+        <img src="images/pic00.jpg" alt="Xinyuan Yan" class="profile-photo">
         <h1>Xinyuan Yan</h1>
         <h3>PhD</h3>
     </header>
@@ -65,7 +92,7 @@
     <nav>
         <ul>
             <li><a href="#about">About</a></li>
-            <li><a href="#my light">My Light</a></li>
+            <li><a href="#my-light">My Light</a></li>
             <li><a href="#cv">CV</a></li>
             <li><a href="#publications">Publications</a></li>
             <li><a href="teaching.html">Teaching</a></li>
@@ -73,76 +100,66 @@
         </ul>
     </nav>
 
-<section id="about">
-    <h2>About Me</h2>
+    <section id="about">
+        <h2>About Me</h2>
+        <p>An normal person</p>
+        <p>Find science fascinating</p>
+        <p>A passerby on Earth</p>
+        <p>Past 10 years: learning how to do science, intensive training in social value learning and decision-making, with fMRI and behavioral modeling</p>
+        <p>Past 3 years: focusing on human uncertainty-value learning and decision-making, with intracranial EEG and behavioral modeling</p>
+        <p>Next 2 years: exploring single neuron encoding of cross-linguistic concepts and new concept learning</p>
+    </section>
 
-    <p>An normal person</p>
-    
-    <p>Find science fascinating</p>
-    
-    <p>A passerby on Earth</p>
-    
-    <p>Past 10 years: learning how to do science, intensive training in social value learning and decision-making, with fMRI and behavioral modeling</p>
-    
-    <p>Past 3 years: focusing on human uncertainty-value learning and decision-making, with intracranial EEG and behavioral modeling</p>
-    
-    <p>Next 2 years: exploring single neuron encoding of cross-linguistic concepts and new concept learning</p>
-</section>
-
-    <section id="my light" class="my light">
-        <h2>My light</h2>
+    <section id="my-light">
+        <h2>My Light</h2>
         <p>
-           But the fruit of the Spirit is love, joy, peace, patience, kindness, goodness, faithfulness, gentleness, self-control; against such things there is no law (Galatians 5:22-23, ESV)
-       
+            But the fruit of the Spirit is love, joy, peace, patience, kindness, goodness, faithfulness, gentleness, self-control; against such things there is no law (Galatians 5:22-23, ESV)
         </p>
     </section>
 
-<section id="cv">
-    <h2>Curriculum Vitae</h2>
-    <a href="./CV_YanX.pdf" target="_blank" class="cv-button">
-        View CV (PDF)
-    </a>
-</section>
+    <section id="cv">
+        <h2>Curriculum Vitae</h2>
+        <a href="./CV_YanX.pdf" target="_blank" class="cv-button">
+            View CV (PDF)
+        </a>
+    </section>
+
     <section id="publications">
         <h2>Publications</h2>
         <ul>
             <li><span style="color: #005a9c;">Topic: beliefs about uncertainty (explore-exploit) and implications for affective disorder.</span> 
-            <p><span style="color: #005a9c;">Skillset: computational modeling, intracranial EEG</span> </p></li>
+            <p><span style="color: #005a9c;">Skillset: computational modeling, intracranial EEG</span></p></li>
     
-            <p>1. Yan, X., Ebitz, B. R., Darrow, D. P., & Herman, A. B. (2025). Nonlinear modulation of human exploration by distinct sources of uncertainty. bioRxiv, 2025-04 </p>
+            <p>1. Yan, X., Ebitz, B. R., Darrow, D. P., & Herman, A. B. (2025). Nonlinear modulation of human exploration by distinct sources of uncertainty. bioRxiv, 2025-04</p>
             <p>2. Yan, X., König, S. D., Ebitz, R. B., Hayden, B. Y., Darrow, D. P., & Herman, A. B. (2025). Dynamic prefrontal coupling coordinates adaptive decision-making. Research Square, rs-3</p>
             <p>3. Yan, X., Ebitz, R. B., Grissom, N., Darrow, D. P., & Herman, A. B. (2025). Distinct computational mechanisms of uncertainty processing explain opposing exploratory behaviors in anxiety and apathy. Biological Psychiatry: Cognitive Neuroscience and Neuroimaging.</p>
-            <p>4. Knep, E., Yan, X., Chen, C. S., Jacob, S., Darrow, D. P., Ebitz, R. B., ... & Herman, A. B. (2025). Social aloofness is associated with non-social explore-exploit decisions. Communications Psychology, 3(1), 106. </p>
+            <p>4. Knep, E., Yan, X., Chen, C. S., Jacob, S., Darrow, D. P., Ebitz, R. B., ... & Herman, A. B. (2025). Social aloofness is associated with non-social explore-exploit decisions. Communications Psychology, 3(1), 106.</p>
                         
-            <li><span style="color: #005a9c;">Topic: Social decision-making and its modulation </span> 
-            <p><span style="color: #005a9c;">Skillset: computational modeling, fMRI</span> </p></li>
-            <p>1. Yan X. (2024) Too smart for one’s good? Evolution favors individuals with a low-level theory of mind in a complex network. Psyarxiv.</p>
+            <li><span style="color: #005a9c;">Topic: Social decision-making and its modulation</span> 
+            <p><span style="color: #005a9c;">Skillset: computational modeling, fMRI</span></p></li>
+            <p>1. Yan X. (2024) Too smart for one's good? Evolution favors individuals with a low-level theory of mind in a complex network. Psyarxiv.</p>
             <p>2. Yan X, Yong X, Huang W, Ma Y. Placebo treatment facilitates social trust and approach behavior (2018). PNAS 115(22):5732-37.</p>
             <p>3. Kappes A, Yan X, Ma Y, Crockett M. (2023). Cultural Differences in Forming Beliefs about Others. Psyarxiv.</p>
             <p>4. Zheng S†, Yan X†, Siegel J, Chituc V, Li S, Crockett, M & Ma Y. (2020). Self-serving karmic beliefs: prosociality influences vicarious optimism. Psyarxiv. († co-first-author)</p>
             <p>5. Liu Y, Li S#, Lin W#, Li W#, Yan X, Wang X, Pan X, RB Rutledge, Ma Y. Amygdala activity tracks deviations from social preferences (2019). Nat Neurosci 22 (4): 633-641 (# co-second author)</p>
             <p>6. Wang D, Yan X, Li M, Ma Y (2017). Neural substrates underlying oxytocin effect: A quantitative meta-analysis of pharmaco-imaging studies. Soc Cogn Affect Neurosci 12(10): 1565-1573.</p>
             
-            <li><span style="color: #005a9c;">Topic: beliefs about self and implications for major depressive disorder </span> 
-            <p><span style="color: #005a9c;">Skillset: fMRI</span> </p></li>
+            <li><span style="color: #005a9c;">Topic: beliefs about self and implications for major depressive disorder</span> 
+            <p><span style="color: #005a9c;">Skillset: fMRI</span></p></li>
             <p>1. Yan X (2024). Neural dynamics of self-referential processing and the insight for decoding self-concepts. Journal of Neuroscience 44(30).</p>
             <p>2. Feng C†, Yan X†, Huang W, Han S, Ma Y. Neural representations of the multidimensional self in the cortical midline structures (2018). Neuroimage 183:291-299. († co-first-author)</p>
             <p>3. Ma Y, Li S, Wang C, Liu Y, Li W, Yan X, Chen Q, Han S (2016). Distinct oxytocin effects on belief updating in response to desirable and undesirable feedback. PNAS 113(33):9256-61.</p>
             
             <li><span style="color: #005a9c;">Topic: cortisol and stress model</span>  
-            <p><span style="color: #005a9c;">Skillset: resting-state fMRI</span> </p></li>
-            <p>1. Feng Z, Zhang H, Zhou T, Yu X, Zhang Y, & Yan X*. (2023). Dynamic functional connectivity changes associated with psychiatric traits and cognitive deficits in Cushing’s disease. Translational Psychiatry, 13(1), 308. (*corresponding author)</p>
+            <p><span style="color: #005a9c;">Skillset: resting-state fMRI</span></p></li>
+            <p>1. Feng Z, Zhang H, Zhou T, Yu X, Zhang Y, & Yan X*. (2023). Dynamic functional connectivity changes associated with psychiatric traits and cognitive deficits in Cushing's disease. Translational Psychiatry, 13(1), 308. (*corresponding author)</p>
             <p>2. Liu B, Mao Z, Yan X, Yang H, Xu J, Feng Z, Zhang Y, Yu X (2024) Structural network topologies are associated with deep brain stimulation outcomes in Meige syndrome. Neurotherapeutics, e00367</p>
-            <p>3. Shang G, Zhou T, Yu X, Yan X, He K, Liu B, Feng Z, Zhang Y, Yu X (2024) Chronic hypercortisolism disrupts the principal functional gradient in Cushing’s disease: A multi-scale connectomics and transcriptomics study. NeuroImage: Clinical 43, 103652</p>
-        </ul>
-    </section>
-    
-            <!-- Add more publications as needed -->
+            <p>3. Shang G, Zhou T, Yu X, Yan X, He K, Liu B, Feng Z, Zhang Y, Yu X (2024) Chronic hypercortisolism disrupts the principal functional gradient in Cushing's disease: A multi-scale connectomics and transcriptomics study. NeuroImage: Clinical 43, 103652</p>
         </ul>
     </section>
 
     <footer>
-        <p>&copy; 2025 Xinyuan Yan. All rights reserved. updated at August, 2025</p>
+        <p>&copy; 2025 Xinyuan Yan. All rights reserved. Updated August 2025</p>
     </footer>
 </body>
 </html>
