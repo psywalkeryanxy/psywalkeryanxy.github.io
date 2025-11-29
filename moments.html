@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Moments | Xinyuan Yan</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            background-color: #fff;
+        }
+
+        /* Header - matching main site */
+        .site-header {
+            text-align: center;
+            padding: 30px 20px 20px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .site-header h1 {
+            color: #005a9c;
+            margin: 0 0 5px 0;
+            font-size: 1.8rem;
+        }
+
+        .site-header p {
+            color: #666;
+            margin: 0;
+            font-size: 0.95rem;
+        }
+
+        /* Navigation - matching main site */
+        nav {
+            padding: 15px 20px;
+            border-bottom: 1px solid #ddd;
+            background-color: #f8f9fa;
+        }
+
+        nav ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        nav ul li {
+            margin: 5px 10px;
+        }
+
+        nav ul li a {
+            text-decoration: none;
+            color: #007bff;
+        }
+
+        nav ul li a:hover {
+            text-decoration: underline;
+        }
+
+        /* Main Layout */
+        .container {
+            display: flex;
+            max-width: 1200px;
+            margin: 0 auto;
+            min-height: calc(100vh - 200px);
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 280px;
+            min-width: 280px;
+            border-right: 1px solid #ddd;
+            background-color: #f8f9fa;
+            padding: 20px 0;
+        }
+
+        .sidebar-title {
+            padding: 0 20px 15px;
+            margin: 0 0 10px 0;
+            font-size: 1rem;
+            color: #005a9c;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .article-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .article-item {
+            padding: 12px 20px;
+            cursor: pointer;
+            border-left: 3px solid transparent;
+            transition: all 0.2s ease;
+        }
+
+        .article-item:hover {
+            background-color: #e9ecef;
+        }
+
+        .article-item.active {
+            background-color: #e9ecef;
+            border-left-color: #007bff;
+        }
+
+        .article-item-title {
+            font-size: 0.95rem;
+            color: #333;
+            margin-bottom: 3px;
+        }
+
+        .article-item-date {
+            font-size: 0.8rem;
+            color: #666;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            padding: 30px 40px;
+            max-width: 750px;
+        }
+
+        .article {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .article.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .article-image {
+            width: 100%;
+            max-height: 400px;
+            object-fit: cover;
+            border-radius: 5px;
+            margin-bottom: 25px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .article-header {
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .article-title {
+            font-size: 1.4rem;
+            color: #005a9c;
+            margin: 0 0 8px 0;
+        }
+
+        .article-meta {
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        /* Content Sections */
+        .content-section {
+            margin-bottom: 30px;
+        }
+
+        .content-section.chinese {
+            font-size: 1rem;
+            line-height: 1.9;
+            color: #333;
+        }
+
+        .content-section.english {
+            font-size: 0.95rem;
+            line-height: 1.8;
+            color: #555;
+            padding-top: 25px;
+            border-top: 1px solid #ddd;
+            font-style: italic;
+        }
+
+        .section-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: #999;
+            margin-bottom: 10px;
+        }
+
+        .content-section p {
+            margin-bottom: 1em;
+            text-align: justify;
+        }
+
+        .content-section blockquote {
+            margin: 1em 0;
+            padding: 10px 20px;
+            background-color: #f8f9fa;
+            border-left: 3px solid #007bff;
+            color: #555;
+            font-style: italic;
+        }
+
+        /* Empty State */
+        .empty-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 50vh;
+            color: #666;
+        }
+
+        .empty-state p {
+            font-size: 1rem;
+        }
+
+        /* Footer - matching main site */
+        footer {
+            text-align: center;
+            padding: 20px;
+            border-top: 1px solid #ddd;
+            color: #666;
+            font-size: 0.85rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                min-width: 100%;
+                border-right: none;
+                border-bottom: 1px solid #ddd;
+            }
+
+            .article-list {
+                display: flex;
+                overflow-x: auto;
+                padding: 0 10px;
+            }
+
+            .article-item {
+                padding: 10px 15px;
+                white-space: nowrap;
+                border-left: none;
+                border-bottom: 3px solid transparent;
+            }
+
+            .article-item.active {
+                border-left: none;
+                border-bottom-color: #007bff;
+            }
+
+            .main-content {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="site-header">
+        <h1>Moments</h1>
+        <p>随想 · Thoughts from daily life</p>
+    </header>
+
+    <!-- Navigation - same as main site -->
+    <nav>
+        <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="index.html#about">About</a></li>
+            <li><a href="index.html#publications">Publications</a></li>
+            <li><a href="teaching.html">Teaching</a></li>
+            <li><a href="photography.html">Photography</a></li>
+            <li><a href="moments.html" style="font-weight: bold;">Moments</a></li>
+        </ul>
+    </nav>
+
+    <!-- Main Layout -->
+    <div class="container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <h2 class="sidebar-title">Articles</h2>
+            <ul class="article-list">
+                <li class="article-item active" data-article="pianist">
+                    <div class="article-item-title">医院里的钢琴家</div>
+                    <div class="article-item-date">November 2024</div>
+                </li>
+                <!-- Add more articles here -->
+                <!--
+                <li class="article-item" data-article="article-id">
+                    <div class="article-item-title">文章标题</div>
+                    <div class="article-item-date">Date</div>
+                </li>
+                -->
+            </ul>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Article: Pianist -->
+            <article class="article active" id="pianist">
+                <img src="images/pianist.jpg" 
+                     alt="Piano at Houston Methodist Hospital" 
+                     class="article-image"
+                     onerror="this.src='https://images.unsplash.com/photo-1520523839897-bd0b52f945a0?w=800&q=80'">
+                
+                <header class="article-header">
+                    <h2 class="article-title">The Pianist at Houston Methodist Hospital</h2>
+                    <p class="article-meta">November 2024 · Houston, Texas</p>
+                </header>
+
+                <!-- Chinese Content -->
+                <section class="content-section chinese">
+                    <p class="section-label">中文</p>
+                    <p>Houston Methodist 医院的大厅里，有一架钢琴，有一位钢琴家。</p>
+                    <p>他几乎每天都在，弹奏不同的曲目。人来人往，少有人驻足；但他依然端坐琴前，指尖流淌出安静的旋律。不问有没有听众，只是弹。</p>
+                    <p>那琴声扫去我一日的疲惫，或许也抚慰了某个病患心中的忧愁。一架钢琴在喧闹的大厅里显得孤独，但非常美。</p>
+                    <p>我想起传道书的话：</p>
+                    <blockquote>"快跑的未必能赢，力战的未必得胜，智慧的未必得粮食，明哲的未必得资财，灵巧的未必得喜悦。所临到众人的，是在乎当时的机会。"</blockquote>
+                    <p>世事无常，努力未必有回报，才华未必被看见。那么，这位钢琴家为何还弹？</p>
+                    <p>也许他知道另一个真理：</p>
+                    <blockquote>"敬畏神，谨守他的诫命，这是人所当尽的本分。因为人所做的事，连一切隐藏的事，无论是善是恶，神都必审问。"</blockquote>
+                    <p>无人鼓掌的地方，不等于无人看见。隐藏的善，神都记念。</p>
+                    <p>我能不能在没有掌声的时候，依然演好自己的角色？假如我不再为掌声而活，那就可以。</p>
+                </section>
+
+                <!-- English Content -->
+                <section class="content-section english">
+                    <p class="section-label" style="font-style: normal;">English</p>
+                    <p>In the lobby of Houston Methodist Hospital, there is a piano, and there is a pianist.</p>
+                    <p>He is there almost every day, playing different pieces. People come and go, few stop to listen; yet he remains seated at the piano, quiet melodies flowing from his fingertips. He doesn't ask whether anyone is listening. He simply plays.</p>
+                    <p>That music sweeps away my day's fatigue, and perhaps soothes the sorrow in some patient's heart. A piano in a bustling lobby seems lonely, but within that loneliness there is a beauty.</p>
+                    <p>I think of the words from Ecclesiastes:</p>
+                    <blockquote>"The race is not to the swift, nor the battle to the strong, nor bread to the wise, nor riches to the intelligent, nor favor to those with knowledge, but time and chance happen to them all."</blockquote>
+                    <p>Life is uncertain. Effort does not guarantee reward; talent may never be seen. So why does this pianist keep playing?</p>
+                    <p>Perhaps he knows another truth:</p>
+                    <blockquote>"Fear God and keep his commandments, for this is the whole duty of man. For God will bring every deed into judgment, including every hidden thing, whether good or evil."</blockquote>
+                    <p>Where no one applauds, it does not mean no one sees. Every hidden act of goodness, God remembers.</p>
+                    <p>Can I play my part well when there is no applause? If I no longer live for applause, then I can.</p>
+                </section>
+            </article>
+
+            <!-- Empty State -->
+            <div class="empty-state" id="empty-state" style="display: none;">
+                <p>Select an article from the left to read.</p>
+            </div>
+        </main>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2025 Xinyuan Yan. All rights reserved.</p>
+    </footer>
+
+    <script>
+        // Article navigation
+        const articleItems = document.querySelectorAll('.article-item');
+        const articles = document.querySelectorAll('.article');
+
+        articleItems.forEach(item => {
+            item.addEventListener('click', () => {
+                // Remove active class from all
+                articleItems.forEach(i => i.classList.remove('active'));
+                articles.forEach(a => a.classList.remove('active'));
+
+                // Add active class to clicked item
+                item.classList.add('active');
+
+                // Show corresponding article
+                const articleId = item.getAttribute('data-article');
+                const article = document.getElementById(articleId);
+                if (article) {
+                    article.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
