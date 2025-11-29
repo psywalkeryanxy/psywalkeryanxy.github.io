@@ -9,7 +9,7 @@
             font-family: Arial, sans-serif;
             line-height: 1.6;
             color: #333;
-            max-width: 800px;
+            max-width: 900px;
             margin: 0 auto;
             padding: 20px;
         }
@@ -69,7 +69,82 @@
         .cv-button:hover {
             background-color: #0056b3;
         }
-        
+
+        /* Featured Publications */
+        .featured-publications {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+        .pub-card {
+            display: flex;
+            gap: 25px;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #005a9c;
+        }
+        .pub-card:hover {
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+        .pub-figure {
+            width: 280px;
+            min-width: 280px;
+            height: 200px;
+            object-fit: contain;
+            background-color: #fff;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+        .pub-content {
+            flex: 1;
+        }
+        .pub-title {
+            font-size: 1.1rem;
+            color: #005a9c;
+            margin: 0 0 8px 0;
+            font-weight: bold;
+        }
+        .pub-authors {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 8px;
+        }
+        .pub-venue {
+            font-size: 0.85rem;
+            color: #007bff;
+            margin-bottom: 12px;
+            font-style: italic;
+        }
+        .pub-summary {
+            font-size: 0.95rem;
+            color: #444;
+            line-height: 1.5;
+        }
+        .pub-links {
+            margin-top: 12px;
+        }
+        .pub-links a {
+            font-size: 0.85rem;
+            color: #007bff;
+            text-decoration: none;
+            margin-right: 15px;
+        }
+        .pub-links a:hover {
+            text-decoration: underline;
+        }
+        .all-pubs-link {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .all-pubs-link a {
+            color: #007bff;
+            text-decoration: none;
+        }
+        .all-pubs-link a:hover {
+            text-decoration: underline;
+        }
+
         /* Styles for Failure Chronicle */
         .failure-chronicle {
             background-color: #fff5f5;
@@ -98,6 +173,18 @@
             margin-top: 40px;
             color: #666;
         }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .pub-card {
+                flex-direction: column;
+            }
+            .pub-figure {
+                width: 100%;
+                min-width: auto;
+                height: 180px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -116,6 +203,7 @@
             <li><a href="#failure-chronicle">Failure Chronicle</a></li>
             <li><a href="teaching.html">Teaching</a></li>
             <li><a href="photography.html">Photography</a></li>
+            <li><a href="moments.html">Moments</a></li>
         </ul>
     </nav>
 
@@ -126,7 +214,7 @@
         <p>A passerby on Earth</p>
         <p>Past 10 years: learning how to do science, intensive training in social value learning and decision-making, with fMRI and behavioral modeling</p>
         <p>Past 3 years: focusing on human uncertainty-value learning and decision-making, with intracranial EEG and behavioral modeling</p>
-        <p>Next 2 years: exploring single neuron encoding of cross-linguistic concepts and new concept learning</p>
+        <p>Maybe my rest of life: neural representations of multi-modal concepts—why and how different languages (spoken, signed) reach the same concept space; how humans learn new concepts and maintain stable representations; how concepts link to our affective feelings</p>
     </section>
 
     <section id="my-light">
@@ -144,37 +232,77 @@
     </section>
 
     <section id="publications">
-        <h2>Publications</h2>
-        <ul>
-            <li><span style="color: #005a9c;">Topic: beliefs about uncertainty (explore-exploit) and implications for affective disorder.</span> 
-            <p><span style="color: #005a9c;">Skillset: computational modeling, intracranial EEG</span></p></li>
-    
-            <p>1. Yan, X., Ebitz, B. R., Darrow, D. P., & Herman, A. B. (2025). Nonlinear modulation of human exploration by distinct sources of uncertainty. bioRxiv, 2025-04</p>
-            <p>2. Yan, X., König, S. D., Ebitz, R. B., Hayden, B. Y., Darrow, D. P., & Herman, A. B. (2025). Dynamic prefrontal coupling coordinates adaptive decision-making. Research Square, rs-3</p>
-            <p>3. Yan, X., Ebitz, R. B., Grissom, N., Darrow, D. P., & Herman, A. B. (2025). Distinct computational mechanisms of uncertainty processing explain opposing exploratory behaviors in anxiety and apathy. Biological Psychiatry: Cognitive Neuroscience and Neuroimaging.</p>
-            <p>4. Knep, E., Yan, X., Chen, C. S., Jacob, S., Darrow, D. P., Ebitz, R. B., ... & Herman, A. B. (2025). Social aloofness is associated with non-social explore-exploit decisions. Communications Psychology, 3(1), 106.</p>
-                        
-            <li><span style="color: #005a9c;">Topic: Social decision-making and its modulation</span> 
-            <p><span style="color: #005a9c;">Skillset: computational modeling, fMRI</span></p></li>
-            <p>1. Yan X. (2024) Too smart for one's good? Evolution favors individuals with a low-level theory of mind in a complex network. Psyarxiv.</p>
-            <p>2. Yan X, Yong X, Huang W, Ma Y. Placebo treatment facilitates social trust and approach behavior (2018). PNAS 115(22):5732-37.</p>
-            <p>3. Kappes A, Yan X, Ma Y, Crockett M. (2023). Cultural Differences in Forming Beliefs about Others. Psyarxiv.</p>
-            <p>4. Zheng S†, Yan X†, Siegel J, Chituc V, Li S, Crockett, M & Ma Y. (2020). Self-serving karmic beliefs: prosociality influences vicarious optimism. Psyarxiv. († co-first-author)</p>
-            <p>5. Liu Y, Li S#, Lin W#, Li W#, Yan X, Wang X, Pan X, RB Rutledge, Ma Y. Amygdala activity tracks deviations from social preferences (2019). Nat Neurosci 22 (4): 633-641 (# co-second author)</p>
-            <p>6. Wang D, Yan X, Li M, Ma Y (2017). Neural substrates underlying oxytocin effect: A quantitative meta-analysis of pharmaco-imaging studies. Soc Cogn Affect Neurosci 12(10): 1565-1573.</p>
+        <h2>Featured Publications</h2>
+        
+        <div class="featured-publications">
             
-            <li><span style="color: #005a9c;">Topic: beliefs about self and implications for major depressive disorder</span> 
-            <p><span style="color: #005a9c;">Skillset: fMRI</span></p></li>
-            <p>1. Yan X (2024). Neural dynamics of self-referential processing and the insight for decoding self-concepts. Journal of Neuroscience 44(30).</p>
-            <p>2. Feng C†, Yan X†, Huang W, Han S, Ma Y. Neural representations of the multidimensional self in the cortical midline structures (2018). Neuroimage 183:291-299. († co-first-author)</p>
-            <p>3. Ma Y, Li S, Wang C, Liu Y, Li W, Yan X, Chen Q, Han S (2016). Distinct oxytocin effects on belief updating in response to desirable and undesirable feedback. PNAS 113(33):9256-61.</p>
-            
-            <li><span style="color: #005a9c;">Topic: cortisol and stress model</span>  
-            <p><span style="color: #005a9c;">Skillset: resting-state fMRI</span></p></li>
-            <p>1. Feng Z, Zhang H, Zhou T, Yu X, Zhang Y, & Yan X*. (2023). Dynamic functional connectivity changes associated with psychiatric traits and cognitive deficits in Cushing's disease. Translational Psychiatry, 13(1), 308. (*corresponding author)</p>
-            <p>2. Liu B, Mao Z, Yan X, Yang H, Xu J, Feng Z, Zhang Y, Yu X (2024) Structural network topologies are associated with deep brain stimulation outcomes in Meige syndrome. Neurotherapeutics, e00367</p>
-            <p>3. Shang G, Zhou T, Yu X, Yan X, He K, Liu B, Feng Z, Zhang Y, Yu X (2024) Chronic hypercortisolism disrupts the principal functional gradient in Cushing's disease: A multi-scale connectomics and transcriptomics study. NeuroImage: Clinical 43, 103652</p>
-        </ul>
+            <!-- Publication 1: Bilingual Semantic Representation -->
+            <div class="pub-card">
+                <img src="images/fig_bilingual.png" alt="Bilingual semantic representation" class="pub-figure">
+                <div class="pub-content">
+                    <h3 class="pub-title">Cross-linguistic semantic representation in the human hippocampus</h3>
+                    <p class="pub-authors">Yan, X., Sheth, S. A., & Hayden, B. Y.</p>
+                    <p class="pub-venue">Under review</p>
+                    <p class="pub-summary">Using rare intracranial recordings from bilingual epilepsy patients, we discovered that individual hippocampal neurons maintain shared semantic geometry across English and Spanish while using different neural coordinate systems. This suggests the brain preserves meaning relationships across languages through distributed population codes rather than sparse "concept cells."</p>
+                    <div class="pub-links">
+                        <a href="#">[Paper]</a>
+                        <a href="#">[Supplementary]</a>
+                        <a href="#">[Responses to Reviewers]</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Publication 2: Anxiety and Apathy -->
+            <div class="pub-card">
+                <img src="images/fig_anxiety_apathy.png" alt="Anxiety and apathy mechanisms" class="pub-figure">
+                <div class="pub-content">
+                    <h3 class="pub-title">Distinct computational mechanisms of uncertainty processing explain opposing exploratory behaviors in anxiety and apathy</h3>
+                    <p class="pub-authors">Yan, X., Ebitz, R. B., Grissom, N., Darrow, D. P., & Herman, A. B.</p>
+                    <p class="pub-venue">Biological Psychiatry: Cognitive Neuroscience and Neuroimaging, 2025</p>
+                    <p class="pub-summary">We identified distinct computational mechanisms underlying exploration deficits in anxiety versus apathy. Anxiety increases sensitivity to environmental uncertainty, driving excessive exploration; apathy reduces sensitivity to reward information, causing exploitation of known options. These opposing patterns emerge from separable cognitive computations.</p>
+                    <div class="pub-links">
+                        <a href="#">[Paper]</a>
+                        <a href="#">[Supplementary]</a>
+                        <a href="#">[Responses to Reviewers]</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Publication 3: Prefrontal Coupling -->
+            <div class="pub-card">
+                <img src="images/fig_prefrontal.png" alt="Prefrontal coupling" class="pub-figure">
+                <div class="pub-content">
+                    <h3 class="pub-title">Dynamic prefrontal coupling coordinates adaptive decision-making</h3>
+                    <p class="pub-authors">Yan, X., König, S. D., Ebitz, R. B., Hayden, B. Y., Darrow, D. P., & Herman, A. B.</p>
+                    <p class="pub-venue">Research Square, 2025</p>
+                    <p class="pub-summary">Using intracranial recordings during a three-armed bandit task, we show that prefrontal cortex regions dynamically coordinate through frequency-specific coupling to support adaptive decision-making under uncertainty. This coordination flexibly adjusts based on environmental volatility and decision demands.</p>
+                    <div class="pub-links">
+                        <a href="#">[Paper]</a>
+                        <a href="#">[Supplementary]</a>
+                        <a href="#">[Responses to Reviewers]</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Publication 4: Placebo and Social Trust -->
+            <div class="pub-card">
+                <img src="images/fig_placebo.png" alt="Placebo and social trust" class="pub-figure">
+                <div class="pub-content">
+                    <h3 class="pub-title">Placebo treatment facilitates social trust and approach behavior</h3>
+                    <p class="pub-authors">Yan, X., Yong, X., Huang, W., & Ma, Y.</p>
+                    <p class="pub-venue">PNAS, 2018, 115(22): 5732-5737</p>
+                    <p class="pub-summary">We demonstrated that placebo treatment—the mere belief in receiving a pro-social drug—increases social trust and approach behavior toward strangers. This effect operates through expectation-driven modulation of social decision-making, revealing how beliefs shape interpersonal behavior independent of pharmacological action.</p>
+                    <div class="pub-links">
+                        <a href="#">[Paper]</a>
+                        <a href="#">[Supplementary]</a>
+                        <a href="#">[Responses to Reviewers]</a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <p class="all-pubs-link"><a href="https://scholar.google.com/citations?user=rdGDTMsAAAAJ" target="_blank">View all publications on Google Scholar →</a></p>
     </section>
 
     <section id="failure-chronicle" class="failure-chronicle">
