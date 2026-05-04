@@ -1,0 +1,65 @@
+---
+title: "Failure Chronicle"
+subtitle: "A public ledger of rejections, failed experiments, and unfunded grants."
+page-layout: article
+toc: false
+---
+
+> *Success without extreme pain and desperation is not stable, and is a fairy tale.*
+
+I keep this page because I genuinely cannot remember, in the moment, whether the work is good. The chronicle is a memory aid: this has happened before, you have been wrong about what reviewers will say before, the field has changed its mind before.
+
+---
+
+## Paper rejections
+
+::: {.failure-box}
+### By year
+
+- **2023** — 1 acceptance / 7 submissions · *14%*
+- **2024** — 1 acceptance / 6 submissions · *17%*
+- **2025 to date** — 0 acceptances / 4 submissions · *0%*
+
+**Total: 2 / 17 · 12%**
+:::
+
+A few that stung in particular:
+
+- A two-round major revision at *Nature Communications* on the dmPFC/dlPFC restless bandit paper, ultimately rejected. The appeal documenting goalpost-shifting is on file. The science survived: a reframe around dmPFC high-gamma tracking environmental richness (slow state variable) vs. theta carrying trial-by-trial PE/RV/RU has since become the cleaner version of the story.
+- The hippocampal polysemanticity paper went through several null-model rewrites before I caught that the regularity null was producing 98% spurious significance. Painful, necessary, not a rejection but a near-miss.
+
+---
+
+## Grant applications
+
+::: {.failure-box}
+*To be filled in as the trail lengthens.*
+:::
+
+---
+
+## Job applications
+
+::: {.failure-box}
+**2022 postdoc cycle** — 1 offer / 10 applications.
+:::
+
+---
+
+## Failed experiments
+
+::: {.failure-box}
+3 published / 9 succeeded / 5 failed.
+
+The 5 that didn't work taught me more about the recording rig and the analysis pipeline than the 9 that did.
+:::
+
+---
+
+## What I've stopped doing
+
+1. **Reading rejections the same day they arrive.** Overnight, my next-morning self is much better at separating "this critique is right" from "this critique is loud."
+2. **Treating Reviewer 3 as a person.** Reviewer 3 is a *role* — the role of the reviewer who didn't read carefully. Sometimes Reviewer 3 is in slot 1. Once Reviewer 3 was the editor.
+3. **Counting acceptances.** The count I track now is *submissions per year*. Acceptances arrive when they arrive.
+
+The hard part isn't the rejection. The hard part is staying interested in the question after the rejection.

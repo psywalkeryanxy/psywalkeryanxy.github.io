@@ -1,0 +1,44 @@
+---
+title: "Shared geometry, rotated readout: bilingual concept representations in the hippocampus"
+description: "Companion blog to our Cell paper on cross-language semantic geometry."
+author: "Xinyuan Yan"
+date: "2026-01-15"
+categories: [paper, hippocampus, language, geometry]
+image: "thumb.png"
+format:
+  html:
+    toc: true
+    toc-location: right
+    code-fold: show
+---
+
+> *This is a companion post to the paper. The published version contains the formal results; here I'll write more freely about how we got there, what surprised us, and what the analysis didn't tell us.*
+
+## The question
+
+Bilingual speakers reach the *same* concept ("dog", "perro") through two very different surface forms. Where does that convergence happen, and what does it look like at the population level?
+
+## The finding in one sentence
+
+English and Spanish nouns are encoded along nearly orthogonal axes in human hippocampal population activity (≈85° principal angles), yet the **geometric relationships between concepts are preserved across languages** — which we summarize as *shared geometry, rotated readout axes*.
+
+## Why I think this matters
+
+Most work on bilingual semantic memory has either looked for "shared neurons" (translation neurons) or for fully separate representations. The geometric framing dissolves that dichotomy: the *same* relational structure can live in two different subspaces. That's also a clean prediction from how you'd expect a high-dimensional code to multiplex.
+
+## A figure I keep coming back to
+
+```{r}
+#| eval: false
+#| label: fig-rotation
+#| fig-cap: "Schematic — same simplex, two readout frames."
+# placeholder for the rotation schematic
+```
+
+## What this post is *not*
+
+A complete account. For methods, controls, and the negative result on grammatical-gender decoding (chance in both within- and cross-language conditions), see the paper.
+
+---
+
+*Comments / errata: open an issue on the [GitHub repo](https://github.com/psywalkeryanxy).*

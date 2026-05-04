@@ -1,0 +1,255 @@
+/* ============ Global rhythm ============ */
+
+@import url('https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;500;600&family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600&family=JetBrains+Mono:wght@400;500&display=swap');
+
+main.content {
+  max-width: 720px;
+}
+
+a {
+  text-underline-offset: 3px;
+  text-decoration-thickness: 1px;
+  transition: color .15s ease;
+}
+
+p { margin-bottom: 1.1rem; }
+
+hr {
+  border: 0;
+  border-top: 1px solid #e5e2dc;
+  margin: 3rem auto;
+  max-width: 80px;
+}
+
+/* ============ Homepage hero ============ */
+
+.hero {
+  display: grid;
+  grid-template-columns: 180px 1fr;
+  gap: 2.5rem;
+  align-items: center;
+  margin: 1.5rem 0 3.5rem 0;
+}
+
+.hero img {
+  width: 180px;
+  height: 180px;
+  border-radius: 50%;
+  object-fit: cover;
+  filter: grayscale(15%);
+}
+
+.hero h1 {
+  margin: 0 0 .25rem 0;
+  font-size: 2.25rem;
+  letter-spacing: -0.01em;
+}
+
+.hero .role {
+  color: #6b6760;
+  font-style: italic;
+  margin-bottom: .75rem;
+  font-family: "Source Serif 4", Georgia, serif;
+}
+
+.hero .links a {
+  margin-right: 1rem;
+  font-size: .95rem;
+  color: #1d1d1f;
+  border-bottom: 1px solid #c9c4b9;
+  text-decoration: none;
+  padding-bottom: 1px;
+}
+
+.hero .links a:hover {
+  color: #8a3a2e;
+  border-bottom-color: #8a3a2e;
+}
+
+@media (max-width: 600px) {
+  .hero { grid-template-columns: 1fr; text-align: left; gap: 1.5rem; }
+  .hero img { width: 140px; height: 140px; }
+}
+
+/* ============ Section labels ============ */
+
+.section-label {
+  font-family: "Source Sans 3", sans-serif;
+  font-size: .75rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #8a3a2e;
+  margin-bottom: 1rem;
+  display: block;
+}
+
+h2 {
+  margin-top: 3rem;
+  margin-bottom: 1.25rem;
+}
+
+/* ============ Featured publications on home ============ */
+
+.featured-pub {
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  gap: 1.5rem;
+  padding: 1.25rem 0;
+  border-top: 1px solid #e5e2dc;
+}
+
+.featured-pub:last-child { border-bottom: 1px solid #e5e2dc; }
+
+.featured-pub img {
+  width: 100%;
+  height: auto;
+  background: #fff;
+  border: 1px solid #e5e2dc;
+  border-radius: 2px;
+}
+
+.featured-pub .pub-title {
+  font-family: "Source Serif 4", Georgia, serif;
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin: 0 0 .35rem 0;
+  line-height: 1.35;
+}
+
+.featured-pub .pub-authors {
+  font-size: .9rem;
+  color: #4a4640;
+  margin-bottom: .25rem;
+}
+
+.featured-pub .pub-venue {
+  font-size: .85rem;
+  color: #6b6760;
+  font-style: italic;
+  margin-bottom: .6rem;
+}
+
+.featured-pub .pub-summary {
+  font-size: .95rem;
+  color: #2a2823;
+  margin-bottom: .6rem;
+}
+
+.featured-pub .pub-links a {
+  font-size: .82rem;
+  margin-right: .9rem;
+  color: #8a3a2e;
+  text-decoration: none;
+}
+.featured-pub .pub-links a:hover { text-decoration: underline; }
+
+@media (max-width: 600px) {
+  .featured-pub { grid-template-columns: 1fr; }
+}
+
+/* ============ Listing pages (Science / Life) ============ */
+
+.quarto-listing-default .listing-item {
+  border-top: 1px solid #e5e2dc;
+  padding: 1.5rem 0;
+}
+
+.listing-title {
+  font-family: "Source Serif 4", Georgia, serif !important;
+  font-size: 1.2rem !important;
+  font-weight: 600 !important;
+}
+
+.listing-date, .listing-categories {
+  color: #6b6760;
+  font-size: .85rem;
+}
+
+.listing-description {
+  color: #2a2823;
+  font-size: .95rem;
+}
+
+/* ============ Photo gallery ============ */
+
+.photo-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 12px;
+  margin: 2rem 0;
+}
+
+.photo-grid a {
+  display: block;
+  overflow: hidden;
+  border-radius: 2px;
+  background: #efece6;
+  aspect-ratio: 4 / 3;
+}
+
+.photo-grid img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform .5s ease;
+  display: block;
+}
+
+.photo-grid a:hover img {
+  transform: scale(1.04);
+}
+
+.photo-caption {
+  font-size: .85rem;
+  color: #6b6760;
+  font-style: italic;
+  margin-top: .35rem;
+}
+
+/* ============ Lightbox (vanilla) ============ */
+
+.lightbox-overlay {
+  position: fixed; inset: 0;
+  background: rgba(20, 18, 14, 0.92);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  cursor: zoom-out;
+}
+
+.lightbox-overlay.active { display: flex; }
+
+.lightbox-overlay img {
+  max-width: 92vw;
+  max-height: 92vh;
+  object-fit: contain;
+  box-shadow: 0 30px 80px rgba(0,0,0,.5);
+}
+
+.lightbox-overlay .lb-caption {
+  position: absolute;
+  bottom: 1.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  color: #d8d4cb;
+  font-size: .85rem;
+  font-style: italic;
+  font-family: "Source Serif 4", serif;
+}
+
+/* ============ Failure chronicle ============ */
+
+.failure-box {
+  background: #f3f0e9;
+  border-left: 3px solid #8a3a2e;
+  padding: 1.25rem 1.5rem;
+  margin: 1.5rem 0;
+  font-size: .95rem;
+}
+
+.failure-box h3 {
+  margin-top: 0;
+  font-size: 1.05rem;
+}

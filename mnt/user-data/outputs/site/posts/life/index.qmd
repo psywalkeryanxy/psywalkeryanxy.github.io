@@ -1,0 +1,16 @@
+---
+title: "Life"
+subtitle: "Cooking, swimming, walking, and what I'm thinking about between experiments."
+page-layout: full
+listing:
+  contents: "*.qmd"
+  type: default
+  sort: "date desc"
+  fields: [date, title, description, categories]
+  categories: true
+  sort-ui: false
+  filter-ui: false
+  feed: true
+  date-format: "MMM D, YYYY"
+toc: false
+---

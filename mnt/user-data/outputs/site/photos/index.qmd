@@ -1,0 +1,67 @@
+---
+title: "Photos"
+subtitle: "Landscapes I've walked through. Click any image to enlarge."
+page-layout: article
+toc: false
+format:
+  html:
+    include-in-header:
+      text: |
+        <link rel="preload" as="style" href="assets/styles.css">
+---
+
+::: {.photo-grid}
+
+<a href="photos/img/01.jpg" data-caption="Houston — early morning, late spring."><img src="photos/img/01.jpg" alt="Houston spring morning" loading="lazy"></a>
+
+<a href="photos/img/02.jpg" data-caption="Galveston coast."><img src="photos/img/02.jpg" alt="Galveston coast" loading="lazy"></a>
+
+<a href="photos/img/03.jpg" data-caption="Hermann Park."><img src="photos/img/03.jpg" alt="Hermann Park" loading="lazy"></a>
+
+<a href="photos/img/04.jpg" data-caption="Big Bend, west Texas."><img src="photos/img/04.jpg" alt="Big Bend" loading="lazy"></a>
+
+<a href="photos/img/05.jpg" data-caption="A quiet street in Beijing."><img src="photos/img/05.jpg" alt="Beijing street" loading="lazy"></a>
+
+<a href="photos/img/06.jpg" data-caption="Rice University campus."><img src="photos/img/06.jpg" alt="Rice University" loading="lazy"></a>
+
+:::
+
+<div class="lightbox-overlay" id="lightbox" role="dialog" aria-modal="true">
+  <img src="" alt="" id="lightbox-img">
+  <div class="lb-caption" id="lightbox-caption"></div>
+</div>
+
+<script>
+(function() {
+  const grid = document.querySelector('.photo-grid');
+  if (!grid) return;
+  const overlay = document.getElementById('lightbox');
+  const overlayImg = document.getElementById('lightbox-img');
+  const overlayCap = document.getElementById('lightbox-caption');
+
+  grid.addEventListener('click', (e) => {
+    const a = e.target.closest('a');
+    if (!a) return;
+    e.preventDefault();
+    overlayImg.src = a.getAttribute('href');
+    overlayCap.textContent = a.dataset.caption || '';
+    overlay.classList.add('active');
+    document.body.style.overflow = 'hidden';
+  });
+
+  const close = () => {
+    overlay.classList.remove('active');
+    overlayImg.src = '';
+    document.body.style.overflow = '';
+  };
+
+  overlay.addEventListener('click', close);
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && overlay.classList.contains('active')) close();
+  });
+})();
+</script>
+
+::: {.callout-note appearance="minimal"}
+Drop your full-resolution photos into `photos/img/` (just `01.jpg`, `02.jpg`, …) and add a line above for each. No further config needed.
+:::

@@ -1,0 +1,62 @@
+project:
+  type: website
+  output-dir: docs
+  resources:
+    - "CV_YanX.pdf"
+    - "published_papers/"
+
+website:
+  title: "Xinyuan Yan"
+  description: "Computational neuroscience · representations · decisions"
+  site-url: "https://psywalkeryanxy.github.io"
+  open-graph: true
+  twitter-card: true
+  page-navigation: true
+  back-to-top-navigation: true
+
+  navbar:
+    pinned: true
+    logo: false
+    left:
+      - href: index.qmd
+        text: Home
+      - href: posts/science/index.qmd
+        text: Science
+      - href: posts/life/index.qmd
+        text: Life
+      - href: photos/index.qmd
+        text: Photos
+      - href: failures.qmd
+        text: Failures
+      - href: cv.qmd
+        text: CV
+    right:
+      - icon: google-scholar
+        href: https://scholar.google.com/citations?user=rdGDTMsAAAAJ
+        aria-label: Google Scholar
+      - icon: github
+        href: https://github.com/psywalkeryanxy
+        aria-label: GitHub
+      - icon: envelope
+        href: mailto:xinyuanyan2016@gmail.com
+        aria-label: Email
+
+  page-footer:
+    left: "© 2025 Xinyuan Yan"
+    right: "Built with [Quarto](https://quarto.org)"
+
+format:
+  html:
+    theme:
+      light: [cosmo, assets/custom.scss]
+    css: assets/styles.css
+    toc: false
+    smooth-scroll: true
+    link-external-newwindow: true
+    anchor-sections: true
+    fig-cap-location: bottom
+    mainfont: "Source Sans 3"
+    monofont: "JetBrains Mono"
+
+execute:
+  freeze: auto

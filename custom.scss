@@ -1,0 +1,29 @@
+/*-- scss:defaults --*/
+
+// Refined neutral palette — warm off-white, deep ink, single accent
+$body-bg:        #fbfaf7;
+$body-color:     #1d1d1f;
+$link-color:     #8a3a2e;          // muted oxblood accent
+$navbar-bg:      #fbfaf7;
+$navbar-fg:      #1d1d1f;
+$footer-bg:      #fbfaf7;
+
+// Generous typography
+$font-family-sans-serif: "Source Sans 3", "Inter", system-ui, -apple-system, sans-serif;
+$font-family-serif:      "Source Serif 4", "Iowan Old Style", Georgia, serif;
+$font-family-monospace:  "JetBrains Mono", ui-monospace, monospace;
+
+$headings-font-family: $font-family-serif;
+$headings-font-weight: 600;
+$headings-color:       #1d1d1f;
+$headings-line-height: 1.25;
+
+$font-size-base: 1.0625rem;     // 17px — comfortable reading
+$line-height-base: 1.7;
+
+$h1-font-size: 2.5rem;
+$h2-font-size: 1.75rem;
+$h3-font-size: 1.25rem;
+
+// No-frills containers
+$content-padding-top: 3rem;

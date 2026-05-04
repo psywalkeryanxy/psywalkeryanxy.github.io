@@ -1,0 +1,847 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.9.37">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Xinyuan Yan">
+<meta name="author" content="Benjamin Hayden">
+<meta name="author" content="Sameer Sheth">
+<meta name="dcterms.date" content="2026-05-03">
+<meta name="description" content="How single neurons encode word meanings.">
+
+<title>Polysemanticity in Human Hippocampal Neurons – Xinyuan Yan</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-7f8f88aac4f3542376d5c11b86a4c14d.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-158031087360bce0ff56dc785ce39e06.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+<link rel="stylesheet" href="styles.css">
+</head>
+
+<body class="nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="./index.html">
+    <span class="navbar-title">Xinyuan Yan</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link active" href="./index.html" aria-current="page"> 
+<span class="menu-text">Home</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul class="collapse">
+  <li><a href="#the-recording-setup" id="toc-the-recording-setup" class="nav-link active" data-scroll-target="#the-recording-setup">The recording setup</a></li>
+  <li><a href="#hippocampal-neurons-encode-meaning" id="toc-hippocampal-neurons-encode-meaning" class="nav-link" data-scroll-target="#hippocampal-neurons-encode-meaning">Hippocampal neurons encode meaning</a></li>
+  <li><a href="#neurons-with-similar-tuning-dont-form-clean-categories" id="toc-neurons-with-similar-tuning-dont-form-clean-categories" class="nav-link" data-scroll-target="#neurons-with-similar-tuning-dont-form-clean-categories">Neurons with similar tuning don’t form clean categories</a></li>
+  <li><a href="#the-code-is-dense-not-sparse" id="toc-the-code-is-dense-not-sparse" class="nav-link" data-scroll-target="#the-code-is-dense-not-sparse">The code is dense, not sparse</a></li>
+  <li><a href="#hippocampal-neurons-are-polysemantic" id="toc-hippocampal-neurons-are-polysemantic" class="nav-link" data-scroll-target="#hippocampal-neurons-are-polysemantic">Hippocampal neurons are polysemantic</a></li>
+  <li><a href="#a-neurons-preferred-words-are-scattered-not-clustered" id="toc-a-neurons-preferred-words-are-scattered-not-clustered" class="nav-link" data-scroll-target="#a-neurons-preferred-words-are-scattered-not-clustered">A neuron’s preferred words are scattered, not clustered</a></li>
+  <li><a href="#context-reshapes-single-neuron-tuning-while-preserving-population-geometry" id="toc-context-reshapes-single-neuron-tuning-while-preserving-population-geometry" class="nav-link" data-scroll-target="#context-reshapes-single-neuron-tuning-while-preserving-population-geometry">Context reshapes single-neuron tuning while preserving population geometry</a></li>
+  <li><a href="#context-changes-how-neurons-read-meaning-in-a-non-linear-mixed-selectivity-way" id="toc-context-changes-how-neurons-read-meaning-in-a-non-linear-mixed-selectivity-way" class="nav-link" data-scroll-target="#context-changes-how-neurons-read-meaning-in-a-non-linear-mixed-selectivity-way">Context changes how neurons read meaning in a non-linear mixed selectivity way</a></li>
+  <li><a href="#polysemantic-codes-enable-pattern-separation" id="toc-polysemantic-codes-enable-pattern-separation" class="nav-link" data-scroll-target="#polysemantic-codes-enable-pattern-separation">Polysemantic codes enable pattern separation</a></li>
+  <li><a href="#polysemantic-codes-enable-pattern-completion" id="toc-polysemantic-codes-enable-pattern-completion" class="nav-link" data-scroll-target="#polysemantic-codes-enable-pattern-completion">Polysemantic codes enable pattern completion</a></li>
+  <li><a href="#what-this-means" id="toc-what-this-means" class="nav-link" data-scroll-target="#what-this-means">What this means</a></li>
+  <li><a href="#read-the-paper" id="toc-read-the-paper" class="nav-link" data-scroll-target="#read-the-paper">Read the paper</a></li>
+  
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Polysemanticity in Human Hippocampal Neurons</h1>
+  <div class="quarto-categories">
+    <div class="quarto-category">neuroscience</div>
+    <div class="quarto-category">hippocampus</div>
+    <div class="quarto-category">concepts</div>
+    <div class="quarto-category">single-unit recording</div>
+  </div>
+  </div>
+
+<div>
+  <div class="description">
+    <p>How single neurons encode word meanings.</p>
+  </div>
+</div>
+
+<div class="quarto-title-meta-author">
+  <div class="quarto-title-meta-heading">Authors</div>
+  <div class="quarto-title-meta-heading">Affiliation</div>
+  
+    <div class="quarto-title-meta-contents">
+    <p class="author"><a href="https://scholar.google.com/citations?hl=zh-CN&amp;user=rdGDTMsAAAAJ&amp;view_op=list_works&amp;sortby=pubdate">Xinyuan Yan</a> </p>
+  </div>
+  <div class="quarto-title-meta-contents">
+        <p class="affiliation">
+            Baylor College of Medicine
+          </p>
+      </div>
+    <div class="quarto-title-meta-contents">
+    <p class="author"><a href="https://scholar.google.com/citations?hl=en&amp;user=MN2ueWEAAAAJ&amp;view_op=list_works&amp;sortby=pubdate">Benjamin Hayden</a> </p>
+  </div>
+  <div class="quarto-title-meta-contents">
+        <p class="affiliation">
+            Baylor College of Medicine
+          </p>
+      </div>
+    <div class="quarto-title-meta-contents">
+    <p class="author"><a href="https://scholar.google.com/citations?hl=en&amp;user=lgG2xMgAAAAJ&amp;view_op=list_works&amp;sortby=pubdate">Sameer Sheth</a> </p>
+  </div>
+  <div class="quarto-title-meta-contents">
+        <p class="affiliation">
+            Baylor College of Medicine
+          </p>
+      </div>
+  </div>
+
+<div class="quarto-title-meta">
+
+      
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">May 3, 2026</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<div class="view-badge">
+<p>👁️ <span id="view-count">…</span> views</p>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="figures/hero_polysemantic.png" class="img-fluid figure-img"></p>
+<figcaption><strong>Hippocampal neurons respond to many unrelated words.</strong> A single unit’s preferred stimuli are scattered across semantic space rather than clustered around a single concept.</figcaption>
+</figure>
+</div>
+<p>When we hear speech, neurons in our brains represent the meanings of the words. But there is no one-to-one relationship between neurons and words. Instead, each word is associated with a distinct <em>pattern</em> of neural activity, and the particular pattern depends on the context. In this study, we set out to determine the principles that shape those patterns. We found that each neuron responds to multiple unrelated words, and that the set of words driving a neuron is more dispersed than chance would predict. These results indicate that hippocampal neurons obey the principle of <strong>polysemanticity</strong>, and they support the idea that the brain uses <strong>superposition</strong> to represent more concepts than it has coding dimensions.</p>
+<section id="the-recording-setup" class="level2">
+<h2 class="anchored" data-anchor-id="the-recording-setup">The recording setup</h2>
+<p>We studied neurons from the brains of fifteen human participants with depth electrodes implanted in the hippocampus for the detection of seizure onset zones in intractable epilepsy. While the electrodes were in place, participants listened to six podcasts from <em>The Moth Radio Hour</em> — about forty-seven minutes of continuous storytelling, totalling more than seven thousand words.</p>
+<p>Here is an example episode of the kind of story participants heard:</p>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/9sGmJMgGDU8" title="The Moth Radio Hour" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen="">
+</iframe>
+<p>Across the fifteen patients we recorded just under five hundred neurons in total, sampled broadly within the hippocampus.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="figures/neuron_montage.png" class="img-fluid figure-img"></p>
+<figcaption><strong>Example units.</strong> Each panel shows the spike waveform and firing pattern of a hippocampal neuron during the listening task.</figcaption>
+</figure>
+</div>
+<p>The neurons were well-isolated single units.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="figures/example_trace.png" class="img-fluid figure-img"></p>
+<figcaption><strong>Activity of a single neuron during natural speech.</strong> Spikes are aligned to word onsets across the session.</figcaption>
+</figure>
+</div>
+</section>
+<section id="hippocampal-neurons-encode-meaning" class="level2">
+<h2 class="anchored" data-anchor-id="hippocampal-neurons-encode-meaning">Hippocampal neurons encode meaning</h2>
+<p>Before asking <em>how</em> neurons encode word meaning, we had to convince ourselves that they do at all. The evidence in humans has been thin.</p>
+<p>We used a now-standard approach<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> to predict each neuron’s firing from semantic features extracted from a language model. The features came from GPT-2, a transformer trained to predict the next word in a sequence; we used the activations from a deep layer that captures abstract meaning rather than surface form. Because we were interested in word concepts, we restricted the analysis to nouns.</p>
+<p>The model worked. Across the recorded population, we could read out which word a participant had just heard from the pattern of hippocampal activity — many words were reconstructed perfectly, and nearly all the rest were close.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="figures/decoding_accuracy.png" class="img-fluid figure-img"></p>
+<figcaption><strong>Reading word meaning from hippocampal activity.</strong> Words can be decoded from neural population activity.</figcaption>
+</figure>
+</div>
+<p>More than that, the <em>relationships</em> between words were preserved. Two words that are close in the language model’s semantic space — say, <em>ocean</em> and <em>river</em> — were also close in the activity space of the hippocampal population.<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a> And crucially, the agreement between neural and semantic geometry kept improving as we added more neurons to the analysis.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="figures/rsa_scaling.png" class="img-fluid figure-img"></p>
+<figcaption><strong>Neural and semantic geometry align, and the alignment grows with population size.</strong> Distances between word-evoked neural patterns mirror distances in the language model’s embedding space.</figcaption>
+</figure>
+</div>
+<p>That scaling behaviour is itself diagnostic. If meaning were carried by a small number of dedicated “concept cells” — one neuron firing for <em>Jennifer Aniston</em>, another for <em>the Eiffel Tower</em> — then adding neurons that are silent for most words should contribute almost nothing, and the curve should saturate early. Instead, it climbs. Each additional neuron adds a little more information, which is what you’d expect if individual neurons carry <em>partial, overlapping</em> information about many words. To make sure this was really diagnostic, we ran the same analysis on simulated populations of classical concept cells: those simulated populations failed to recover the geometry at any population size we tested.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="figures/concept_cell_control.png" class="img-fluid figure-img"></p>
+<figcaption><strong>Simulated concept cells fail to recover semantic geometry.</strong> A control analysis on synthetic concept-cell populations shows none of the scaling behaviour observed in real neurons.</figcaption>
+</figure>
+</div>
+</section>
+<section id="neurons-with-similar-tuning-dont-form-clean-categories" class="level2">
+<h2 class="anchored" data-anchor-id="neurons-with-similar-tuning-dont-form-clean-categories">Neurons with similar tuning don’t form clean categories</h2>
+<p>A classical concept cell that prefers, say, <em>Christmas</em> should fire to words that are semantically adjacent — <em>reindeer</em>, <em>snow</em>, <em>candy canes</em>, even abstract relatives like <em>family</em> and <em>generosity</em>. Polysemanticity predicts the opposite: a neuron’s preferred words should <em>not</em> cluster into a tight semantic neighbourhood, and may in fact be more scattered than chance.</p>
+<p>To test this, we asked whether functional groupings inside the population — sets of neurons with similar tuning — line up with the natural categories of language. We extracted these groupings directly from the data,<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a> and then asked, for each one, whether the words it preferred came from the same neighbourhood of semantic space or from many different neighbourhoods.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="figures/nmf_modules.png" class="img-fluid figure-img"></p>
+<figcaption><strong>Functional modules cut across semantic categories.</strong> Each module’s top-scoring words are drawn from many different regions of meaning space rather than a single coherent neighbourhood.</figcaption>
+</figure>
+</div>
+<p>Almost none of the modules mapped onto a single semantic category. Most spanned several at once — one module recruited words that, in everyday language, would belong to entirely separate worlds. And many of the modules were <em>more</em> dispersed than chance: their top words were drawn from more distant regions of semantic space than you’d get by random sampling. This pattern held inside individual patients, not just at the group level.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="figures/module_dispersion.png" class="img-fluid figure-img"></p>
+<figcaption><strong>Modules are overdispersed.</strong> Most functional modules are at least as dispersed as chance, and several are significantly more so.</figcaption>
+</figure>
+</div>
+</section>
+<section id="the-code-is-dense-not-sparse" class="level2">
+<h2 class="anchored" data-anchor-id="the-code-is-dense-not-sparse">The code is dense, not sparse</h2>
+<p>If hippocampus uses concept cells, most neurons should sit silent for most words and respond to a small handful. We checked this from several angles, and they all told the same story.</p>
+<p>We measured how selectively each word activates the population — whether a given word lights up just a few neurons or many of them. We measured how selectively each neuron responds across the vocabulary — whether a given neuron fires for a small handful of words or distributes its activity broadly. We measured the entropy of each neuron’s firing across words, which captures how concentrated or uniform that distribution is. By every measure, hippocampal neurons looked considerably <em>denser</em> than simulated concept cells: each word recruited many neurons, and each neuron contributed a little to many words.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="figures/density_panels.png" class="img-fluid figure-img"></p>
+<figcaption><strong>Hippocampal coding is dense.</strong> Across multiple measures of selectivity, real neurons are far less sparse than simulated concept cells.</figcaption>
+</figure>
+</div>
+<p>A dense code raises an immediate worry: maybe the broad tuning is just noise. A neuron that fires unreliably will <em>look</em> like it responds to many words without actually distinguishing among them. We checked this too, by asking how much information each neuron’s firing rate actually carries about word identity. Real neurons carried substantially more information per word than the simulated concept cells did. The broad tuning is functionally meaningful — it supports fine-grained discrimination among words rather than averaging them all together.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="figures/information_per_word.png" class="img-fluid figure-img"></p>
+<figcaption><strong>Broad tuning carries real information.</strong> Information-per-word measurements confirm the dense code is not noise.</figcaption>
+</figure>
+</div>
+</section>
+<section id="hippocampal-neurons-are-polysemantic" class="level2">
+<h2 class="anchored" data-anchor-id="hippocampal-neurons-are-polysemantic">Hippocampal neurons are polysemantic</h2>
+<p>One way to <em>see</em> a neuron’s tuning is to look at its predicted response to a large vocabulary. We used a standard fifty-thousand-noun corpus and plotted three example neurons’ responses on a 2D map of semantic space. The patterns are not what you’d get from a concept cell. Each neuron responds across a wide range of words, with several local clusters of particularly strong activation — what we call <strong>modes</strong>. A neuron has not one favourite, but many.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="figures/example_polysemantic_neurons.png" class="img-fluid figure-img"></p>
+<figcaption><strong>Hippocampal neurons are multi-peaked across semantic space.</strong> Three example neurons show several distinct activation modes scattered across the embedding.</figcaption>
+</figure>
+</div>
+<p>For comparison, simulated concept cells produce exactly the narrow single peaks you would expect — one tight cluster around the preferred concept, silence elsewhere.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="figures/example_concept_cells.png" class="img-fluid figure-img"></p>
+<figcaption><strong>Simulated concept cells, for contrast.</strong> A single tight peak and silence elsewhere — the signature of a one-concept-per-cell code.</figcaption>
+</figure>
+</div>
+<p>We then asked how those modes are arranged in semantic space. If neurons were sampling meaning at random, the modes should sit in a disordered cloud. Instead we found something more structured. The modes were spaced <strong>regularly</strong> — the gaps between them were unusually uniform. They were arranged <strong>isotropically</strong> — pointing in all directions away from the centre, rather than concentrating along a few preferred axes. And they were close to <strong>equidistant</strong> from their neighbours. What they were <em>not</em> was hexagonal — they showed none of the periodic, six-fold symmetry that defines grid cells in flat 2D environments.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="figures/mode_geometry.png" class="img-fluid figure-img"></p>
+<figcaption><strong>The geometry of modes.</strong> Modes are regularly spaced, equidistant, and isotropically distributed, but not hexagonal.</figcaption>
+</figure>
+</div>
+<p>In other words, hippocampal neurons tile semantic space the way grid cells tile <em>complex, three-dimensional</em> spaces — uniformly and densely, but without the clean hexagons that emerge only in two flat dimensions. This kind of fragmented-but-regular geometry has been described in bats flying through 3D volumes and in animals navigating topologically complex environments. We see the same signature here, but for the space of meanings.</p>
+</section>
+<section id="a-neurons-preferred-words-are-scattered-not-clustered" class="level2">
+<h2 class="anchored" data-anchor-id="a-neurons-preferred-words-are-scattered-not-clustered">A neuron’s preferred words are scattered, not clustered</h2>
+<p>The geometric finding has a direct prediction at the level of single neurons: a neuron’s top-firing words should not cluster around a single theme. They should be <em>overdispersed</em> — spread across semantic space more widely than a random sample of words. We tested this directly. For each neuron we took its highest-firing words and measured how spread out they were in the language model’s embedding space, comparing against random word sets of the same size. Across the population, a substantial fraction of neurons had preferred-word sets that were significantly more dispersed than chance, and this held no matter how many top words we looked at.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="figures/single_neuron_overdispersion.png" class="img-fluid figure-img"></p>
+<figcaption><strong>Single-neuron overdispersion.</strong> A neuron’s preferred words are scattered across semantic space rather than clustered around a single concept.</figcaption>
+</figure>
+</div>
+</section>
+<section id="context-reshapes-single-neuron-tuning-while-preserving-population-geometry" class="level2">
+<h2 class="anchored" data-anchor-id="context-reshapes-single-neuron-tuning-while-preserving-population-geometry">Context reshapes single-neuron tuning while preserving population geometry</h2>
+<p>A polysemantic code carries a useful side-effect. If a single neuron participates in many meanings, then different contexts can call up different meanings without rewiring anything — the network simply weights the same neurons differently when the story changes. We asked whether hippocampal neurons actually do this.</p>
+<p>For each neuron, we measured how much its tuning to words shifted across different stories. The answer was: a lot. The same neuron’s response to a given word looked noticeably different from one Moth story to the next, and this shift was visible in every single patient. It wasn’t drift — neurons recorded close together in time looked just as different as neurons recorded far apart.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="figures/within_vs_across_story.png" class="img-fluid figure-img"></p>
+<figcaption><strong>Single-neuron tuning shifts across stories.</strong> The same neuron responds differently to the same words depending on narrative context.</figcaption>
+</figure>
+</div>
+<p>But here’s the surprise. While individual neurons changed their tuning from story to story, the <strong>population’s geometry did not</strong>. Pairs of words that were close together in one story remained close together in another. The map stayed the same; the readers shifted around on it. A polysemantic code makes this possible: the population can preserve relational structure while individual neurons reshuffle their roles.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="figures/population_geometry_stability.png" class="img-fluid figure-img"></p>
+<figcaption><strong>Population geometry is preserved across stories.</strong> The relational structure of word representations stays stable even as single-neuron tuning shifts.</figcaption>
+</figure>
+</div>
+</section>
+<section id="context-changes-how-neurons-read-meaning-in-a-non-linear-mixed-selectivity-way" class="level2">
+<h2 class="anchored" data-anchor-id="context-changes-how-neurons-read-meaning-in-a-non-linear-mixed-selectivity-way">Context changes how neurons read meaning in a non-linear mixed selectivity way</h2>
+<p>A neuron’s response to a word doesn’t happen in a vacuum. The same word — <em>bank</em>, <em>fly</em>, <em>cell</em> — can mean different things depending on what came before it. We asked whether hippocampal neurons are sensitive to that.</p>
+<p>We compared three ways a neuron might use context to shape its firing. The first ignored context entirely and predicted activity from word identity alone. The second added context as a separate ingredient — the surrounding words could push firing up or down, but they couldn’t change <em>what the neuron cared about</em>. The third allowed context and word to interact, so that the surrounding words could actually reshape how the neuron responded to meaning.</p>
+<p>The third model won, across nearly every context window we tested. Adding context as a side ingredient helped, but letting context <em>bend</em> the neuron’s tuning helped more. About a quarter of all the neurons we recorded only showed up as meaningful in this third model — they looked silent under simpler analyses, but came alive once we accounted for the interaction. And the effect cut across categories: many of the neurons that seemed to be encoding pure word identity, or pure context, turned out to be doing something more interesting.</p>
+<p>What this means is that local context doesn’t just nudge a neuron’s firing rate up or down. It changes the question the neuron is asking. The same neuron reads meaning differently depending on what was just said — a hallmark of <em>non-linear mixed selectivity</em>, where single units combine multiple variables in ways that no linear sum could reproduce.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="figures/wxc_neurons.png" class="img-fluid figure-img"></p>
+<figcaption><strong>Word-by-context interactions are widespread.</strong> Many neurons only emerge as meaningful when the model allows context to reshape their semantic tuning.</figcaption>
+</figure>
+</div>
+</section>
+<section id="polysemantic-codes-enable-pattern-separation" class="level2">
+<h2 class="anchored" data-anchor-id="polysemantic-codes-enable-pattern-separation">Polysemantic codes enable pattern separation</h2>
+<p>The hippocampus is famous for <strong>pattern separation</strong> — taking two inputs that look similar and pushing them apart in neural space, so that they don’t interfere with each other in memory. We asked whether the polysemantic code we’d been describing supports this.</p>
+<p>The test: when the same word appears in different contexts within our podcasts, does the neural population represent it differently? And does the <em>amount</em> of difference scale with how different the contexts are? The answer to both was yes. Identical words in distinct contexts evoked distinct population responses, and the further apart the contexts were, the further apart the responses were. The system maps contextual differences onto representational differences in a graded way — exactly what pattern separation requires.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="figures/pattern_separation.png" class="img-fluid figure-img"></p>
+<figcaption><strong>Repeated words separate by context.</strong> When the same word appears in different contexts, its neural representation shifts in proportion to how different those contexts are.</figcaption>
+</figure>
+</div>
+</section>
+<section id="polysemantic-codes-enable-pattern-completion" class="level2">
+<h2 class="anchored" data-anchor-id="polysemantic-codes-enable-pattern-completion">Polysemantic codes enable pattern completion</h2>
+<p>The hippocampus is equally famous for the opposite trick — <strong>pattern completion</strong>, where a partial or noisy input retrieves a complete representation. Concept cells are excellent at this for individual concepts: one cue, one identity. But they aren’t built for <em>relational</em> completion, where the system must infer not just an item but where that item sits in a richer structure of meaning.</p>
+<p>A polysemantic code, by contrast, naturally supports this. If a neuron participates in many concepts, the broader population can settle onto the right semantic neighbourhood as contextual cues accumulate, even for words it has never been explicitly trained on.</p>
+<p>We tested this directly. Across the embedding space, we asked whether the hippocampal population could classify words along a semantic dimension <em>after being trained on a different set of words for the same dimension</em>. The classifier never saw the test words during training; if it succeeded, the population’s geometry must encode the dimension in an abstract, generalisable way. It did succeed, on most semantic dimensions we tried. The geometry generalises.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="figures/ccgp_generalization.png" class="img-fluid figure-img"></p>
+<figcaption><strong>The semantic geometry generalises.</strong> A linear classifier trained to separate words along one semantic dimension correctly classifies new words it has never seen.</figcaption>
+</figure>
+</div>
+</section>
+<section id="what-this-means" class="level2">
+<h2 class="anchored" data-anchor-id="what-this-means">What this means</h2>
+<p>Pulling everything together: the human hippocampus represents word meaning the way modern neural networks do — by packing many concepts into overlapping patterns of activity across a population, rather than by assigning each concept to its own dedicated detector. Individual neurons participate in many meanings; individual meanings recruit many neurons. The geometry of population activity tracks the geometry of language itself. Context bends single-neuron tuning while leaving population structure intact. The same code that lets the hippocampus separate similar inputs also lets it complete partial ones.</p>
+<p>This isn’t a refutation of concept cells. Classical concept-cell experiments use isolated, deliberately presented stimuli, which favour a one-concept-per-cell regime. Naturalistic speech, with thousands of fast-flowing concepts shaped by context, favours polysemanticity. Both regimes likely coexist, depending on what the input demands.</p>
+<p>What strikes us most is the parallel with the hippocampus’s older trick. In navigating large physical spaces, place cells develop multiple unrelated firing fields and grid cells tile the world with repeating, multi-peaked maps; in topologically complex three-dimensional spaces, even grid cells become fragmented and polysemantic. Here we see the same architecture again — for the space of meanings. The hippocampus seems to have one general-purpose strategy for representing high-dimensional spaces, whether the space is physical, semantic, or something else entirely.</p>
+</section>
+<section id="read-the-paper" class="level2">
+<h2 class="anchored" data-anchor-id="read-the-paper">Read the paper</h2>
+<p>The full preprint is available on bioRxiv: <a href="https://www.biorxiv.org/content/10.64898/2026.05.02.722435v1" class="track-click" data-track="biorxiv-preprint">Polysemanticity in Human Hippocampal Neurons</a>.</p>
+</section>
+
+
+
+<div id="quarto-appendix" class="default"><section id="acknowledgements" class="level2 appendix"><h2 class="anchored quarto-appendix-heading">Acknowledgements</h2><div class="quarto-appendix-contents">
+
+<p>We thank the patients who participated in this study, and the clinical teams at Baylor College of Medicine who made these recordings possible.</p>
+
+
+</div></section><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
+
+<ol>
+<li id="fn1"><p>An <em>encoding model</em> learns a mapping from a feature space — here, semantic features extracted from a large language model — to neural firing rates, and is scored on held-out data.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p>This kind of comparison is called <em>representational similarity analysis</em>: instead of asking whether two systems represent the same things, we ask whether they represent the <em>relationships between</em> things in the same way.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn3"><p>We used non-negative matrix factorisation, a decomposition technique that finds additive components in a similarity matrix. Each component picks out a coherent pattern of co-tuning across the population.<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section></div></main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<input type="hidden" id="giscus-base-theme" value="light">
+<input type="hidden" id="giscus-alt-theme" value="light">
+<script>
+  function loadGiscus() {
+    // Function to get the theme based on body class
+    const getTheme = () => {
+      let baseTheme = document.getElementById('giscus-base-theme').value;
+      let altTheme = document.getElementById('giscus-alt-theme').value;
+      return document.body.classList.contains('quarto-dark') ? altTheme : baseTheme;
+    };
+    const script = document.createElement("script");
+    script.src = "https://giscus.app/client.js";
+    script.async = true;
+    script.dataset.repo = "psywalkeryanxy/psywalkeryanxy.github.io";
+    script.dataset.repoId = "MDEwOlJlcG9zaXRvcnkyODMxNjU1NDY=";
+    script.dataset.category = "Announcements";
+    script.dataset.categoryId = "DIC_kwDOEODDas4C8VfD";
+    script.dataset.mapping = "pathname";
+    script.dataset.reactionsEnabled = "1";
+    script.dataset.emitMetadata = "0";
+    script.dataset.inputPosition = "top";
+    script.dataset.theme = getTheme();
+    script.dataset.lang = "en";
+    script.crossOrigin = "anonymous";
+    // Append the script to the desired div instead of at the end of the body
+    document.getElementById("quarto-content").appendChild(script);
+  }
+  loadGiscus();
+</script>
+</div> <!-- /content -->
+<script src="assets/counters.js" defer=""></script>
+
+
+
+
+</body></html>

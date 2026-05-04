@@ -1,0 +1,185 @@
+/* ============================================
+   Distill-inspired serif look for Quarto
+   ============================================ */
+
+/* ---------- Body text ---------- */
+body {
+  font-family: "Crimson Text", "Times New Roman", Georgia, serif;
+  font-size: 18px;
+  line-height: 1.65;
+  color: rgba(0, 0, 0, 0.85);
+  max-width: 100%;
+}
+
+/* ---------- Title and headings ---------- */
+h1, h2, h3, h4, .title {
+  font-family: "Helvetica Neue", "Helvetica", Arial, sans-serif;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.title {
+  font-size: 2.5rem;
+  margin-bottom: 0.3em;
+}
+
+.subtitle, .description {
+  font-family: "Helvetica Neue", "Helvetica", Arial, sans-serif;
+  font-weight: 300;
+  font-size: 1.3rem;
+  color: rgba(0, 0, 0, 0.6);
+  margin-bottom: 1.5em;
+}
+
+h2 {
+  font-size: 1.6rem;
+  margin-top: 2.5em;
+  margin-bottom: 0.6em;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  padding-bottom: 0.3em;
+}
+
+h3 {
+  font-size: 1.25rem;
+  margin-top: 2em;
+}
+
+/* ---------- Footnotes ---------- */
+.footnote-ref, .footnote-back {
+  font-family: "Helvetica Neue", sans-serif;
+  font-size: 0.75em;
+  vertical-align: super;
+  text-decoration: none;
+  color: #b87333;
+}
+
+/* ---------- Author block ---------- */
+.quarto-title-meta {
+  font-family: "Helvetica Neue", sans-serif;
+  font-size: 0.9rem;
+  color: rgba(0, 0, 0, 0.7);
+}
+
+/* ---------- Links ---------- */
+a {
+  color: #b87333;
+  text-decoration: none;
+  border-bottom: 1px solid rgba(184, 115, 51, 0.3);
+}
+a:hover {
+  border-bottom-color: #b87333;
+}
+
+/* ---------- Inline code ---------- */
+code {
+  font-family: "SF Mono", Menlo, Consolas, monospace;
+  font-size: 0.9em;
+  background: rgba(0, 0, 0, 0.04);
+  padding: 0.1em 0.3em;
+  border-radius: 3px;
+}
+
+/* ---------- Block quotes ---------- */
+blockquote {
+  border-left: 3px solid rgba(0, 0, 0, 0.15);
+  padding-left: 1em;
+  color: rgba(0, 0, 0, 0.7);
+  font-style: italic;
+}
+
+/* ---------- Appendix ---------- */
+.appendix {
+  margin-top: 4em;
+  padding-top: 2em;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+  font-size: 0.95rem;
+  color: rgba(0, 0, 0, 0.7);
+}
+
+/* ============================================
+   FIGURES — all centered between paragraphs,
+   uniform width, controlled size
+   ============================================ */
+
+/* Force every figure container to a max width and center it */
+figure,
+.figure,
+.quarto-figure,
+p:has(> img:only-child) {
+  margin: 2.5em auto !important;
+  text-align: center !important;
+  max-width: 700px !important;
+  width: 100% !important;
+  display: block !important;
+}
+
+/* The image inside the figure */
+figure img,
+.figure img,
+.quarto-figure img,
+p > img {
+  max-width: 100% !important;
+  width: auto !important;
+  max-height: 480px !important;
+  height: auto !important;
+  object-fit: contain !important;
+  display: block !important;
+  margin: 0 auto !important;
+}
+
+/* Figure captions: smaller, centered, gray */
+figcaption,
+.figure-caption,
+.quarto-figure figcaption {
+  font-family: "Helvetica Neue", "Helvetica", Arial, sans-serif !important;
+  font-size: 0.85rem !important;
+  line-height: 1.4 !important;
+  color: rgba(0, 0, 0, 0.6) !important;
+  margin-top: 0.7em !important;
+  text-align: center !important;
+  max-width: 600px !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+/* Override any wide layout containers Quarto might add */
+.column-screen-inset,
+.column-screen-inset-shaded,
+.column-page,
+.column-page-inset,
+.column-page-left,
+.column-page-right,
+.column-body-outset,
+.column-body-outset-left,
+.column-body-outset-right {
+  max-width: 700px !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  width: 100% !important;
+}
+
+/* ---------- YouTube / iframe embeds ---------- */
+iframe {
+  display: block;
+  margin: 2em auto;
+  max-width: 100%;
+  border-radius: 4px;
+}
+
+/* View counter badge */
+.view-badge {
+  display: inline-block;
+  padding: 0.25rem 0.7rem;
+  margin: 0.5rem 0 1.25rem 0;
+  font-size: 0.85rem;
+  color: #555;
+  background: #f4f4f6;
+  border-radius: 999px;
+  border: 1px solid #e5e5ea;
+}
+
+.view-badge #view-count {
+  font-weight: 600;
+  color: #222;
+}
+

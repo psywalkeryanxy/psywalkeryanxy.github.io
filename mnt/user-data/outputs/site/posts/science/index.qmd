@@ -1,0 +1,17 @@
+---
+title: "Science"
+subtitle: "Notes on papers, methods, and ideas in computational neuroscience."
+page-layout: full
+title-block-banner: false
+listing:
+  contents: "*.qmd"
+  type: default
+  sort: "date desc"
+  fields: [date, title, description, categories]
+  categories: true
+  sort-ui: false
+  filter-ui: true
+  feed: true
+  date-format: "MMM D, YYYY"
+toc: false
+---
