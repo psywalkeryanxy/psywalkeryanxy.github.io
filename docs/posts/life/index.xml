@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss  xmlns:atom="http://www.w3.org/2005/Atom" 
+      xmlns:media="http://search.yahoo.com/mrss/" 
+      xmlns:content="http://purl.org/rss/1.0/modules/content/" 
+      xmlns:dc="http://purl.org/dc/elements/1.1/" 
+      version="2.0">
+<channel>
+<title>Xinyuan Yan</title>
+<link>https://psywalkeryanxy.github.io/posts/life/</link>
+<atom:link href="https://psywalkeryanxy.github.io/posts/life/index.xml" rel="self" type="application/rss+xml"/>
+<description>Computational neuroscience · representations · decisions</description>
+<generator>quarto-1.9.37</generator>
+<lastBuildDate>Sat, 20 Dec 2025 06:00:00 GMT</lastBuildDate>
+<item>
+  <title>On rejection rates</title>
+  <dc:creator>Xinyuan Yan</dc:creator>
+  <link>https://psywalkeryanxy.github.io/posts/life/2025-12-20-rejection-rates/</link>
+  <description><![CDATA[ 
+
+
+
+
+<p>I keep a public failure chronicle on the homepage. The current count is 2 acceptances out of 17 submissions — 12%.</p>
+<p>The point of writing it down isn’t to perform humility. It’s that I genuinely cannot remember, in the moment, whether the work is good. The chronicle is a memory aid: this has happened before, you have been wrong about what reviewers will say before, the field has changed its mind before.</p>
+<p>Three things I’ve stopped doing since I started keeping the count:</p>
+<ol type="1">
+<li><strong>Reading rejections the same day they arrive.</strong> I let them sit overnight. The next-morning version of me is much better at telling apart “this critique is right” from “this critique is loud.”</li>
+<li><strong>Treating Reviewer 3 as a person.</strong> Reviewer 3 is a <em>role</em> — the role of the reviewer who didn’t read carefully. Sometimes Reviewer 3 is in slot 1. Once Reviewer 3 was the editor.</li>
+<li><strong>Counting acceptances.</strong> The count I track now is <em>submissions per year</em>, not acceptances. The acceptances will arrive when they arrive.</li>
+</ol>
+<p>The hard part isn’t the rejection. The hard part is staying interested in the question after the rejection.</p>
+
+
+
+<a onclick="window.scrollTo(0, 0); return false;" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a> ]]></description>
+  <category>reflection</category>
+  <category>academia</category>
+  <guid>https://psywalkeryanxy.github.io/posts/life/2025-12-20-rejection-rates/</guid>
+  <pubDate>Sat, 20 Dec 2025 06:00:00 GMT</pubDate>
+</item>
+</channel>
+</rss>

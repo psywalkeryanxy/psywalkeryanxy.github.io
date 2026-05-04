@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>readme – Xinyuan Yan</title>
+<title>Life – Xinyuan Yan</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -26,22 +26,24 @@ ul.task-list li input[type="checkbox"] {
 </style>
 
 
-<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
-<script src="../site_libs/clipboard/clipboard.min.js"></script>
-<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
-<script src="../site_libs/quarto-search/fuse.min.js"></script>
-<script src="../site_libs/quarto-search/quarto-search.js"></script>
-<meta name="quarto:offset" content="../">
-<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
-<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
-<script src="../site_libs/quarto-html/popper.min.js"></script>
-<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
-<script src="../site_libs/quarto-html/anchor.min.js"></script>
-<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-0c6c582a2e32955cc333a2e936bacdbf.css" rel="stylesheet" id="quarto-text-highlighting-styles">
-<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
-<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-ad9a1071cd71055483265ce165fbccbd.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-listing/list.min.js"></script>
+<script src="../../site_libs/quarto-listing/quarto-listing.js"></script>
+<script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-0c6c582a2e32955cc333a2e936bacdbf.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap-ad9a1071cd71055483265ce165fbccbd.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -69,24 +71,84 @@ ul.task-list li input[type="checkbox"] {
     "search-label": "Search"
   }
 }</script>
+<script>
+
+  window.document.addEventListener("DOMContentLoaded", function (_event) {
+    const listingTargetEl = window.document.querySelector('#listing-listing .list');
+    if (!listingTargetEl) {
+      // No listing discovered, do not attach.
+      return; 
+    }
+
+    const options = {
+      valueNames: ['listing-date','listing-author','listing-title','listing-categories','listing-description','listing-image',{ data: ['index'] },{ data: ['categories'] },{ data: ['listing-date-sort'] },{ data: ['listing-file-modified-sort'] }],
+      
+      searchColumns: ["listing-date","listing-title","listing-author","listing-image","listing-description","listing-categories"],
+    };
+
+    window['quarto-listings'] = window['quarto-listings'] || {};
+    window['quarto-listings']['listing-listing'] = new List('listing-listing', options);
+
+    if (window['quarto-listing-loaded']) {
+      window['quarto-listing-loaded']();
+    }
+  });
+
+  window.addEventListener('hashchange',() => {
+    if (window['quarto-listing-loaded']) {
+      window['quarto-listing-loaded']();
+    }
+  })
+  </script>
 <style>html{ scroll-behavior: smooth; }</style>
 
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
-<link rel="stylesheet" href="../styles.css">
-<meta property="og:title" content="Xinyuan Yan">
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="../../styles.css">
+<link rel="alternate" type="application/rss+xml" title="Xinyuan Yan" href="index.xml" data-external="1"><meta property="og:title" content="Life – Xinyuan Yan">
+<meta property="og:description" content="Cooking, swimming, walking, and what I’m thinking about between experiments.">
 <meta property="og:site_name" content="Xinyuan Yan">
-<meta name="twitter:title" content="Xinyuan Yan">
+<meta name="twitter:title" content="Life – Xinyuan Yan">
+<meta name="twitter:description" content="Cooking, swimming, walking, and what I’m thinking about between experiments.">
 <meta name="twitter:card" content="summary">
 </head>
 
-<body class="nav-fixed fullcontent quarto-light">
+<body class="nav-fixed quarto-light">
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top">
     <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
-    <a class="navbar-brand" href="../index.html">
+    <a class="navbar-brand" href="../../index.html">
     <span class="navbar-title">Xinyuan Yan</span>
     </a>
   </div>
@@ -97,27 +159,27 @@ ul.task-list li input[type="checkbox"] {
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll me-auto">
   <li class="nav-item">
-    <a class="nav-link" href="../index.html"> 
+    <a class="nav-link" href="../../index.html"> 
 <span class="menu-text">Home</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../posts/science/index.html"> 
+    <a class="nav-link" href="../../posts/science/index.html"> 
 <span class="menu-text">Science</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../posts/life/index.html"> 
+    <a class="nav-link active" href="../../posts/life/index.html" aria-current="page"> 
 <span class="menu-text">Life</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../photos/index.html"> 
+    <a class="nav-link" href="../../photos/index.html"> 
 <span class="menu-text">Photos</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../failures.html"> 
+    <a class="nav-link" href="../../failures.html"> 
 <span class="menu-text">Failures</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../cv.html"> 
+    <a class="nav-link" href="../../cv.html"> 
 <span class="menu-text">CV</span></a>
   </li>  
 </ul>
@@ -133,7 +195,7 @@ ul.task-list li input[type="checkbox"] {
 <span class="menu-text"></span></a>
   </li>  
   <li class="nav-item compact">
-    <a class="nav-link" href="../xinyuanyan2016@gmail.com"> <i class="bi bi-envelope" role="img" aria-label="Email">
+    <a class="nav-link" href="../../xinyuanyan2016@gmail.com"> <i class="bi bi-envelope" role="img" aria-label="Email">
 </i> 
 <span class="menu-text"></span></a>
   </li>  
@@ -145,64 +207,97 @@ ul.task-list li input[type="checkbox"] {
     </nav>
 </header>
 <!-- content -->
-<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+    <h5 class="quarto-listing-category-title">Categories</h5><div class="quarto-listing-category category-default"><div class="category" data-category="">All <span class="quarto-category-count">(2)</span></div><div class="category" data-category="YWNhZGVtaWE=">academia <span class="quarto-category-count">(1)</span></div><div class="category" data-category="cmVmbGVjdGlvbg==">reflection <span class="quarto-category-count">(1)</span></div></div></div>
 <!-- main -->
-<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"></header>
+<main class="content column-page-left" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Life</h1>
+<p class="subtitle lead">Cooking, swimming, walking, and what I’m thinking about between experiments.</p>
+</div>
+
+
+
+<div class="quarto-title-meta column-page-left">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
 
 
 
 
-<section id="trial-by-trial-behavioral-data-vmpfc-recordings" class="level1">
-<h1>Trial-by-trial Behavioral Data — vmPFC Recordings</h1>
-<section id="subjects" class="level2">
-<h2 class="anchored" data-anchor-id="subjects">Subjects</h2>
-<table class="caption-top table">
-<thead>
-<tr class="header">
-<th>Subject</th>
-<th># Neurons</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>Batman</td>
-<td>106</td>
-</tr>
-<tr class="even">
-<td>Hobbes</td>
-<td>50</td>
-</tr>
-</tbody>
-</table>
-</section>
-<section id="file-structure-vmpfc_trial_vars_shared.mat" class="level2">
-<h2 class="anchored" data-anchor-id="file-structure-vmpfc_trial_vars_shared.mat">File structure (<code>vmPFC_Trial_Vars_shared.mat</code>)</h2>
-<pre><code>newTrial_Vars
-├── subj_ID
-│   ├── Batman                 % [106 x 1] cell, one entry per neuron
-│   │   └── {n}.vars           % [trial numbers x 5] double — trials x variables
-│   └── Hobbes                 % [50 x 1] cell, one entry per neuron
-│       └── {n}.vars           % [trial numbers x 5] double
-├── var_names                  % {'choice','reward','prev_reward','SU_offer1','SU_offer2'}
-└── var_idx_in_original        % [9 10 14 30 33] — original column indices</code></pre>
-</section>
-<section id="variables-5-columns-in-order" class="level2">
-<h2 class="anchored" data-anchor-id="variables-5-columns-in-order">Variables (5 columns, in order)</h2>
-<div class="line-block"># | Name || Description | Coding |</div>
-<p>|—|—————||—————————————————|———————————| | 1 | <code>choice</code> || Which offer the subject chose | 1 = offer 1, 0 = offer 2 | | 2 | <code>reward</code> || Reward received on this trial | numeric | | 3 | <code>prev_reward</code> || Whether the <em>previous</em> trial was rewarded | 0 = no, 1 = yes | | 4 | <code>SU_offer1</code> || Subjective utility of offer 1, computed via JMF | numeric | | 5 | <code>SU_offer2</code> || Subjective utility of offer 2, computed via JMF | numeric |</p>
-</section>
-<section id="contact" class="level2">
-<h2 class="anchored" data-anchor-id="contact">Contact</h2>
-<p>Xinyuan Yan — Baylor College of Medicine</p>
 
 
-</section>
-</section>
+<div class="quarto-listing quarto-listing-container-default" id="listing-listing">
+<div class="listing-actions-group">
+    <div class="input-group input-group-sm quarto-listing-filter">
+      <span class="input-group-text"><i class="bi bi-search"></i></span>
+      <input type="text" class="search form-control" placeholder="Filter">
+    </div>
+</div>
+<div class="list quarto-listing-default">
+<div class="quarto-post image-right" data-index="0" data-listing-file-modified-sort="1777935380451">
+<div class="thumbnail"><a href="../../posts/life/2025-12-20-rejection-rates/index.html" class="no-external">
 
-<a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a></main> <!-- /main -->
+</a></div>
+<div class="body">
+<h3 class="no-anchor listing-title">
+<a href="../../posts/life/2025-12-20-rejection-rates/index.html" class="no-external"></a>
+</h3>
+<div class="delink listing-description"><a href="../../posts/life/2025-12-20-rejection-rates/index.html" class="no-external">
+</a></div>
+</div>
+<div class="metadata">
+<a href="../../posts/life/2025-12-20-rejection-rates/index.html" class="no-external">
+</a>
+</div>
+</div>
+<div class="quarto-post image-right" data-index="1" data-categories="cmVmbGVjdGlvbiUyQ2FjYWRlbWlh" data-listing-date-sort="1766210400000" data-listing-file-modified-sort="1777946140000" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="184">
+<div class="thumbnail"><a href="../../posts/life/2025-12-20-rejection-rates/index.html" class="no-external">
+
+<div class="listing-item-img-placeholder card-img-top" style="height: 180px;">&nbsp;</div>
+
+</a></div>
+<div class="body">
+<h3 class="no-anchor listing-title">
+<a href="../../posts/life/2025-12-20-rejection-rates/index.html" class="no-external">On rejection rates</a>
+</h3>
+<div class="listing-categories">
+
+<div class="listing-category" onclick="window.quartoListingCategory('cmVmbGVjdGlvbg=='); return false;">reflection</div>
+
+<div class="listing-category" onclick="window.quartoListingCategory('YWNhZGVtaWE='); return false;">academia</div>
+
+</div>
+<div class="delink listing-description"><a href="../../posts/life/2025-12-20-rejection-rates/index.html" class="no-external">
+<p>What a 12% acceptance rate has taught me about doing science.</p>
+</a></div>
+</div>
+<div class="metadata">
+<a href="../../posts/life/2025-12-20-rejection-rates/index.html" class="no-external">
+<div class="listing-date">
+Dec 20, 2025
+</div>
+<div class="listing-author">
+Xinyuan Yan
+</div>
+</a>
+</div>
+</div>
+</div>
+<div class="listing-no-matching d-none">No matching items</div>
+</div><a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a></main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
     const icon = "";
@@ -626,5 +721,5 @@ ul.task-list li input[type="checkbox"] {
 
 
 
-<script src="../site_libs/quarto-html/zenscroll-min.js"></script>
+<script src="../../site_libs/quarto-html/zenscroll-min.js"></script>
 </body></html>

@@ -1,0 +1,18 @@
+---
+title: "Life"
+subtitle: "Cooking, swimming, walking, and what I'm thinking about between experiments."
+page-layout: full
+listing:
+  contents: "*"
+  type: default
+  image-align: right
+  image-height: "180px"
+  sort: "date desc"
+  fields: [date, author, title, categories, description, image]
+  categories: true
+  sort-ui: false
+  filter-ui: true
+  feed: true
+  date-format: "MMM D, YYYY"
+toc: false
+---

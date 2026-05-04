@@ -1,14 +1,14 @@
 [
   {
-    "listing": "/mnt/user-data/outputs/site/posts/science/index.html",
+    "listing": "/posts/life/index.html",
     "items": [
-      "/mnt/user-data/outputs/site/posts/science/2026-01-15-bilingual-geometry/index.html"
+      "/posts/life/2025-12-20-rejection-rates/index.html"
     ]
   },
   {
-    "listing": "/mnt/user-data/outputs/site/posts/life/index.html",
+    "listing": "/posts/science/index.html",
     "items": [
-      "/mnt/user-data/outputs/site/posts/life/2025-12-20-rejection-rates/index.html"
+      "/posts/science/2026-05-03-polysemanticity/index.html"
     ]
   }
 ]

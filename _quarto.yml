@@ -38,7 +38,7 @@ website:
         href: https://github.com/psywalkeryanxy
         aria-label: GitHub
       - icon: envelope
-        href: mailto:xinyuanyan2016@gmail.com
+        href: xinyuanyan2016@gmail.com
         aria-label: Email
 
   page-footer:
@@ -48,8 +48,8 @@ website:
 format:
   html:
     theme:
-      light: [cosmo, assets/custom.scss]
-    css: assets/styles.css
+      light: [cosmo, custom.scss]
+    css: styles.css
     toc: false
     smooth-scroll: true
     link-external-newwindow: true

@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>readme – Xinyuan Yan</title>
+<title>Photos – Xinyuan Yan</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -73,10 +73,16 @@ ul.task-list li input[type="checkbox"] {
 
 
 <link rel="stylesheet" href="../styles.css">
-<meta property="og:title" content="Xinyuan Yan">
+<meta property="og:title" content="Photos – Xinyuan Yan">
+<meta property="og:description" content="Landscapes I’ve walked through. Click any image to enlarge.">
+<meta property="og:image" content="https://psywalkeryanxy.github.io/photos/img/01.jpg">
 <meta property="og:site_name" content="Xinyuan Yan">
-<meta name="twitter:title" content="Xinyuan Yan">
-<meta name="twitter:card" content="summary">
+<meta property="og:image:alt" content="Houston spring morning">
+<meta name="twitter:title" content="Photos – Xinyuan Yan">
+<meta name="twitter:description" content="Landscapes I’ve walked through. Click any image to enlarge.">
+<meta name="twitter:image" content="https://psywalkeryanxy.github.io/photos/img/01.jpg">
+<meta name="twitter:image:alt" content="Houston spring morning">
+<meta name="twitter:card" content="summary_large_image">
 </head>
 
 <body class="nav-fixed fullcontent quarto-light">
@@ -109,7 +115,7 @@ ul.task-list li input[type="checkbox"] {
 <span class="menu-text">Life</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../photos/index.html"> 
+    <a class="nav-link active" href="../photos/index.html" aria-current="page"> 
 <span class="menu-text">Photos</span></a>
   </li>  
   <li class="nav-item">
@@ -150,57 +156,74 @@ ul.task-list li input[type="checkbox"] {
 <!-- margin-sidebar -->
     
 <!-- main -->
-<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"></header>
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Photos</h1>
+<p class="subtitle lead">Landscapes I’ve walked through. Click any image to enlarge.</p>
+</div>
 
 
 
+<div class="quarto-title-meta">
 
-<section id="trial-by-trial-behavioral-data-vmpfc-recordings" class="level1">
-<h1>Trial-by-trial Behavioral Data — vmPFC Recordings</h1>
-<section id="subjects" class="level2">
-<h2 class="anchored" data-anchor-id="subjects">Subjects</h2>
-<table class="caption-top table">
-<thead>
-<tr class="header">
-<th>Subject</th>
-<th># Neurons</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>Batman</td>
-<td>106</td>
-</tr>
-<tr class="even">
-<td>Hobbes</td>
-<td>50</td>
-</tr>
-</tbody>
-</table>
-</section>
-<section id="file-structure-vmpfc_trial_vars_shared.mat" class="level2">
-<h2 class="anchored" data-anchor-id="file-structure-vmpfc_trial_vars_shared.mat">File structure (<code>vmPFC_Trial_Vars_shared.mat</code>)</h2>
-<pre><code>newTrial_Vars
-├── subj_ID
-│   ├── Batman                 % [106 x 1] cell, one entry per neuron
-│   │   └── {n}.vars           % [trial numbers x 5] double — trials x variables
-│   └── Hobbes                 % [50 x 1] cell, one entry per neuron
-│       └── {n}.vars           % [trial numbers x 5] double
-├── var_names                  % {'choice','reward','prev_reward','SU_offer1','SU_offer2'}
-└── var_idx_in_original        % [9 10 14 30 33] — original column indices</code></pre>
-</section>
-<section id="variables-5-columns-in-order" class="level2">
-<h2 class="anchored" data-anchor-id="variables-5-columns-in-order">Variables (5 columns, in order)</h2>
-<div class="line-block"># | Name || Description | Coding |</div>
-<p>|—|—————||—————————————————|———————————| | 1 | <code>choice</code> || Which offer the subject chose | 1 = offer 1, 0 = offer 2 | | 2 | <code>reward</code> || Reward received on this trial | numeric | | 3 | <code>prev_reward</code> || Whether the <em>previous</em> trial was rewarded | 0 = no, 1 = yes | | 4 | <code>SU_offer1</code> || Subjective utility of offer 1, computed via JMF | numeric | | 5 | <code>SU_offer2</code> || Subjective utility of offer 2, computed via JMF | numeric |</p>
-</section>
-<section id="contact" class="level2">
-<h2 class="anchored" data-anchor-id="contact">Contact</h2>
-<p>Xinyuan Yan — Baylor College of Medicine</p>
+    
+  
+    
+  </div>
+  
 
 
-</section>
-</section>
+</header>
+
+
+<div class="photo-grid">
+<p><a href="img/01.jpg" data-caption="Houston — early morning, late spring."><img src="img/01.jpg" alt="Houston spring morning" loading="lazy"></a></p>
+<p><a href="img/02.jpg" data-caption="Galveston coast."><img src="img/02.jpg" alt="Galveston coast" loading="lazy"></a></p>
+<p><a href="img/03.jpg" data-caption="Hermann Park."><img src="img/03.jpg" alt="Hermann Park" loading="lazy"></a></p>
+<p><a href="img/04.jpg" data-caption="Big Bend, west Texas."><img src="img/04.jpg" alt="Big Bend" loading="lazy"></a></p>
+<p><a href="img/05.jpg" data-caption="A quiet street in Beijing."><img src="img/05.jpg" alt="Beijing street" loading="lazy"></a></p>
+<p><a href="img/06.jpg" data-caption="Rice University campus."><img src="img/06.jpg" alt="Rice University" loading="lazy"></a></p>
+</div>
+<div id="lightbox" class="lightbox-overlay" role="dialog" aria-modal="true">
+<img src="" alt="" id="lightbox-img">
+<div id="lightbox-caption" class="lb-caption">
+
+</div>
+</div>
+<script>
+(function() {
+  const grid = document.querySelector('.photo-grid');
+  if (!grid) return;
+  const overlay = document.getElementById('lightbox');
+  const overlayImg = document.getElementById('lightbox-img');
+  const overlayCap = document.getElementById('lightbox-caption');
+
+  grid.addEventListener('click', (e) => {
+    const a = e.target.closest('a');
+    if (!a) return;
+    e.preventDefault();
+    overlayImg.src = a.getAttribute('href');
+    overlayCap.textContent = a.dataset.caption || '';
+    overlay.classList.add('active');
+    document.body.style.overflow = 'hidden';
+  });
+
+  const close = () => {
+    overlay.classList.remove('active');
+    overlayImg.src = '';
+    document.body.style.overflow = '';
+  };
+
+  overlay.addEventListener('click', close);
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && overlay.classList.contains('active')) close();
+  });
+})();
+</script>
+
+
 
 <a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a></main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">

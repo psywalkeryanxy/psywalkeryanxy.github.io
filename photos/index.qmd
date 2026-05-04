@@ -1,0 +1,58 @@
+---
+title: "Photos"
+subtitle: "Landscapes I've walked through. Click any image to enlarge."
+page-layout: article
+toc: false
+---
+
+::: {.photo-grid}
+
+<a href="img/01.jpg" data-caption="Houston — early morning, late spring."><img src="img/01.jpg" alt="Houston spring morning" loading="lazy"></a>
+
+<a href="img/02.jpg" data-caption="Galveston coast."><img src="img/02.jpg" alt="Galveston coast" loading="lazy"></a>
+
+<a href="img/03.jpg" data-caption="Hermann Park."><img src="img/03.jpg" alt="Hermann Park" loading="lazy"></a>
+
+<a href="img/04.jpg" data-caption="Big Bend, west Texas."><img src="img/04.jpg" alt="Big Bend" loading="lazy"></a>
+
+<a href="img/05.jpg" data-caption="A quiet street in Beijing."><img src="img/05.jpg" alt="Beijing street" loading="lazy"></a>
+
+<a href="img/06.jpg" data-caption="Rice University campus."><img src="img/06.jpg" alt="Rice University" loading="lazy"></a>
+
+:::
+
+<div class="lightbox-overlay" id="lightbox" role="dialog" aria-modal="true">
+  <img src="" alt="" id="lightbox-img">
+  <div class="lb-caption" id="lightbox-caption"></div>
+</div>
+
+<script>
+(function() {
+  const grid = document.querySelector('.photo-grid');
+  if (!grid) return;
+  const overlay = document.getElementById('lightbox');
+  const overlayImg = document.getElementById('lightbox-img');
+  const overlayCap = document.getElementById('lightbox-caption');
+
+  grid.addEventListener('click', (e) => {
+    const a = e.target.closest('a');
+    if (!a) return;
+    e.preventDefault();
+    overlayImg.src = a.getAttribute('href');
+    overlayCap.textContent = a.dataset.caption || '';
+    overlay.classList.add('active');
+    document.body.style.overflow = 'hidden';
+  });
+
+  const close = () => {
+    overlay.classList.remove('active');
+    overlayImg.src = '';
+    document.body.style.overflow = '';
+  };
+
+  overlay.addEventListener('click', close);
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && overlay.classList.contains('active')) close();
+  });
+})();
+</script>
