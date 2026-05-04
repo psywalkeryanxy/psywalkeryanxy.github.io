@@ -399,7 +399,7 @@ body.quarto-listing-page main.content {
   font-size: .85rem;
   color: #6b6760;
   text-decoration: none;
-  letter-spacing: 0.4em;
+  letter-spacing: 0.1em;
   border-bottom: 1px solid transparent;
   transition: all .2s ease;
 }
