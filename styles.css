@@ -189,7 +189,7 @@ body:has(.photo-grid) main.content {
   display: block;
   overflow: hidden;
   border-radius: 2px;
-  background: #efece6;
+  background: #ffffff;
   aspect-ratio: 4 / 3;
   text-decoration: none;
   border: none;
@@ -249,7 +249,7 @@ body:has(.photo-grid) main.content {
 /* ============ Failure chronicle ============ */
 
 .failure-box {
-  background: #f3f0e9;
+  background: #ffffff;
   border-left: 3px solid #8a3a2e;
   padding: 1.25rem 1.5rem;
   margin: 1.5rem 0;
