@@ -4,7 +4,7 @@ project:
   resources:
     - "CV_YanX.pdf"
     - "published_papers/"
-    - "goatcounter-views.js"
+    - "views.js"
 
 website:
   title: "Xinyuan Yan"
@@ -58,13 +58,15 @@ format:
     fig-cap-location: bottom
     mainfont: "Source Sans 3"
     monofont: "JetBrains Mono"
-    include-in-header:
-      text: |
-        <script data-goatcounter="https://xinyuanyan.goatcounter.com/count"
-                async src="//gc.zgo.at/count.js"></script>
     include-after-body:
       text: |
-        <script src="/goatcounter-views.js"></script>
+        <span id="busuanzi_container_page_pv" style="display:none">
+          <span id="busuanzi_value_page_pv"></span>
+        </span>
+        <span id="busuanzi_container_site_pv" style="display:none">
+          <span id="busuanzi_value_site_pv"></span>
+        </span>
+        <script src="/views.js"></script>
 
 execute:
   freeze: auto
