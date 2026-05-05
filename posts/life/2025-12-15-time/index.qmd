@@ -1,0 +1,19 @@
+---
+title: "Time"
+description: "A short reflection on the seasons, with a verse and a photograph from Mirror Lake."
+author: "Xinyuan Yan"
+date: "2025-12-15"
+categories: [reflection, life]
+image: autumn_2023_W.jpg
+---
+
+![](autumn_2023_W.jpg){fig-alt="Autumn at straight lake state park"}
+
+> Summer and winter and springtime and harvest,\
+> Sun, moon, and stars in their courses above\
+> Join with all nature in manifold witness\
+> To thy great faithfulness, mercy, and love.
+
+::: {style="text-align: right; font-size: 0.85rem; color: #888; margin-top: 1.5em;"}
+Photo by Xinyuan Yan, Mirror Lake State Park
+:::

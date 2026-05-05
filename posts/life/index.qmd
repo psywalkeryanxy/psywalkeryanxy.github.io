@@ -1,14 +1,16 @@
 ---
 title: "Life"
-subtitle: "Cooking, swimming, walking, and what I'm thinking about between experiments."
+subtitle: "love, death, humanity."
 page-layout: full
+title-block-banner: false
 listing:
-  contents: "*"
+  contents: 
+    - "*/index.qmd"
   type: default
   image-align: right
   image-height: "180px"
   sort: "date desc"
-  fields: [date, author, title, categories, description, image]
+  fields: [date, title, categories, description, image]
   categories: true
   sort-ui: false
   filter-ui: true
