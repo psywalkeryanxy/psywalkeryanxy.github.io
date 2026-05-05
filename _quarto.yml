@@ -59,8 +59,7 @@ format:
     monofont: "JetBrains Mono"
     include-in-header:
       text: |
-        <script data-goatcounter="https://xinyuanyan.goatcounter.com/count"
-                data-goatcounter-settings='{"allow_local": true}'
+       <script data-goatcounter="https://xinyuanyan.goatcounter.com/count"
                 async src="//gc.zgo.at/count.js"></script>
         <script async src="//gc.zgo.at/count.v4.js"></script>
 
