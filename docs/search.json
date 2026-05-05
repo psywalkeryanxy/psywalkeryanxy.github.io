@@ -18,7 +18,7 @@
     "href": "failures.html#paper-rejections",
     "title": "Failure Chronicle",
     "section": "Paper rejections",
-    "text": "Paper rejections\n\nBy year\n\n2023 — 1 acceptance / 7 submissions · 14%\n2024 — 1 acceptance / 6 submissions · 17%\n2025 to date — 0 acceptances / 4 submissions · 0%\n\nTotal: 2 / 17 · 12%\n\nA few that stung in particular:\n\nA two-round major revision at Nature Communications on the dmPFC/dlPFC restless bandit paper, ultimately rejected. The appeal documenting goalpost-shifting is on file. The science survived: a reframe around dmPFC high-gamma tracking environmental richness (slow state variable) vs. theta carrying trial-by-trial PE/RV/RU has since become the cleaner version of the story.\nThe hippocampal polysemanticity paper went through several null-model rewrites before I caught that the regularity null was producing 98% spurious significance. Painful, necessary, not a rejection but a near-miss."
+    "text": "Paper rejections\n\nBy year\n\n2023 — 1 acceptance / 7 submissions · 14%\n2024 — 1 acceptance / 6 submissions · 17%\n2025 to date — 1 acceptances / 7 submissions · 14%\n\nTotal: 3 / 20 · 15%\n\nA few that stung in particular:\n\nA two-round major revision at Nature Communications on the dmPFC/dlPFC restless bandit paper, ultimately rejected. (response to the reviewers goes up 170 pages)"
   },
   {
     "objectID": "failures.html#grant-applications",
@@ -40,13 +40,6 @@
     "title": "Failure Chronicle",
     "section": "Failed experiments",
     "text": "Failed experiments\n\n3 published / 9 succeeded / 5 failed.\nThe 5 that didn’t work taught me more about the recording rig and the analysis pipeline than the 9 that did."
-  },
-  {
-    "objectID": "failures.html#what-ive-stopped-doing",
-    "href": "failures.html#what-ive-stopped-doing",
-    "title": "Failure Chronicle",
-    "section": "What I’ve stopped doing",
-    "text": "What I’ve stopped doing\n\nReading rejections the same day they arrive. Overnight, my next-morning self is much better at separating “this critique is right” from “this critique is loud.”\nTreating Reviewer 3 as a person. Reviewer 3 is a role — the role of the reviewer who didn’t read carefully. Sometimes Reviewer 3 is in slot 1. Once Reviewer 3 was the editor.\nCounting acceptances. The count I track now is submissions per year. Acceptances arrive when they arrive.\n\nThe hard part isn’t the rejection. The hard part is staying interested in the question after the rejection."
   },
   {
     "objectID": "posts/life/index.html",
@@ -179,7 +172,7 @@
     "href": "index.html",
     "title": "Xinyuan Yan",
     "section": "",
-    "text": "PhD · Postdoctoral Researcher, Baylor College of Medicine\n\n\nCV Google Scholar GitHub Email\nA normal person. Find science fascinating. A passerby on Earth.\nFor the past decade I have been learning how to do science — first through fMRI and behavioral modeling of social value learning and decision-making, more recently through intracranial recordings of human uncertainty, value, and concept representations in collaboration with Dr. Sameer Sheth and Dr. Ben Hayden at Baylor College of Medicine.\nWhat I hope to spend the rest of my life thinking about: how the brain represents multimodal concepts; why and how different languages — spoken and signed — converge on the same conceptual space; how new concepts are learned and stably maintained; and how concepts link to affect."
+    "text": "PhD · Postdoctoral Researcher, Baylor College of Medicine\n\n\nCV Google Scholar GitHub Email\nA normal person. Find science fascinating. A passerby on Earth.\nFor the past decade I have been learning how to do science — first through fMRI and behavioral modeling of social value learning and decision-making, and then through two postdoctoral chapters of intracranial human neuroscience. In my first postdoc at the University of Minnesota, I worked with [Dr. Alexander Herman] (https://scholar.google.com/citations?user=kIeWhuUAAAAJ&hl=en) and Dr. David Darrow on iEEG signatures of value, uncertainty computation, and their relevance to psychiatry. I am now in my second postdoc at Baylor College of Medicine, working with Dr. Sameer Sheth and Dr. Ben Hayden on single-neuron recordings of human language, and concept representations. What I hope to spend the rest of my life thinking about: how concepts are formed; how they are represented across modalities; how different languages — spoken and signed — converge on, and diverge from, a shared conceptual space; and how human and artificial intelligence might come to understand each other. ::: {.section-label} My Light :::"
   },
   {
     "objectID": "index.html#featured-publications",

@@ -18,15 +18,14 @@ I keep this page because I genuinely cannot remember, in the moment, whether the
 
 - **2023** — 1 acceptance / 7 submissions · *14%*
 - **2024** — 1 acceptance / 6 submissions · *17%*
-- **2025 to date** — 0 acceptances / 4 submissions · *0%*
+- **2025 to date** — 1 acceptances / 7 submissions · *14%*
 
-**Total: 2 / 17 · 12%**
+**Total: 3 / 20 · 15%**
 :::
 
 A few that stung in particular:
 
-- A two-round major revision at *Nature Communications* on the dmPFC/dlPFC restless bandit paper, ultimately rejected. The appeal documenting goalpost-shifting is on file. The science survived: a reframe around dmPFC high-gamma tracking environmental richness (slow state variable) vs. theta carrying trial-by-trial PE/RV/RU has since become the cleaner version of the story.
-- The hippocampal polysemanticity paper went through several null-model rewrites before I caught that the regularity null was producing 98% spurious significance. Painful, necessary, not a rejection but a near-miss.
+- A two-round major revision at *Nature Communications* on the dmPFC/dlPFC restless bandit paper, ultimately rejected. (response to the reviewers goes up 170 pages)
 
 ---
 
@@ -55,11 +54,3 @@ The 5 that didn't work taught me more about the recording rig and the analysis p
 :::
 
 ---
-
-## What I've stopped doing
-
-1. **Reading rejections the same day they arrive.** Overnight, my next-morning self is much better at separating "this critique is right" from "this critique is loud."
-2. **Treating Reviewer 3 as a person.** Reviewer 3 is a *role* — the role of the reviewer who didn't read carefully. Sometimes Reviewer 3 is in slot 1. Once Reviewer 3 was the editor.
-3. **Counting acceptances.** The count I track now is *submissions per year*. Acceptances arrive when they arrive.
-
-The hard part isn't the rejection. The hard part is staying interested in the question after the rejection.

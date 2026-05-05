@@ -7,7 +7,7 @@ format:
   html:
     include-in-header:
       text: |
-        <meta name="description" content="Xinyuan Yan — postdoctoral researcher in computational neuroscience and psychiatry.">
+        <meta name="description" content="Xinyuan Yan — postdoctoral researcher in neuroscience and psychology">
 ---
 
 ::: {.hero}
@@ -34,10 +34,8 @@ About
 
 A normal person. Find science fascinating. A passerby on Earth.
 
-For the past decade I have been learning how to do science — first through fMRI and behavioral modeling of social value learning and decision-making, more recently through intracranial recordings of human uncertainty, value, and concept representations in collaboration with [Dr. Sameer Sheth](https://www.bcm.edu/people-search/sameer-sheth-32130) and [Dr. Ben Hayden](https://www.bcm.edu/people-search/benjamin-hayden-37790) at Baylor College of Medicine.
-
-What I hope to spend the rest of my life thinking about: how the brain represents multimodal concepts; why and how different languages — spoken and signed — converge on the same conceptual space; how new concepts are learned and stably maintained; and how concepts link to affect.
-
+For the past decade I have been learning how to do science — first through fMRI and behavioral modeling of social value learning and decision-making, and then through two postdoctoral chapters of intracranial human neuroscience. In my first postdoc at the University of Minnesota, I worked with [Dr. Alexander Herman] (https://scholar.google.com/citations?user=kIeWhuUAAAAJ&hl=en) and [Dr. David Darrow](https://scholar.google.com/citations?user=Hm-b2PIAAAAJ&hl=en) on iEEG signatures of value, uncertainty computation, and their relevance to psychiatry. I am now in my second postdoc at Baylor College of Medicine, working with [Dr. Sameer Sheth](https://scholar.google.com/citations?hl=en&user=lgG2xMgAAAAJ&view_op=list_works&sortby=pubdate) and [Dr. Ben Hayden](https://scholar.google.com/citations?hl=en&user=MN2ueWEAAAAJ&view_op=list_works&sortby=pubdate) on single-neuron recordings of human language, and concept representations.
+What I hope to spend the rest of my life thinking about: how concepts are formed; how they are represented across modalities; how different languages — spoken and signed — converge on, and diverge from, a shared conceptual space; and how human and artificial intelligence might come to understand each other.
 ::: {.section-label}
 My Light
 :::
