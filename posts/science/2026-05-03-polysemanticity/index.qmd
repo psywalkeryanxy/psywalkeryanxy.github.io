@@ -34,6 +34,7 @@ format:
         <div class="view-counter" style="margin: 2rem 0 1rem 0; padding: 0.6rem 0; border-top: 1px solid #eee; border-bottom: 1px solid #eee; text-align: center; font-size: 0.9rem; color: #666;">
           👁 <span class="gcvc-views-p"></span> views
         </div>
+        <script src="/goatcounter-views.js"></script>
 ---
 *For the full author list, see the [preprint](https://www.biorxiv.org/content/10.64898/2026.05.02.722435v1).*
 

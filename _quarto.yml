@@ -4,6 +4,7 @@ project:
   resources:
     - "CV_YanX.pdf"
     - "published_papers/"
+    - "goatcounter-views.js"
 
 website:
   title: "Xinyuan Yan"
@@ -59,9 +60,11 @@ format:
     monofont: "JetBrains Mono"
     include-in-header:
       text: |
-       <script data-goatcounter="https://xinyuanyan.goatcounter.com/count"
+        <script data-goatcounter="https://xinyuanyan.goatcounter.com/count"
                 async src="//gc.zgo.at/count.js"></script>
-        <script async src="//gc.zgo.at/count.v4.js"></script>
+    include-after-body:
+      text: |
+        <script src="/goatcounter-views.js"></script>
 
 execute:
   freeze: auto
