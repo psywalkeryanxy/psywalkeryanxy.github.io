@@ -7,17 +7,17 @@ toc: false
 
 ::: {.photo-grid}
 
-<a href="img/01.jpg" data-caption="Houston — early morning, late spring."><img src="img/01.jpg" alt="Houston spring morning" loading="lazy"></a>
+<a href="img/01.jpg" data-caption="Chengdu, Cat, and Yiping."><img src="img/01.jpg" alt="Houston spring morning" loading="lazy"></a>
 
-<a href="img/02.jpg" data-caption="Galveston coast."><img src="img/02.jpg" alt="Galveston coast" loading="lazy"></a>
+<a href="img/02.jpg" data-caption="SiChuan, horse, and Xiangwei"><img src="img/02.jpg" alt="Galveston coast" loading="lazy"></a>
 
-<a href="img/03.jpg" data-caption="Hermann Park."><img src="img/03.jpg" alt="Hermann Park" loading="lazy"></a>
+<a href="img/03.jpg" data-caption="Lavender"><img src="img/03.jpg" alt="Hermann Park" loading="lazy"></a>
 
-<a href="img/04.jpg" data-caption="Big Bend, west Texas."><img src="img/04.jpg" alt="Big Bend" loading="lazy"></a>
+<a href="img/04.jpg" data-caption="གསེར་རྟ་"><img src="img/04.jpg" alt="Big Bend" loading="lazy"></a>
 
-<a href="img/05.jpg" data-caption="A quiet street in Beijing."><img src="img/05.jpg" alt="Beijing street" loading="lazy"></a>
+<a href="img/05.jpg" data-caption="NENU"><img src="img/05.jpg" alt="Beijing street" loading="lazy"></a>
 
-<a href="img/06.jpg" data-caption="Rice University campus."><img src="img/06.jpg" alt="Rice University" loading="lazy"></a>
+<a href="img/06.jpg" data-caption=" Yading Nature Reserve"><img src="img/06.jpg" alt="Rice University" loading="lazy"></a>
 
 :::
 

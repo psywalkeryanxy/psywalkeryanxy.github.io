@@ -38,11 +38,11 @@ website:
         href: https://github.com/psywalkeryanxy
         aria-label: GitHub
       - icon: envelope
-        href: xinyuanyan2016@gmail.com
+        href: mailto:xinyuanyan2016@gmail.com
         aria-label: Email
 
   page-footer:
-    left: "© 2025 Xinyuan Yan"
+    left: "© 2026 Xinyuan Yan"
     right: "Built with [Quarto](https://quarto.org)"
 
 format:
@@ -57,6 +57,10 @@ format:
     fig-cap-location: bottom
     mainfont: "Source Sans 3"
     monofont: "JetBrains Mono"
+    include-in-header:
+      text: |
+        <script data-goatcounter="https://xinyuanyan.goatcounter.com/count"
+                async src="//gc.zgo.at/count.js"></script>
 
 execute:
   freeze: auto
