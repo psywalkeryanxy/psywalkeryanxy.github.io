@@ -7,22 +7,33 @@ toc: false
 
 ::: {.photo-grid}
 
-<a href="img/01.jpg" data-caption="Chengdu, Cat, and Yiping."><img src="img/01.jpg" alt="Houston spring morning" loading="lazy"></a>
+<a href="img/01.jpg" data-caption="Chengdu, Cat, and Yiping"><img src="img/01.jpg" alt="Chengdu, Cat, and Yiping" loading="lazy"></a>
 
-<a href="img/02.jpg" data-caption="SiChuan, horse, and Xiangwei"><img src="img/02.jpg" alt="Galveston coast" loading="lazy"></a>
+<a href="img/02.jpg" data-caption="Sichuan, horse, and Xiangwei"><img src="img/02.jpg" alt="Sichuan, horse, and Xiangwei" loading="lazy"></a>
 
-<a href="img/03.jpg" data-caption="Lavender"><img src="img/03.jpg" alt="Hermann Park" loading="lazy"></a>
+<a href="img/03.jpg" data-caption="Lavender"><img src="img/03.jpg" alt="Lavender" loading="lazy"></a>
 
-<a href="img/04.jpg" data-caption="གསེར་རྟ་"><img src="img/04.jpg" alt="Big Bend" loading="lazy"></a>
+<a href="img/04.jpg" data-caption="གསེར་རྟ་"><img src="img/04.jpg" alt="Sertar" loading="lazy"></a>
 
-<a href="img/05.jpg" data-caption="NENU"><img src="img/05.jpg" alt="Beijing street" loading="lazy"></a>
+<a href="img/05.jpg" data-caption="NENU"><img src="img/05.jpg" alt="NENU" loading="lazy"></a>
 
-<a href="img/06.jpg" data-caption=" Yading Nature Reserve"><img src="img/06.jpg" alt="Rice University" loading="lazy"></a>
-<a href="img/07.jpg" data-caption=" aurora, MN, Hong, Yu, Mohan, Jess"><img src="img/06.jpg" alt="Rice University" loading="lazy"></a>
-<a href="img/08.jpg" data-caption=" Joshua Tree National Park, Ji-An, Mengping"><img src="img/06.jpg" alt="Rice University" loading="lazy"></a>
-<a href="img/09.jpg" data-caption=" Yosemite National Park, Shaonan, Mengping"><img src="img/06.jpg" alt="Rice University" loading="lazy"></a>
-<a href="img/10.jpg" data-caption=" UMN, running club"><img src="img/06.jpg" alt="Rice University" loading="lazy"></a>
-<a href="img/11.jpg" data-caption=" Yosemite National Park, Shaonan, Mengping"><img src="img/06.jpg" alt="Rice University" loading="lazy"></a>
+<a href="img/06.jpg" data-caption="Yading Nature Reserve"><img src="img/06.jpg" alt="Yading Nature Reserve" loading="lazy"></a>
+
+<a href="img/07.jpg" data-caption="Aurora, MN — Hong, Yu, Mohan, Jess"><img src="img/07.jpg" alt="Aurora in Minnesota with friends" loading="lazy"></a>
+
+<a href="img/08.jpg" data-caption="Joshua Tree National Park — Ji-An, Mengping"><img src="img/08.jpg" alt="Joshua Tree National Park" loading="lazy"></a>
+
+<a href="img/09.jpg" data-caption="Yosemite National Park — Shaonan, Mengping"><img src="img/09.jpg" alt="Yosemite National Park" loading="lazy"></a>
+
+<a href="img/10.jpg" data-caption="UMN running club"><img src="img/10.jpg" alt="UMN running club" loading="lazy"></a>
+
+<a href="img/11.jpg" data-caption="Yosemite National Park — Shaonan, Mengping"><img src="img/11.jpg" alt="Yosemite National Park" loading="lazy"></a>
+
+<a href="img/12.jpg" data-caption="Birthday cake — Mohan"><img src="img/12.jpg" alt="Birthday cake with Mohan" loading="lazy"></a>
+
+<a href="img/13.jpg" data-caption="Spring 2026, MN — Mohan"><img src="img/13.jpg" alt="Spring 2026 in Minnesota with Mohan" loading="lazy"></a>
+
+<a href="img/14.jpg" data-caption="Moody Gardens — Mohan"><img src="img/14.jpg" alt="Moody Gardens with Mohan" loading="lazy"></a>
 
 :::
 
