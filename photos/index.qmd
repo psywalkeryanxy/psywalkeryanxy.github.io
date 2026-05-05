@@ -1,6 +1,6 @@
 ---
 title: "Photos"
-subtitle: "Thank you all for being in my life ：）"
+subtitle: ""
 page-layout: article
 toc: false
 ---
