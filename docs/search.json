@@ -140,6 +140,13 @@
     "text": "Discussion\nThe set of stimuli that most effectively drive a given neuron form an overdispersed, isotropic, and equidistant structure within the neural embedding space.\nThis polysemanticity closely parallels the foundational architecture of LLMs, where networks utilize superposition to maximize information capacity within a finite-dimensional space, forcing individual units to represent multiple disparate features (Elhage et al., 2022; Bricken et al., 2023). Human language represents an ideal use case for superposition because the set of concepts available to language is both very high dimensional and sparse. Because these semantic features rarely co-occur, the hippocampus can project them into the same neural dimensions with low risk.\nConcept cells. Polysemantic tuning in hippocampal representations of meaning does not invalidate the theory of concept cells; instead, it suggests they may be part of a larger continuum of coding. Classic concept cell protocols, which involve discrete concepts presented without context, naturally favor a dedicated-neuron regime (Quiroga et al., 2012), whereas naturalistic speech, with thousands of rapidly and transiently appearing concepts, favors polysemanticity.\nOur observations provide a bridge between semantic representation and classical models of hippocampal pattern separation (Bakker et al., 2008; Leutgeb et al., 2007; McClelland et al., 1995; Yassa & Stark, 2011). Traditional frameworks emphasizing sparse, amodal concept cells pose a computational paradox: their monosemantic rigidity lacks the high-dimensional capacity required to decorrelate closely overlapping lexical inputs (Quiroga, 2020). Yet, this limitation seemingly contradicts the amply demonstrated role of the hippocampus in contextualization and pattern separation (Suthana et al. 2021).\nRelationship with grid cells. Grid cells provide a canonical example of neurons whose firing fields tile an environment with multiple, widely separated fields. Crucially, the hexagonal periodicity of grid cells degrades in three-dimensional or topologically complex environments, resulting in fragmented, locally ordered firing fields (Ginosar et al. 2021, 2023; Krupic et al. 2015; Grieves et al. 2021). This fact suggests that grid cells, at least in spaces of more than two dimensions, exhibit a form of spatial polysemanticity, driven by the need to represent multiple independent spatial contexts within a finite neural population.\nWe hypothesize that the overdispersed response sets we observe may reflect the same computational principle that may motivate 3-D grid coding, maximizing coverage of a representational space while minimizing redundancy and interference. In spatial navigation, distributed firing fields support efficient generalization across locations (Bellmund et al. 2018; Whittington et al. 2020). More speculatively, then, an overdispersed sampling of conceptual space could allow hippocampal neurons to link distant experiences while preserving separability among neighboring memories, thereby facilitating relational binding, flexible inference, and, potentially, creativity."
   },
   {
+    "objectID": "posts/science/2026-05-03-polysemanticity/index.html#read-the-paper",
+    "href": "posts/science/2026-05-03-polysemanticity/index.html#read-the-paper",
+    "title": "Polysemanticity in Human Hippocampal Neurons",
+    "section": "Read the paper",
+    "text": "Read the paper\nCheck our preprint: Polysemanticity in Human Hippocampal Neurons."
+  },
+  {
     "objectID": "posts/science/2026-05-03-polysemanticity/index.html#acknowledgements",
     "href": "posts/science/2026-05-03-polysemanticity/index.html#acknowledgements",
     "title": "Polysemanticity in Human Hippocampal Neurons",
@@ -187,12 +194,5 @@
     "title": "Curriculum Vitae",
     "section": "",
     "text": "Download as PDF →\n\n\n\nYour browser doesn’t support inline PDFs. Download the CV instead.\n\n\n\n\n\n Back to top"
-  },
-  {
-    "objectID": "posts/science/2026-05-03-polysemanticity/index.html#read-the-paper",
-    "href": "posts/science/2026-05-03-polysemanticity/index.html#read-the-paper",
-    "title": "Polysemanticity in Human Hippocampal Neurons",
-    "section": "Read the paper",
-    "text": "Read the paper\nCheck our preprint: Polysemanticity in Human Hippocampal Neurons."
   }
 ]
