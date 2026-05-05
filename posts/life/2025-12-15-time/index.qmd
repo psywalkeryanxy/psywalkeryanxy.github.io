@@ -1,6 +1,6 @@
 ---
 title: "Time"
-description: "A short reflection on the seasons, with a verse and a photograph from Mirror Lake."
+description: ""
 author: "Xinyuan Yan"
 date: "2025-12-15"
 categories: [reflection, life]

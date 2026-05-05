@@ -1,6 +1,6 @@
 ---
 title: "The Pianist at Houston Methodist Hospital"
-description: "On a pianist who plays in the lobby every day, and on what it means to play your part when no one is listening."
+description: ""
 author: "Xinyuan Yan"
 date: "2024-11-20"
 categories: [reflection, life]

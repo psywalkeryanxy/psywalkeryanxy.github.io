@@ -1,6 +1,6 @@
 ---
 title: "To Houston Roaches"
-description: "A poem dedicated, with affection and exhaustion, to the small warriors of a Houston summer."
+description: ""
 author: "Xinyuan Yan"
 date: "2026-02-15"
 categories: [poem, life]
