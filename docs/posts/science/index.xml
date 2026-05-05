@@ -13,10 +13,6 @@
 <lastBuildDate>Sun, 03 May 2026 05:00:00 GMT</lastBuildDate>
 <item>
   <title>Polysemanticity in Human Hippocampal Neurons</title>
-  <dc:creator>Xinyuan Yan</dc:creator>
-  <dc:creator>Li Ji-An</dc:creator>
-  <dc:creator>Benjamin Hayden</dc:creator>
-  <dc:creator>Sameer Sheth</dc:creator>
   <link>https://psywalkeryanxy.github.io/posts/science/2026-05-03-polysemanticity/</link>
   <description><![CDATA[ 
 <a href="../" class="back-link">← Back to Science</a>
@@ -24,7 +20,28 @@
 
 
 
-<p><em>For the full author list, see the <a href="https://www.biorxiv.org/content/10.64898/2026.05.02.722435v1">preprint</a>.</em></p>
+<div class="author-list">
+<p>Xinyuan Yan<sup>1</sup>, Ji-An Li<sup>2</sup>, Melissa Franch<sup>1</sup>, Hanlin Zhu<sup>1</sup>, Rhiannon Cowan<sup>3</sup>, James Belanger<sup>1</sup>, Ana G. Chavez<sup>1</sup>, Assia Chericoni<sup>1</sup>, Taha Ismail<sup>1</sup>, Kalman A. Katlowitz<sup>1</sup>, Luca D. Kolibius<sup>4</sup>, Elizabeth A. Mickiewicz<sup>1</sup>, Danika Paulo<sup>1</sup>, Eleonora Bartoli<sup>1</sup>, Jay A. Hennig<sup>1,5,6,7</sup>, Tomasz M. Frączek<sup>1</sup>, Nicole R. Provenza<sup>1,5,6,7</sup>, Shervin Rahimpour<sup>3</sup>, Ben Shofty<sup>3</sup>, Elliot Smith<sup>3</sup>, Joshua Jacobs<sup>4</sup>, Benjamin Y. Hayden<sup>*†1,5,6,7</sup>, and Sameer A. Sheth<sup>*1,5,6,7</sup></p>
+</div>
+<div class="affiliations">
+<ol type="1">
+<li>Department of Neurosurgery, Baylor College of Medicine</li>
+<li>Department of Psychology, New York University</li>
+<li>Department of Neurosurgery, University of Utah</li>
+<li>Department of Neurology, University of Chicago</li>
+<li>Department of Electrical and Computer Engineering, Rice University</li>
+<li>Department of Bioengineering, Rice University</li>
+<li>Neuroengineering Initiative, Rice University</li>
+</ol>
+<div class="footnote-symbols">
+<p>* These authors contributed equally</p>
+<p>† Correspondence: <a href="mailto:Benjamin.Hayden@bcm.edu">Benjamin.Hayden@bcm.edu</a></p>
+</div>
+</div>
+<div class="blog-authors">
+<p><strong>Blog post written by:</strong> <a href="https://scholar.google.com/citations?user=rdGDTMsAAAAJ">Xinyuan Yan</a> and <a href="https://scholar.google.com/citations?user=MN2ueWEAAAAJ">Benjamin Hayden</a></p>
+</div>
+<p><em>For more details, see the <a href="https://www.biorxiv.org/content/10.64898/2026.05.02.722435v1">preprint</a>.</em></p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="https://psywalkeryanxy.github.io/posts/science/2026-05-03-polysemanticity/figures/hero_polysemantic.png" class="img-fluid figure-img"></p>
