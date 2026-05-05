@@ -4,7 +4,8 @@ subtitle: "Notes on papers, methods, and ideas in neuroscience."
 page-layout: full
 title-block-banner: false
 listing:
-  contents: "*"
+  contents: 
+    - "*/index.qmd"
   type: default
   image-align: right
   image-height: "180px"
