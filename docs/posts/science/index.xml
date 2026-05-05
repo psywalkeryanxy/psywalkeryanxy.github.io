@@ -14,6 +14,7 @@
 <item>
   <title>Polysemanticity in Human Hippocampal Neurons</title>
   <dc:creator>Xinyuan Yan</dc:creator>
+  <dc:creator>Li Ji-An</dc:creator>
   <dc:creator>Benjamin Hayden</dc:creator>
   <dc:creator>Sameer Sheth</dc:creator>
   <link>https://psywalkeryanxy.github.io/posts/science/2026-05-03-polysemanticity/</link>
@@ -23,10 +24,11 @@
 
 
 
+<p><em>For the full author list, see the <a href="https://www.biorxiv.org/content/10.64898/2026.05.02.722435v1">preprint</a>.</em></p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="https://psywalkeryanxy.github.io/posts/science/2026-05-03-polysemanticity/figures/hero_polysemantic.png" class="img-fluid figure-img"></p>
-<figcaption><strong>Hippocampal neurons respond to many unrelated words.</strong> Figure 3A.</figcaption>
+<figcaption><strong>Hippocampal neurons respond to many unrelated words.</strong></figcaption>
 </figure>
 </div>
 <p>When we hear speech, neurons in our brains represent the words’ meanings (Franch et al., 2026). But there is no simple one-to-one relationship between neurons and words. Instead, each word is associated with a distinct pattern of neural activity, and the particular pattern depends on the context. Here, we studied the principles that determine those patterns. We found that each neuron responds to multiple unrelated words, and the set of words that drive the neuron are more distinct than expected by chance. These results indicate that neurons have the principle of <strong>polysemanticity</strong>, meaning each neuron responds to multiple unrelated stimuli (Olah, 2017; Olah, 2020). That in turn supports the idea that the brain utilizes the principle of <strong>superposition</strong>, which allows it to flexibly represent more stimuli than it has coding dimensions (Elhage et al., 2022).</p>
@@ -54,7 +56,7 @@
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="https://psywalkeryanxy.github.io/posts/science/2026-05-03-polysemanticity/figures/decoding_accuracy.png" class="img-fluid figure-img"></p>
-<figcaption><strong>Reading word meaning from hippocampal activity.</strong> Figure 1F, right.</figcaption>
+<figcaption><strong>Reading word meaning from hippocampal activity.</strong></figcaption>
 </figure>
 </div>
 </section>
@@ -64,14 +66,14 @@
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="https://psywalkeryanxy.github.io/posts/science/2026-05-03-polysemanticity/figures/rsa_scaling.png" class="img-fluid figure-img"></p>
-<figcaption><strong>Neural and semantic geometry align, and the alignment grows with population size.</strong> Figure 1J–M.</figcaption>
+<figcaption><strong>Neural and semantic geometry align, and the alignment grows with population size.</strong></figcaption>
 </figure>
 </div>
 <p>Overall, our data support the idea that neurons represent word meanings through patterns of activation, rather than through specialized “monosemantic” neurons that respond to each concept with something like a one-hot code (such as concept cells, Quiroga, 2012). To see what kinds of results these analyses would produce with concept cells, we repeated the above analyses on simulated concept cell populations. Unlike real neurons, simulated concept cells showed no monotonically increasing RSA with population size and produced near-zero correlations with GPT-2 semantic geometry at all sparseness levels.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="https://psywalkeryanxy.github.io/posts/science/2026-05-03-polysemanticity/figures/concept_cell_control.png" class="img-fluid figure-img"></p>
-<figcaption><strong>Simulated concept cells fail to recover semantic geometry.</strong> Figure S3.</figcaption>
+<figcaption><strong>Simulated concept cells fail to recover semantic geometry.</strong></figcaption>
 </figure>
 </div>
 </section>
@@ -82,16 +84,10 @@
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="https://psywalkeryanxy.github.io/posts/science/2026-05-03-polysemanticity/figures/nmf_modules.png" class="img-fluid figure-img"></p>
-<figcaption><strong>Functional modules cut across semantic categories.</strong> Figure 1O.</figcaption>
+<figcaption><strong>Functional modules cut across semantic categories.</strong></figcaption>
 </figure>
 </div>
 <p>To quantify this observation, we compared the mean pairwise semantic distance among each module’s top-scoring words against a null distribution constructed by randomly sampling the same number of words. Only one of thirteen modules showed significantly clustered semantics; eight modules were indistinguishable from chance, and four were significantly more dispersed than chance, meaning their top words were drawn from more distant regions of semantic space than expected by chance. In other words, a given neuron’s semantic repertoire is biased towards overdispersion.<sup>7</sup></p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="https://psywalkeryanxy.github.io/posts/science/2026-05-03-polysemanticity/figures/module_dispersion.png" class="img-fluid figure-img"></p>
-<figcaption><strong>Modules are overdispersed.</strong></figcaption>
-</figure>
-</div>
 </section>
 <section id="semantic-coding-is-dense" class="level2">
 <h2 class="anchored" data-anchor-id="semantic-coding-is-dense">Semantic coding is dense</h2>
@@ -100,28 +96,28 @@
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="https://psywalkeryanxy.github.io/posts/science/2026-05-03-polysemanticity/figures/population_sparseness.png" class="img-fluid figure-img"></p>
-<figcaption><strong>Population sparseness.</strong> Figure 2B.</figcaption>
+<figcaption><strong>Population sparseness.</strong></figcaption>
 </figure>
 </div>
 <p><strong>Lifetime sparseness</strong> quantifies how selectively a given neuron responds across words: values near 1 indicate firing to a single word, while values near 0 indicate uniform responding (Rolls and Treves 1997). Lifetime sparseness of neurons in the hippocampus (mean ± std = 0.369 ± 0.305) is considerably denser than the simulated concept cells.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="https://psywalkeryanxy.github.io/posts/science/2026-05-03-polysemanticity/figures/lifetime_sparseness.png" class="img-fluid figure-img"></p>
-<figcaption><strong>Lifetime sparseness.</strong> Figure 2D.</figcaption>
+<figcaption><strong>Lifetime sparseness.</strong></figcaption>
 </figure>
 </div>
 <p><strong>Normalized Shannon entropy</strong> measures how uniformly a neuron distributes its firing across words.<sup>9</sup> Neurons in our sample show relatively high entropy, that is, closer to responding to all words uniformly (mean ± std = 0.910 ± 0.130). Simulated concept cells produced much lower entropy values.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="https://psywalkeryanxy.github.io/posts/science/2026-05-03-polysemanticity/figures/shannon_entropy.png" class="img-fluid figure-img"></p>
-<figcaption><strong>Shannon entropy.</strong> Figure 2E.</figcaption>
+<figcaption><strong>Shannon entropy.</strong></figcaption>
 </figure>
 </div>
 <p>A neuron could have high entropy (responds to many words) but carry very little information if its rate variations don’t reliably distinguish between words. In other words, apparent density could be a by-product of high noise or variability. To test for this possibility, we computed the information per word.<sup>10</sup> Neurons in our dataset convey substantially more information per word than simulated concept cells. This result confirms that the broad tuning (high entropy) we observe is functionally meaningful and supports fine-grained discrimination among words.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="https://psywalkeryanxy.github.io/posts/science/2026-05-03-polysemanticity/figures/information_per_word.png" class="img-fluid figure-img"></p>
-<figcaption><strong>Information per word.</strong> Figure 2F.</figcaption>
+<figcaption><strong>Information per word.</strong></figcaption>
 </figure>
 </div>
 </section>
@@ -138,7 +134,7 @@
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="https://psywalkeryanxy.github.io/posts/science/2026-05-03-polysemanticity/figures/example_concept_cells.png" class="img-fluid figure-img"></p>
-<figcaption><strong>Simulated concept cells, for contrast.</strong> Figure 3B.</figcaption>
+<figcaption><strong>Simulated concept cells, for contrast.</strong></figcaption>
 </figure>
 </div>
 <p>We identified individual modes using DBSCAN clustering of high-firing words in t-SNE 2D semantic plane.<sup>11</sup> We then asked four geometric questions about how these modes are arranged:</p>
@@ -149,7 +145,7 @@
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="https://psywalkeryanxy.github.io/posts/science/2026-05-03-polysemanticity/figures/mode_geometry.png" class="img-fluid figure-img"></p>
-<figcaption><strong>The geometry of modes.</strong> Figure 3C–F.</figcaption>
+<figcaption><strong>The geometry of modes.</strong></figcaption>
 </figure>
 </div>
 <p>In summary, hippocampal semantic representations are organized into regularly spaced, approximately equidistant, and isotropically distributed modes, without the periodic hexagonal symmetry characteristic of grid cells in two dimensions. However, this structure is reminiscent of grid cell geometry in high (specifically, three) dimensional and non-uniform environments (Ginosar et al.&nbsp;2021, 2023; Krupic et al.&nbsp;2015; Grieves et al.&nbsp;2021).</p>
@@ -157,11 +153,11 @@
 </section>
 <section id="overdispersion-of-semantic-modes-in-single-hippocampal-neurons" class="level2">
 <h2 class="anchored" data-anchor-id="overdispersion-of-semantic-modes-in-single-hippocampal-neurons">Overdispersion of semantic modes in single hippocampal neurons</h2>
-<p>The isotropic geometric feature suggests that neuronal responses may be more semantically dispersed (overdispersion) than if their optimal driving stimuli were random. To test for overdispersion, for each neuron we identified the top N preferred nouns (by firing rate) and computed their mean pairwise cosine distance in GPT-2 embedding space, comparing this against a null distribution constructed from random nouns. Across the population, the proportion of neurons whose preferred nouns are significantly more dispersed than chance. This pattern is not an artifact of the N we chose, as it holds across a range of Ns.<sup>14</sup></p>
+<p>The isotropic geometric feature suggests that neuronal responses may be more semantically dispersed (overdispersion) than if their optimal driving stimuli were random. To test for overdispersion, for each neuron we identified the top N preferred nouns (by firing rate) and computed their mean pairwise cosine distance in GPT-2 embedding space, comparing this against a null distribution constructed from random nouns. <img src="https://psywalkeryanxy.github.io/posts/science/2026-05-03-polysemanticity/figures/single_neuron_overdispersion1.png" class="img-fluid" alt="Single-neuron overdispersion, hypothesis"> Across the population, the proportion of neurons whose preferred nouns are significantly more dispersed than chance. This pattern is not an artifact of the N we chose, as it holds across a range of Ns.<sup>14</sup></p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="https://psywalkeryanxy.github.io/posts/science/2026-05-03-polysemanticity/figures/single_neuron_overdispersion.png" class="img-fluid figure-img"></p>
-<figcaption><strong>Single-neuron overdispersion.</strong> Figure 3H–I.</figcaption>
+<p><img src="https://psywalkeryanxy.github.io/posts/science/2026-05-03-polysemanticity/figures/single_neuron_overdispersion2.png" class="img-fluid figure-img"></p>
+<figcaption><strong>Single-neuron overdispersion, results</strong></figcaption>
 </figure>
 </div>
 </section>
@@ -171,21 +167,21 @@
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="https://psywalkeryanxy.github.io/posts/science/2026-05-03-polysemanticity/figures/context_schematic.png" class="img-fluid figure-img"></p>
-<figcaption><strong>Context modulates tuning.</strong> Figure 4A.</figcaption>
+<figcaption><strong>Context modulates tuning.</strong></figcaption>
 </figure>
 </div>
 <p>We first evaluated each neuron’s semantic tuning within versus across stories.<sup>15</sup> Across-story cosine distances were greater than within-story distances, indicating that individual neurons adopt different semantic tuning depending on story context. This cross-story change in semantic tuning was individually significant in all fifteen patients. This effect is not explainable by representational drift, as across-story tuning distance did not correlate with temporal separation between stories.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="https://psywalkeryanxy.github.io/posts/science/2026-05-03-polysemanticity/figures/within_vs_across_story.png" class="img-fluid figure-img"></p>
-<figcaption><strong>Single-neuron tuning shifts across stories.</strong> Figure 4B–C.</figcaption>
+<figcaption><strong>Single-neuron tuning shifts across stories.</strong></figcaption>
 </figure>
 </div>
 <p>Despite these context-dependent shifts in individual neurons’ tuning, the population-level geometric arrangement of word representations was preserved across narratives.<sup>16</sup> In other words, sets of nouns maintain similar geometric relationships to each other regardless of their narrative context, even as neurons shift their tuning across stories.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="https://psywalkeryanxy.github.io/posts/science/2026-05-03-polysemanticity/figures/population_geometry_stability.png" class="img-fluid figure-img"></p>
-<figcaption><strong>Population geometry is preserved across stories.</strong> Figure 4D–E.</figcaption>
+<figcaption><strong>Population geometry is preserved across stories.</strong></figcaption>
 </figure>
 </div>
 </section>
@@ -198,7 +194,7 @@
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="https://psywalkeryanxy.github.io/posts/science/2026-05-03-polysemanticity/figures/wxc_neurons.png" class="img-fluid figure-img"></p>
-<figcaption><strong>Word-by-context interactions are widespread.</strong> Figure 4I–J.</figcaption>
+<figcaption><strong>Word-by-context interactions are widespread.</strong></figcaption>
 </figure>
 </div>
 </section>
@@ -209,7 +205,7 @@
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="https://psywalkeryanxy.github.io/posts/science/2026-05-03-polysemanticity/figures/pattern_separation.png" class="img-fluid figure-img"></p>
-<figcaption><strong>Repeated words separate by context.</strong> Figure 5A–C.</figcaption>
+<figcaption><strong>Repeated words separate by context.</strong></figcaption>
 </figure>
 </div>
 </section>
@@ -221,7 +217,7 @@
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="https://psywalkeryanxy.github.io/posts/science/2026-05-03-polysemanticity/figures/ccgp_generalization.png" class="img-fluid figure-img"></p>
-<figcaption><strong>The semantic geometry generalises.</strong> Figure 5E–H.</figcaption>
+<figcaption><strong>The semantic geometry generalises.</strong></figcaption>
 </figure>
 </div>
 </section>
@@ -235,13 +231,17 @@
 <p>We hypothesize that the overdispersed response sets we observe may reflect the same computational principle that may motivate 3-D grid coding, maximizing coverage of a representational space while minimizing redundancy and interference. In spatial navigation, distributed firing fields support efficient generalization across locations (Bellmund et al.&nbsp;2018; Whittington et al.&nbsp;2020). More speculatively, then, an overdispersed sampling of conceptual space could allow hippocampal neurons to link distant experiences while preserving separability among neighboring memories, thereby facilitating relational binding, flexible inference, and, potentially, creativity.</p>
 </section>
 
+<section id="read-the-paper" class="level2">
+<h2 class="anchored" data-anchor-id="read-the-paper">Read the paper</h2>
+<p>Check our preprint: <a href="https://www.biorxiv.org/content/10.64898/2026.05.02.722435v1">Polysemanticity in Human Hippocampal Neurons</a>.</p>
+
+
+</section>
 
 
 <a onclick="window.scrollTo(0, 0); return false;" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a><div id="quarto-appendix" class="default"><section id="acknowledgements" class="level2 appendix"><h2 class="anchored quarto-appendix-heading">Acknowledgements</h2><div class="quarto-appendix-contents">
 
 <p>We thank the patients who participated in this study, and the clinical teams at Baylor College of Medicine who made these recordings possible.</p>
-
-
 </div></section><section id="footnotes" class="footnotes footnotes-end-of-document"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
 
 <ol>
