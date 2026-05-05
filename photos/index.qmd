@@ -1,6 +1,6 @@
 ---
 title: "Photos"
-subtitle: "Landscapes I've walked through. Click any image to enlarge."
+subtitle: "Thank you all for being in my life ：）"
 page-layout: article
 toc: false
 ---
@@ -18,6 +18,11 @@ toc: false
 <a href="img/05.jpg" data-caption="NENU"><img src="img/05.jpg" alt="Beijing street" loading="lazy"></a>
 
 <a href="img/06.jpg" data-caption=" Yading Nature Reserve"><img src="img/06.jpg" alt="Rice University" loading="lazy"></a>
+<a href="img/07.jpg" data-caption=" aurora, MN, Hong, Yu, Mohan, Jess"><img src="img/06.jpg" alt="Rice University" loading="lazy"></a>
+<a href="img/08.jpg" data-caption=" Joshua Tree National Park, Ji-An, Mengping"><img src="img/06.jpg" alt="Rice University" loading="lazy"></a>
+<a href="img/09.jpg" data-caption=" Yosemite National Park, Shaonan, Mengping"><img src="img/06.jpg" alt="Rice University" loading="lazy"></a>
+<a href="img/10.jpg" data-caption=" UMN, running club"><img src="img/06.jpg" alt="Rice University" loading="lazy"></a>
+<a href="img/11.jpg" data-caption=" Yosemite National Park, Shaonan, Mengping"><img src="img/06.jpg" alt="Rice University" loading="lazy"></a>
 
 :::
 
