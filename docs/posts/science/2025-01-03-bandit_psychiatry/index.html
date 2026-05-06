@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.9.37">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="dcterms.date" content="2025-01-03">
+<meta name="description" content="When faced with uncertainty, anxious and apathetic individuals explore in opposite directions — and they do so because they perceive the source of uncertainty differently.">
+
+<title>Distinct Computational Mechanisms of Uncertainty Processing in Anxiety and Apathy – Xinyuan Yan</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="../../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../../">
+<script src="../../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../../site_libs/quarto-html/quarto-syntax-highlighting-0c6c582a2e32955cc333a2e936bacdbf.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../../site_libs/bootstrap/bootstrap-f7f91bc412425336e89604f2c49ee618.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<style>html{ scroll-behavior: smooth; }</style>
+
+
+<link rel="stylesheet" href="../../../styles.css">
+<meta property="og:title" content="Distinct Computational Mechanisms of Uncertainty Processing in Anxiety and Apathy – Xinyuan Yan">
+<meta property="og:description" content="When faced with uncertainty, anxious and apathetic individuals explore in opposite directions — and they do so because they perceive the source of uncertainty differently.">
+<meta property="og:image" content="https://psywalkeryanxy.github.io/posts/science/2025-01-03-bandit_psychiatry/figures/hero_manifold.png">
+<meta property="og:site_name" content="Xinyuan Yan">
+<meta property="og:image:height" content="13720">
+<meta property="og:image:width" content="21186">
+<meta name="twitter:title" content="Distinct Computational Mechanisms of Uncertainty Processing in Anxiety and Apathy – Xinyuan Yan">
+<meta name="twitter:description" content="When faced with uncertainty, anxious and apathetic individuals explore in opposite directions — and they do so because they perceive the source of uncertainty differently.">
+<meta name="twitter:image" content="https://psywalkeryanxy.github.io/posts/science/2025-01-03-bandit_psychiatry/figures/hero_manifold.png">
+<meta name="twitter:image-height" content="13720">
+<meta name="twitter:image-width" content="21186">
+<meta name="twitter:card" content="summary_large_image">
+</head>
+
+<body class="nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../../../index.html">
+    <span class="navbar-title">Xinyuan Yan</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../../index.html"> 
+<span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../../posts/science/index.html"> 
+<span class="menu-text">Science</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../../posts/life/index.html"> 
+<span class="menu-text">Life</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../../photos/index.html"> 
+<span class="menu-text">Photos</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../../failures.html"> 
+<span class="menu-text">Failures</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../../cv.html"> 
+<span class="menu-text">CV</span></a>
+  </li>  
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://scholar.google.com/citations?user=rdGDTMsAAAAJ"> <i class="bi bi-google-scholar" role="img" aria-label="Google Scholar">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/psywalkeryanxy"> <i class="bi bi-github" role="img" aria-label="GitHub">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="mailto:xinyuanyan2016@gmail.com"> <i class="bi bi-envelope" role="img" aria-label="Email">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul class="collapse">
+  <li><a href="#a-large-online-study-of-explore-exploit-behavior" id="toc-a-large-online-study-of-explore-exploit-behavior" class="nav-link active" data-scroll-target="#a-large-online-study-of-explore-exploit-behavior">A large online study of explore-exploit behavior</a></li>
+  <li><a href="#anxiety-and-apathy-predict-opposite-exploratory-behaviors" id="toc-anxiety-and-apathy-predict-opposite-exploratory-behaviors" class="nav-link" data-scroll-target="#anxiety-and-apathy-predict-opposite-exploratory-behaviors">Anxiety and apathy predict opposite exploratory behaviors</a></li>
+  <li><a href="#anxiety-and-apathy-weigh-volatility-and-stochasticity-differently" id="toc-anxiety-and-apathy-weigh-volatility-and-stochasticity-differently" class="nav-link" data-scroll-target="#anxiety-and-apathy-weigh-volatility-and-stochasticity-differently">Anxiety and apathy weigh volatility and stochasticity differently</a></li>
+  <li><a href="#a-behavioral-manifold-unifies-exploration-uncertainty-and-affect" id="toc-a-behavioral-manifold-unifies-exploration-uncertainty-and-affect" class="nav-link" data-scroll-target="#a-behavioral-manifold-unifies-exploration-uncertainty-and-affect">A behavioral manifold unifies exploration, uncertainty, and affect</a></li>
+  <li><a href="#what-this-means" id="toc-what-this-means" class="nav-link" data-scroll-target="#what-this-means">What this means</a></li>
+  
+  <li><a href="#read-the-paper" id="toc-read-the-paper" class="nav-link" data-scroll-target="#read-the-paper">Read the paper</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+<a href="../" class="back-link">← Back to Science</a>
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Distinct Computational Mechanisms of Uncertainty Processing in Anxiety and Apathy</h1>
+  <div class="quarto-categories">
+    <div class="quarto-category">computational psychiatry</div>
+    <div class="quarto-category">decision-making</div>
+    <div class="quarto-category">exploration-exploitation</div>
+    <div class="quarto-category">anxiety</div>
+    <div class="quarto-category">apathy</div>
+  </div>
+  </div>
+
+<div>
+  <div class="description">
+    When faced with uncertainty, anxious and apathetic individuals explore in opposite directions — and they do so because they perceive the <em>source</em> of uncertainty differently.
+  </div>
+</div>
+
+
+<div class="quarto-title-meta">
+
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">January 3, 2025</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<div class="author-list">
+<p>Xinyuan Yan<sup>1</sup>, R. Becket Ebitz<sup>3</sup>, Nicola Grissom<sup>2</sup>, David P. Darrow<sup>*†4</sup>, and Alexander B. Herman<sup>*†1</sup></p>
+</div>
+<div class="affiliations">
+<ol type="1">
+<li>Department of Psychiatry and Behavioral Sciences, University of Minnesota</li>
+<li>Department of Psychology, University of Minnesota</li>
+<li>Department of Neuroscience, Université de Montréal</li>
+<li>Department of Neurosurgery, University of Minnesota</li>
+</ol>
+<div class="footnote-symbols">
+<p>* Correspondence: <a href="mailto:herma686@umn.edu">herma686@umn.edu</a></p>
+<p>† These authors contributed equally</p>
+</div>
+</div>
+<div class="blog-authors">
+<p><strong>Blog post written by:</strong> <a href="https://scholar.google.com/citations?user=rdGDTMsAAAAJ">Xinyuan Yan</a></p>
+</div>
+<p><em>For more details, see the <a href="https://www.sciencedirect.com/science/article/pii/S2451902225000278">published paper</a>.</em></p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="figures/hero_manifold.png" class="img-fluid figure-img"></p>
+<figcaption><strong>Two ways to handle uncertainty.</strong> Anxious individuals see a world that changes quickly and explore more; apathetic individuals see a world dominated by randomness and explore less.</figcaption>
+</figure>
+</div>
+<p>When the world surprises us, we can read that surprise in two very different ways. Maybe the world has <em>changed</em> — yesterday’s good restaurant has new management, last week’s reliable route is now under construction. Or maybe the world is just <em>noisy</em> — the same restaurant simply has off nights, the same route happens to be slow today. The first reading invites you to update what you know and try something new. The second reading invites you to wait it out.</p>
+<p>These two readings have names in computational neuroscience. <strong>Volatility</strong> is the rate at which the underlying state of the world is changing. <strong>Stochasticity</strong> is the irreducible randomness layered on top of that state. The same surprising outcome can be attributed to either, and the attribution determines what you do next.</p>
+<p>We asked a simple question: do anxious and apathetic individuals weigh these two sources of uncertainty differently? And if so, does that explain why they make such different choices in uncertain environments?</p>
+<section id="a-large-online-study-of-explore-exploit-behavior" class="level2">
+<h2 class="anchored" data-anchor-id="a-large-online-study-of-explore-exploit-behavior">A large online study of explore-exploit behavior</h2>
+<p>We recruited 1,001 participants<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> and had each of them play a 300-trial three-armed restless bandit task. On every trial, participants chose one of three options and received a reward or no reward. Critically, the underlying reward probabilities for each arm drifted independently throughout the task, so the only way to keep performing well was to occasionally check whether a previously bad option had become good.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="figures/restless_bandit_task.gif" class="img-fluid figure-img"></p>
+<figcaption><strong>The task and the two affective measures.</strong> Participants completed a three-armed restless bandit task while we measured trait anxiety (GAD-7) and apathy (Apathy-Motivation Index).</figcaption>
+</figure>
+</div>
+<p>Almost everyone played well: 985 of 1,001 participants earned more rewards than would be expected by chance. We measured trait anxiety with the GAD-7 and apathy with the Apathy-Motivation Index (AMI). As expected from prior work, anxiety and apathy were positively correlated in our sample (r = 0.35), reflecting their well-documented co-occurrence in clinical populations such as Alzheimer’s, Parkinson’s, and depression. But despite that correlation, anxiety and apathy did very different things to behavior.</p>
+</section>
+<section id="anxiety-and-apathy-predict-opposite-exploratory-behaviors" class="level2">
+<h2 class="anchored" data-anchor-id="anxiety-and-apathy-predict-opposite-exploratory-behaviors">Anxiety and apathy predict opposite exploratory behaviors</h2>
+<p>The simplest behavioral measure is <strong>P(switch)</strong> — the proportion of trials on which a participant chose a different option from the previous trial. Apathy and anxiety pulled this measure in opposite directions: apathy was negatively correlated with P(switch) (r = −0.16), while anxiety was positively correlated (r = 0.13).</p>
+<p>The split was sharper after non-reward feedback. After receiving no reward on the previous trial, anxious participants were especially likely to switch (r = 0.16), whereas the same correlation was much weaker after rewarded trials (r = 0.07). Anxious individuals seem to be particularly sensitive to disappointing outcomes — those outcomes are what drives them to disengage from their current choice.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="figures/switching_behavior.png" class="img-fluid figure-img"></p>
+<figcaption><strong>Apathy and anxiety predict opposite exploratory behavior.</strong> Apathy reduces switching; anxiety increases it, especially after reward omission.</figcaption>
+</figure>
+</div>
+<p>To go beyond simple switching, we fit a <strong>Hidden Markov Model (HMM)</strong> to the choice sequences.<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a> The HMM lets us classify each trial as a latent “explore” state or “exploit” state, and look at how often participants enter each state and how readily they switch between them.</p>
+<p>The same opposing pattern emerged at the state level. Apathy was negatively correlated with overall P(explore) (r = −0.16) and with P(explore|0) (r = −0.17). Anxiety was positively correlated with both. And the transition probabilities followed suit: apathetic participants were more likely to slip from explore back into exploit (r = 0.13), while anxious participants did the opposite, transitioning more readily from exploit into explore (r = 0.07).</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="figures/hmm_states.png" class="img-fluid figure-img"></p>
+<figcaption><strong>Hidden states reveal the same opposite pattern.</strong> Apathetic participants spend less time exploring and transition more readily back to exploitation; anxious participants do the reverse.</figcaption>
+</figure>
+</div>
+<p>So apathy and anxiety produce mirror-image exploration profiles. The next question is <em>why</em>.</p>
+</section>
+<section id="anxiety-and-apathy-weigh-volatility-and-stochasticity-differently" class="level2">
+<h2 class="anchored" data-anchor-id="anxiety-and-apathy-weigh-volatility-and-stochasticity-differently">Anxiety and apathy weigh volatility and stochasticity differently</h2>
+<p>We hypothesized that the two affective states correspond to different perceptions of the <em>source</em> of environmental uncertainty. To test this, we fit a <strong>Kalman filter</strong> model<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a> that separates two sources of noise during inference: <strong>process noise</strong> (volatility, <em>v</em>) and <strong>observation noise</strong> (stochasticity, σ²).</p>
+<p>When stochasticity is high relative to volatility, the model’s learning rate is small — it trusts its priors and largely ignores noisy individual outcomes. When volatility is high relative to stochasticity, the learning rate is large — every new outcome is treated as a meaningful signal that the world has changed.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="figures/kalman_schematic.png" class="img-fluid figure-img"></p>
+<figcaption><strong>The Kalman filter dissociates volatility from stochasticity.</strong> Volatility (process noise) means the underlying state is changing; stochasticity (observation noise) means outcomes are randomly drawn around a stable state.</figcaption>
+</figure>
+</div>
+<p>The two affective states sat on opposite sides of this dissociation:</p>
+<ul>
+<li><strong>Apathy</strong> correlated <em>positively</em> with stochasticity (r = 0.08) and <em>negatively</em> with volatility (r = −0.08). Apathetic individuals viewed outcomes as random noise around a stable, uncontrollable state.</li>
+<li><strong>Anxiety</strong> showed the opposite: <em>negative</em> with stochasticity (r = −0.12) and <em>positive</em> with volatility (r = 0.11). Anxious individuals viewed the world as one whose underlying state is shifting beneath their feet.</li>
+</ul>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="figures/kalman_schematic_results.png" class="img-fluid figure-img"></p>
+<figcaption>** High anxious individuals perceived higher volatility, high apathetic individuals perceived higher stochasticity.**</figcaption>
+</figure>
+</div>
+</section>
+<section id="a-behavioral-manifold-unifies-exploration-uncertainty-and-affect" class="level2">
+<h2 class="anchored" data-anchor-id="a-behavioral-manifold-unifies-exploration-uncertainty-and-affect">A behavioral manifold unifies exploration, uncertainty, and affect</h2>
+<p>The HMM and the Kalman filter offer two complementary views of the same task — one describes <em>what state</em> a participant is in on any given trial, the other describes <em>how</em> they integrate uncertainty across trials. We wanted to know whether a single low-dimensional structure could capture both.</p>
+<p>We took each participant’s trial-by-trial choices and outcomes and built an eight-dimensional vector of {choice<sub>t-1</sub>, outcome<sub>t-1</sub>, choice<sub>t</sub>} sequence frequencies. Then we applied <strong>UMAP</strong> to find a two-dimensional manifold underlying the eight-dimensional behavioral space.<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a></p>
+<p>The two UMAP dimensions split the behavior cleanly:</p>
+<ul>
+<li><strong>Dimension 1</strong> correlated almost perfectly with exploratory behavior (r = −0.90 with P(explore)) but was uncorrelated with <em>v</em>/<em>s</em> (r = 0.03).</li>
+<li><strong>Dimension 2</strong> correlated strongly with <em>v</em>/<em>s</em> (r = −0.72) and only weakly with P(explore) (r = −0.19).</li>
+</ul>
+<p>In other words, the <em>behavior</em> itself naturally separates into one axis for exploration and a second, independent axis for how uncertainty is perceived.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="figures/manifold1.png" class="img-fluid figure-img"></p>
+<figcaption><strong>A behavioral manifold.</strong> UMAP recovers two axes from raw behavior: one for exploration, one for the volatility-to-stochasticity ratio. Both axes track affective state.</figcaption>
+</figure>
+</div>
+<p>Both UMAP dimensions also tracked affect. Dimension 1 correlated positively with apathy (r = 0.14) and negatively with anxiety (r = −0.11). Dimension 2 showed the same directional pattern (apathy r = 0.10, anxiety r = −0.09). The manifold puts anxiety and apathy on opposite sides along <em>both</em> the exploration axis and the uncertainty-attribution axis.</p>
+<p>The manifold also revealed a non-linear interaction we’d missed in the simpler analyses. Splitting participants along the manifold identified two groups with <strong>opposing</strong> relationships between <em>v</em>/<em>s</em> and exploration. In the higher-anxiety / lower-apathy group, higher <em>v</em>/<em>s</em> was associated with <em>decreased</em> exploration. In the lower-anxiety / higher-apathy group, higher <em>v</em>/<em>s</em> was associated with <em>increased</em> exploration. Linear correlations in the full sample average over these two opposing patterns and would have missed them entirely.</p>
+</section>
+<section id="what-this-means" class="level2">
+<h2 class="anchored" data-anchor-id="what-this-means">What this means</h2>
+<p>Three things stand out for us.</p>
+<p><strong>Anxiety and apathy are not just “more” or “less” of the same thing.</strong> They produce mirror-image exploration in the same task, and they do so via mirror-image readings of the source of uncertainty. Anxiety reads surprise as change, and reaches for new information to manage it. Apathy reads surprise as randomness, and concludes there is nothing worth learning.</p>
+<p><strong>This computational signature reconciles a long-running disagreement in the anxiety literature.</strong> Some studies find anxious individuals explore <em>more</em>, others find they explore <em>less</em>. Our manifold suggests both can be true depending on where someone sits on the joint anxiety-apathy axis: moderate anxiety drives information-seeking, but as anxiety becomes severe (or co-occurs with high apathy), exploration can collapse into avoidance. The behavioral manifold makes the difference visible.</p>
+<p><strong>The clinical implication is that anxiety and apathy may need fundamentally different interventions.</strong> Anxiety treatments may benefit from helping people <em>recalibrate</em> their volatility estimates — recognizing that the world is more stable than it feels. Apathy treatments may benefit from the opposite: rebuilding a sense that the world is responsive to action rather than dominated by randomness, and that exploration is worth the energy. Behavioral activation and motivational interviewing already do something like this; our framework suggests <em>why</em> they work and where they might be sharpened.</p>
+<p>There are limits, of course. Our sample is non-clinical, the effect sizes are modest (r ≈ 0.10–0.16), and we have not yet tested whether clinical populations sit on the same manifold or somewhere off it. The effect sizes, while modest, are comparable to well-established phenomena like the effect of antihistamines on allergy symptoms (r = 0.11), and small effects on every choice can compound substantially over time. But the larger story we want to tell with this paper is methodological: <strong>complementary models capture complementary aspects of behavior</strong>, and a behavioral manifold built from raw choice sequences can integrate them in a way that neither model achieves alone.</p>
+</section>
+
+<section id="read-the-paper" class="level2">
+<h2 class="anchored" data-anchor-id="read-the-paper">Read the paper</h2>
+<p>Check our paper: <a href="https://www.sciencedirect.com/science/article/pii/S2451902225000278">Distinct computational mechanisms of uncertainty processing explain opposing exploratory behaviors in anxiety and apathy</a>.</p>
+<p>Code is available at <a href="https://github.com/hermandarrowlab/uncertainty_apathy_anxiety">github.com/hermandarrowlab/uncertainty_apathy_anxiety</a>.</p>
+
+
+</section>
+
+
+<a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a><div id="quarto-appendix" class="default"><section id="acknowledgements" class="level2 appendix"><h2 class="anchored quarto-appendix-heading">Acknowledgements</h2><div class="quarto-appendix-contents">
+
+<p>This work was supported by NIMH (R21MH127607), NIDA (K23DA050909), the University of Minnesota’s MnDRIVE initiative, NSERC (Discovery Grant RGPIN-2020-05577), the Research Corporation for Science Advancement &amp; Frederick Gardner Cottrell Foundation (Project #29087), and a Jacobs Foundation Research Fellowship to R.B.E. We thank Iris D. Vilares, A. David Redish, Cathy Chen, Seth D. Koenig, and Brian Sweiss for helpful comments on the manuscript, and the 1,001 participants who took the time to play our task.</p>
+<p>Before published, this paper has been rejected by 6 different journals, thanks my dear friends/sisters in Christ, Hong, Mohan and Yu.</p>
+</div></section><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
+
+<ol>
+<li id="fn1"><p>Recruited online via Prolific, with a non-clinical population. The final sample had a mean age of 28.4 years, with 493 female participants. We pre-registered our power analysis: detecting r = 0.10 effects (typical for individual differences research) with 80% power required at least 782 participants.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p>The HMM treats each trial as belonging to a latent “explore” or “exploit” state. We fit it via expectation-maximization (Baum–Welch) and decoded states via the Viterbi algorithm. From the HMM we extracted P(explore), P(explore|0) (exploration after non-reward), and the transition probabilities between explore and exploit states.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn3"><p>We compared the Kalman filter against several alternatives: a volatile Kalman filter (VKF), and Rescorla–Wagner models with single (RW1) or dual (RW2) learning rates. Hierarchical Bayesian Inference (HBI) and protected exceedance probability (PXP) selected the standard Kalman filter as the best-fitting model. Parameter recovery and split-half reliability checks both passed.<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn4"><p>We confirmed that the manifold structure was robust to the choice of dimensionality reduction method (PCA and t-SNE produced equivalent results) and to extending the sequence beyond two trials of history.<a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section></div></main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/psywalkeryanxy\.github\.io");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+            // target, if specified
+            link.setAttribute("target", "_blank");
+            if (link.getAttribute("rel") === null) {
+              link.setAttribute("rel", "noopener");
+            }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>© 2026 Xinyuan Yan</p>
+</div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    </div>
+    <div class="nav-footer-right">
+<p>Built with <a href="https://quarto.org">Quarto</a></p>
+</div>
+  </div>
+</footer>
+<div class="view-counter" style="margin: 2rem 0 1rem 0; padding: 0.6rem 0; border-top: 1px solid #eee; border-bottom: 1px solid #eee; text-align: center; font-size: 0.9rem; color: #666;">
+  👁 <span class="gcvc-views-p"></span> views
+</div>
+<span id="busuanzi_container_page_pv" style="display:none">
+  <span id="busuanzi_value_page_pv"></span>
+</span>
+<script src="views.js"></script>
+
+
+
+
+<script src="../../../site_libs/quarto-html/zenscroll-min.js"></script>
+</body></html>

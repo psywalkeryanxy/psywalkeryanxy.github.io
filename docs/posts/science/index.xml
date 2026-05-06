@@ -290,5 +290,347 @@
   <pubDate>Sun, 03 May 2026 05:00:00 GMT</pubDate>
   <media:content url="https://psywalkeryanxy.github.io/posts/science/2026-05-03-polysemanticity/figures/hero_polysemantic.png" medium="image" type="image/png" height="43" width="144"/>
 </item>
+<item>
+  <title>Nonlinear modulation of human exploration by distinct sources of uncertainty</title>
+  <link>https://psywalkeryanxy.github.io/posts/science/2025-04-03-bandit_vs/</link>
+  <description><![CDATA[ 
+<a href="../" class="back-link">← Back to Science</a>
+
+
+
+
+<div class="author-list">
+<p>Xinyuan Yan<sup>1</sup>, David P. Darrow<sup>2</sup>, and Alexander B. Herman<sup>*1,2</sup></p>
+</div>
+<div class="affiliations">
+<ol type="1">
+<li>Department of Psychiatry and Behavioral Sciences, University of Minnesota</li>
+<li>Department of Neurosurgery, University of Minnesota</li>
+</ol>
+<div class="footnote-symbols">
+<p>* Correspondence: <a href="mailto:aherman@umn.edu">aherman@umn.edu</a></p>
+</div>
+</div>
+<div class="blog-authors">
+<p><strong>Blog post written by:</strong> <a href="https://scholar.google.com/citations?user=rdGDTMsAAAAJ">Xinyuan Yan</a></p>
+</div>
+<p><em>For more details, see the <a href="https://www.biorxiv.org/content/10.1101/2025.04.16.649221v1.abstract">preprint</a>.</em></p>
+<p>A common idea in decision research is that <strong>uncertainty drives exploration</strong>: when the world feels less knowable, people sample more options. The trouble is that “uncertainty” isn’t one thing.</p>
+<p>Two flavors of uncertainty matter for the same kind of choice:</p>
+<ul>
+<li><strong>Volatility</strong> — the underlying value of an option is changing. Old observations stop being informative; recent ones matter more.</li>
+<li><strong>Stochasticity</strong> — the underlying value is stable, but observations around it are noisy. Any single outcome is unreliable, and you need to average across samples.</li>
+</ul>
+<p>These two regimes call for the same response (more sampling) but for <em>different reasons</em>. We asked a sharper question: what happens when both are present in the same environment, and the participant has to weigh them simultaneously?</p>
+<p>We had a specific prediction. When <strong>volatility dominates</strong>, sampling helps you track moving values. When <strong>stochasticity dominates</strong>, sampling helps you average out the noise. But when the two sources are <em>balanced</em>, the apparent best option should be relatively easy to identify and exploit. So we predicted that exploration would be a <strong>U-shaped function</strong> of the volatility-to-stochasticity ratio — minimized at balance, increasing as either source takes over.</p>
+<p>That’s what we found, in two experiments, several model variants, multiple measures of switching, and — strikingly — in five years of stock market data.</p>
+<section id="the-task-and-the-model" class="level2">
+<h2 class="anchored" data-anchor-id="the-task-and-the-model">The task and the model</h2>
+<p>Across both experiments, participants played a 300-trial three-armed restless bandit. Each arm’s reward probability evolved as a bounded Gaussian random walk:<sup>1</sup> the value drifts a little on every trial, and the true volatility is fixed within a session.</p>
+<p>For each participant, we fit a Kalman filter with two static parameters that the participant treats the environment as having: <strong>process noise σ</strong> (their inferred volatility, <em>v</em>) and <strong>observation noise ω</strong> (their inferred stochasticity, <em>s</em>).<sup>2</sup> These two parameters describe what <em>kind</em> of uncertainty a participant attributes to the environment, separately from how much overall uncertainty they perceive.</p>
+<p>A useful sanity check: across participants, fitted <em>v</em> and <em>s</em> were nearly uncorrelated (r = 0.04 in both experiments). They are estimating different things.</p>
+<p>We then summarized each participant’s uncertainty composition by <strong>log(<em>v</em>/<em>s</em>)</strong> — positive values mean the participant treats the environment as volatility-dominated; negative values mean stochasticity-dominated; zero means balanced.</p>
+</section>
+<section id="exploration-is-a-u-shape-in-logvs-performance-is-the-inverted-u" class="level2">
+<h2 class="anchored" data-anchor-id="exploration-is-a-u-shape-in-logvs-performance-is-the-inverted-u">Exploration is a U-shape in log(v/s); performance is the inverted-U</h2>
+<p>We regressed each participant’s <strong>switching probability</strong> on log(<em>v</em>/<em>s</em>) and its square. In both experiments, the quadratic term was strongly positive:</p>
+<ul>
+<li>Experiment 1 (N = 1,001): <em>b</em>_quad = 0.0058, <em>t</em> = 5.94, <em>p</em> = 3.4 × 10⁻⁹</li>
+<li>Experiment 2 (N = 747): <em>b</em>_quad = 0.0081, <em>t</em> = 9.74, <em>p</em> = 2.7 × 10⁻²²</li>
+</ul>
+<p>Switching was <strong>lowest near balance</strong> (log(<em>v</em>/<em>s</em>) ≈ 0) and rose as the ratio moved in either direction. Reward followed exactly the opposite shape — an inverted-U with the peak in the same region of parameter space (Experiment 1: <em>p</em> = 7.1 × 10⁻¹²; Experiment 2: <em>p</em> = 7.5 × 10⁻¹⁶).</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://psywalkeryanxy.github.io/posts/science/2025-04-03-bandit_vs/figures/figure1_ushape.png" class="img-fluid figure-img"></p>
+<figcaption><strong>Switching and performance are mirror-image curves of log(v/s), and the result replicates across two experiments.</strong> Top: switching probability is U-shaped. Bottom: chance-corrected performance is the inverted-U with its peak near balance. Left: Experiment 1 (N = 1,001). Right: Experiment 2 (N = 747).</figcaption>
+</figure>
+</div>
+<p>The two patterns line up at the same location: the regime in which participants switch <em>least</em> is also the regime in which they earn <em>most</em>. People who treated the environment as roughly balanced — neither runaway change nor pure noise — exploited well, and the gain was visible in their reward.</p>
+</section>
+<section id="the-u-shape-reflects-a-v-s-interaction-not-separate-main-effects" class="level2">
+<h2 class="anchored" data-anchor-id="the-u-shape-reflects-a-v-s-interaction-not-separate-main-effects">The U-shape reflects a v × s interaction, not separate main effects</h2>
+<p>A U-shaped dependence on log(<em>v</em>/<em>s</em>) could come from a few different underlying structures. Maybe <em>v</em> and <em>s</em> each independently push switching in one direction, and we’re seeing their sum. Maybe one of them dominates. We compared five regression models predicting switching probability:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Model</th>
+<th>Exp. 1 R²</th>
+<th>Exp. 1 BIC</th>
+<th>Exp. 2 R²</th>
+<th>Exp. 2 BIC</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>log(<em>v</em>/<em>s</em>) + log(<em>v</em>/<em>s</em>)² (ratio)</td>
+<td>0.031</td>
+<td>−598</td>
+<td>0.061</td>
+<td>−704</td>
+</tr>
+<tr class="even">
+<td>log(<em>v</em>) + log(<em>s</em>) (additive)</td>
+<td>0.018</td>
+<td>−585</td>
+<td>0.015</td>
+<td>−669</td>
+</tr>
+<tr class="odd">
+<td>log(<em>v</em>) + log(<em>s</em>) + log(<em>v</em>) × log(<em>s</em>) (interaction)</td>
+<td>0.078</td>
+<td>−642</td>
+<td>0.071</td>
+<td>−707</td>
+</tr>
+<tr class="even">
+<td>log(<em>v</em>) + log(<em>v</em>)² + log(<em>s</em>) + log(<em>s</em>)² (quadratic main)</td>
+<td>0.036</td>
+<td>−592</td>
+<td>0.064</td>
+<td>−696</td>
+</tr>
+<tr class="odd">
+<td>Full (quadratic + interaction)</td>
+<td>0.087</td>
+<td>−640</td>
+<td>0.100</td>
+<td>−719</td>
+</tr>
+</tbody>
+</table>
+<p>The <strong>additive model fared worst</strong> in both experiments. The <strong>interaction model</strong> beat both the additive and the ratio-only specifications. In Experiment 1, the <em>v</em> × <em>s</em> interaction term was the single strongest predictor of switching (<em>t</em> = −7.54, <em>p</em> = 1.0 × 10⁻¹³). The U-shape in log(<em>v</em>/<em>s</em>) is a compact one-dimensional summary of a genuine interaction between volatility and stochasticity — not the sum of two independent effects.</p>
+<p>We also asked whether the <em>absolute level</em> of fitted uncertainty (log <em>v</em> + log <em>s</em>) might drive the pattern, in case some participants simply think the world is generally more uncertain. Adding the absolute level as a covariate produced no BIC improvement in Experiment 2 and only a marginal one in Experiment 1. The <strong>balance</strong> between volatility and stochasticity matters more than the total amount.</p>
+</section>
+<section id="the-effect-is-sharpest-after-losses" class="level2">
+<h2 class="anchored" data-anchor-id="the-effect-is-sharpest-after-losses">The effect is sharpest after losses</h2>
+<p>Switching is a coarse measure that mixes directed exploration, random choice, and feedback-driven responding. To localize the effect, we repeated the analysis on three more specific measures:</p>
+<ul>
+<li><strong>p(switch | win)</strong> — switching after a rewarded trial</li>
+<li><strong>p(switch | lose)</strong> — switching after a non-rewarded trial</li>
+<li><strong>value-controlled switching</strong> — the residual switch rate after regressing out the model-derived value difference between the chosen and best unchosen arm</li>
+</ul>
+<p>The U-shape replicated across all three. But it was <strong>strongest for post-loss switching</strong> — R² = 0.43 in Experiment 1 and R² = 0.61 in Experiment 2 — substantially larger than for any other measure. The effect on p(switch | win) was significant in Experiment 2 (<em>p</em> = 1.1 × 10⁻⁵) but not Experiment 1 (<em>p</em> = 0.18).</p>
+<p>Negative feedback is precisely the moment when participants need to decide whether a bad outcome reflects environmental change, irreducible noise, or a reliable signal that should update their value estimate. The <em>v</em>/<em>s</em> balance shapes this interpretation most strongly when there’s a loss to interpret.</p>
+</section>
+<section id="robustness-the-u-shape-isnt-an-artifact" class="level2">
+<h2 class="anchored" data-anchor-id="robustness-the-u-shape-isnt-an-artifact">Robustness — the U-shape isn’t an artifact</h2>
+<p>We checked the result against the most plausible alternative explanations.</p>
+<p><strong>Counterfactual updating.</strong> The standard Kalman filter updates beliefs about <em>unchosen</em> arms via fictive learning. We refit the data with <strong>chosen-arm-only variants</strong> (a chosen-arm-only KF and a chosen-arm-only volatile Kalman filter) where unchosen arms are not updated. The U-shape replicated in three of four model × experiment combinations (Experiment 1 chosen-arm-only KF: trend, <em>p</em> = 0.12; all others <em>p</em> &lt; 10⁻⁴).</p>
+<p><strong>Objective task difficulty.</strong> Maybe fitted <em>s</em> simply reflects how hard the environment was. We computed each participant’s experienced chance level — the mean of the three true reward probabilities averaged across the 300 trials — and added it as a covariate. Fitted ω was only weakly related to chance level (r = −0.04 in Experiment 1, r = −0.07 in Experiment 2), and the U-shape was unchanged after the correction (Experiment 1: <em>p</em> = 2.1 × 10⁻⁹; Experiment 2: <em>p</em> = 2.1 × 10⁻²⁵). The quadratic term was also significant within all six chance-level tertiles across the two experiments.</p>
+<p>The effect is robust to how the model handles unchosen arms and to objective differences in task difficulty.</p>
+</section>
+<section id="a-parallel-u-shape-in-sp-500-returns" class="level2">
+<h2 class="anchored" data-anchor-id="a-parallel-u-shape-in-sp-500-returns">A parallel U-shape in S&amp;P 500 returns</h2>
+<p>The behavioral result raised a different kind of question: is this U-shape something specific to bandit-task choice, or is it a general property of how systems allocate sampling across options when uncertainty has structure? To check, we ran the same analysis on a domain that has nothing to do with individual decision-making.</p>
+<p>We took five years of daily returns for the <strong>50 most-traded S&amp;P 500 stocks</strong>.<sup>3</sup> For each rolling window (100–150 trading days, in steps of 10), we computed:</p>
+<ul>
+<li><strong>Volatility</strong> as the rolling standard deviation of changes in each stock’s mean return, averaged across stocks. This is a <em>temporal</em> measure — it tracks how the values themselves shift over time, not how widely they vary at any moment.</li>
+<li><strong>Stochasticity</strong> as a composite of within-window return dispersion, autocorrelation, and a runs-test statistic — capturing how noisy and unpredictable returns are around their mean.</li>
+<li><strong>Portfolio diversity</strong> as one minus the Herfindahl–Hirschman index of return-weighted shares — the market analog of “exploration.”</li>
+<li><strong>Performance</strong> as mean daily return.</li>
+</ul>
+<p>Market <em>v</em> and <em>s</em> were moderately correlated (r = 0.32–0.40), more than in the bandit data but still far from collinear. And portfolio diversity was a U-shaped function of log(<em>v</em>/<em>s</em>) across <strong>all five window sizes</strong>, with quadratic coefficients (<em>b</em>_quad = 0.034 to 0.049) that were <em>larger</em> than in our earlier analysis with a cross-sectional volatility measure. Mean daily return showed the corresponding inverted-U.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://psywalkeryanxy.github.io/posts/science/2025-04-03-bandit_vs/figures/figure2_market.png" class="img-fluid figure-img"></p>
+<figcaption><strong>The same U-shape in S&amp;P 500 market data.</strong> Portfolio diversity (left) and performance (right) as functions of log(v/s) across five rolling-window sizes (100–150 days). Diversification is lowest, and return highest, near balance — mirroring the bandit-task result.</figcaption>
+</figure>
+</div>
+<p>Markets are not literal explore–exploit agents — all prices are observable to all participants, so we use “diversification” rather than “exploration” — but the same formal relationship between log(<em>v</em>/<em>s</em>) and sampling breadth shows up at the aggregate level. Whatever is driving individual choice in the bandit task may be driving market allocation too.</p>
+</section>
+<section id="what-this-means" class="level2">
+<h2 class="anchored" data-anchor-id="what-this-means">What this means</h2>
+<p>The usual story is that exploration responds to uncertainty. Our story is one level finer: exploration responds to the <strong>composition</strong> of uncertainty.</p>
+<p>Volatility and stochasticity ask different questions of the agent. Volatility asks <em>whether the world has changed</em>, and the right response is to discount old observations and sample again. Stochasticity asks <em>whether the current outcome is reliable</em>, and the right response is to keep sampling so noise can average out. Both push toward more sampling, but for opposite reasons. When one dominates, sampling has a clear job. When both are present in roughly equal measure — when the world is moderately changing <em>and</em> moderately noisy — neither argument for sampling is decisive, and the apparent best option is easier to identify and exploit. Reward is highest there, exactly as one would predict.</p>
+<p>Two implications stand out for us.</p>
+<p><strong>Exploration may be best understood as a response to uncertainty’s structure, not to its amount.</strong> Two participants with the same total uncertainty can sit on opposite sides of the U-shape if their volatility-to-stochasticity balance differs. This may matter for how we think about altered exploration in clinical conditions like anxiety, addiction, and mood disorders, where existing accounts often cite “increased” or “decreased” uncertainty without distinguishing its sources.</p>
+<p><strong>The same formal relationship appears in markets.</strong> It’s striking that the same U-shape pattern emerges from five years of stock-return data, computed without any reference to individual cognition. We don’t want to overclaim — markets and bandit tasks differ in important ways — but the parallel suggests the relationship between uncertainty composition and sampling breadth may not be a quirk of individual decision-makers. It may be a more general property of how systems allocate effort when uncertainty has structure.</p>
+<p>The post-loss result also has a specific clinical resonance. The strongest behavioral expression of the v/s balance was in how participants responded after a non-rewarded trial — exactly the moment when the interpretation of negative feedback (change vs.&nbsp;noise vs.&nbsp;signal) is most consequential. Future work might ask whether the same balance shapes negative-feedback interpretation in clinical populations.</p>
+</section>
+
+<section id="read-the-paper" class="level2">
+<h2 class="anchored" data-anchor-id="read-the-paper">Read the paper</h2>
+<p>Check our preprint: <a href="https://www.biorxiv.org/content/10.1101/2025.04.16.649221v1.abstract">Nonlinear modulation of human exploration by distinct sources of uncertainty</a>.</p>
+
+
+</section>
+
+
+<a onclick="window.scrollTo(0, 0); return false;" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a><div id="quarto-appendix" class="default"><section id="acknowledgements" class="level2 appendix"><h2 class="anchored quarto-appendix-heading">Acknowledgements</h2><div class="quarto-appendix-contents">
+
+<p>Funding details and acknowledgements are listed in the published paper.</p>
+</div></section><section id="footnotes" class="footnotes footnotes-end-of-document"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
+
+<ol>
+<li id="fn1"><p>Specifically, <em>p</em>(<em>t</em> + 1) = clip(<em>p</em>(<em>t</em>) + <em>ε</em>, 0.1, 0.9), with <em>ε</em> ∼ Normal(0, σ²_walk). Participants chose one of three slot machines on each trial and received binary feedback. In Experiment 2, the σ_walk that controlled the <em>true</em> environmental volatility was manipulated between subjects (high-volatility vs.&nbsp;low-volatility conditions, N = 747 total).↩︎</p></li>
+<li id="fn2"><p>A softmax choice rule supplied a third fitted parameter, the inverse temperature β. Bayesian model comparison favored the static Kalman filter over a volatile Kalman filter (Piray &amp; Daw, 2021), which is consistent with the task design — ground-truth volatility is constant within a session, so a static fit is appropriate and avoids tying trial-by-trial volatility estimates to the participant’s current behavior. Parameters were estimated via Laplace approximation around the MAP solution using the CBM toolbox (Piray et al., 2019), with empirical Bayes priors. Robustness analyses used a chosen-arm-only KF variant and a volatile Kalman filter — all reported effects replicated under these alternative specifications.↩︎</p></li>
+<li id="fn3"><p>Public Kaggle dataset of S&amp;P 500 daily prices, 2013–2018. We restricted to the 50 stocks with the highest mean trading volume.↩︎</p></li>
+</ol>
+</section></div> ]]></description>
+  <category>decision-making</category>
+  <category>exploration-exploitation</category>
+  <category>uncertainty</category>
+  <category>financial markets</category>
+  <category>computational psychiatry</category>
+  <guid>https://psywalkeryanxy.github.io/posts/science/2025-04-03-bandit_vs/</guid>
+  <pubDate>Thu, 03 Apr 2025 05:00:00 GMT</pubDate>
+  <media:content url="https://psywalkeryanxy.github.io/posts/science/2025-04-03-bandit_vs/figures/hero_ushape.png" medium="image" type="image/png" height="138" width="144"/>
+</item>
+<item>
+  <title>Distinct Computational Mechanisms of Uncertainty Processing in Anxiety and Apathy</title>
+  <link>https://psywalkeryanxy.github.io/posts/science/2025-01-03-bandit_psychiatry/</link>
+  <description><![CDATA[ 
+<a href="../" class="back-link">← Back to Science</a>
+
+
+
+
+<div class="author-list">
+<p>Xinyuan Yan<sup>1</sup>, R. Becket Ebitz<sup>3</sup>, Nicola Grissom<sup>2</sup>, David P. Darrow<sup>*†4</sup>, and Alexander B. Herman<sup>*†1</sup></p>
+</div>
+<div class="affiliations">
+<ol type="1">
+<li>Department of Psychiatry and Behavioral Sciences, University of Minnesota</li>
+<li>Department of Psychology, University of Minnesota</li>
+<li>Department of Neuroscience, Université de Montréal</li>
+<li>Department of Neurosurgery, University of Minnesota</li>
+</ol>
+<div class="footnote-symbols">
+<p>* Correspondence: <a href="mailto:herma686@umn.edu">herma686@umn.edu</a></p>
+<p>† These authors contributed equally</p>
+</div>
+</div>
+<div class="blog-authors">
+<p><strong>Blog post written by:</strong> <a href="https://scholar.google.com/citations?user=rdGDTMsAAAAJ">Xinyuan Yan</a></p>
+</div>
+<p><em>For more details, see the <a href="https://www.sciencedirect.com/science/article/pii/S2451902225000278">published paper</a>.</em></p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://psywalkeryanxy.github.io/posts/science/2025-01-03-bandit_psychiatry/figures/hero_manifold.png" class="img-fluid figure-img"></p>
+<figcaption><strong>Two ways to handle uncertainty.</strong> Anxious individuals see a world that changes quickly and explore more; apathetic individuals see a world dominated by randomness and explore less.</figcaption>
+</figure>
+</div>
+<p>When the world surprises us, we can read that surprise in two very different ways. Maybe the world has <em>changed</em> — yesterday’s good restaurant has new management, last week’s reliable route is now under construction. Or maybe the world is just <em>noisy</em> — the same restaurant simply has off nights, the same route happens to be slow today. The first reading invites you to update what you know and try something new. The second reading invites you to wait it out.</p>
+<p>These two readings have names in computational neuroscience. <strong>Volatility</strong> is the rate at which the underlying state of the world is changing. <strong>Stochasticity</strong> is the irreducible randomness layered on top of that state. The same surprising outcome can be attributed to either, and the attribution determines what you do next.</p>
+<p>We asked a simple question: do anxious and apathetic individuals weigh these two sources of uncertainty differently? And if so, does that explain why they make such different choices in uncertain environments?</p>
+<section id="a-large-online-study-of-explore-exploit-behavior" class="level2">
+<h2 class="anchored" data-anchor-id="a-large-online-study-of-explore-exploit-behavior">A large online study of explore-exploit behavior</h2>
+<p>We recruited 1,001 participants<sup>1</sup> and had each of them play a 300-trial three-armed restless bandit task. On every trial, participants chose one of three options and received a reward or no reward. Critically, the underlying reward probabilities for each arm drifted independently throughout the task, so the only way to keep performing well was to occasionally check whether a previously bad option had become good.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://psywalkeryanxy.github.io/posts/science/2025-01-03-bandit_psychiatry/figures/restless_bandit_task.gif" class="img-fluid figure-img"></p>
+<figcaption><strong>The task and the two affective measures.</strong> Participants completed a three-armed restless bandit task while we measured trait anxiety (GAD-7) and apathy (Apathy-Motivation Index).</figcaption>
+</figure>
+</div>
+<p>Almost everyone played well: 985 of 1,001 participants earned more rewards than would be expected by chance. We measured trait anxiety with the GAD-7 and apathy with the Apathy-Motivation Index (AMI). As expected from prior work, anxiety and apathy were positively correlated in our sample (r = 0.35), reflecting their well-documented co-occurrence in clinical populations such as Alzheimer’s, Parkinson’s, and depression. But despite that correlation, anxiety and apathy did very different things to behavior.</p>
+</section>
+<section id="anxiety-and-apathy-predict-opposite-exploratory-behaviors" class="level2">
+<h2 class="anchored" data-anchor-id="anxiety-and-apathy-predict-opposite-exploratory-behaviors">Anxiety and apathy predict opposite exploratory behaviors</h2>
+<p>The simplest behavioral measure is <strong>P(switch)</strong> — the proportion of trials on which a participant chose a different option from the previous trial. Apathy and anxiety pulled this measure in opposite directions: apathy was negatively correlated with P(switch) (r = −0.16), while anxiety was positively correlated (r = 0.13).</p>
+<p>The split was sharper after non-reward feedback. After receiving no reward on the previous trial, anxious participants were especially likely to switch (r = 0.16), whereas the same correlation was much weaker after rewarded trials (r = 0.07). Anxious individuals seem to be particularly sensitive to disappointing outcomes — those outcomes are what drives them to disengage from their current choice.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://psywalkeryanxy.github.io/posts/science/2025-01-03-bandit_psychiatry/figures/switching_behavior.png" class="img-fluid figure-img"></p>
+<figcaption><strong>Apathy and anxiety predict opposite exploratory behavior.</strong> Apathy reduces switching; anxiety increases it, especially after reward omission.</figcaption>
+</figure>
+</div>
+<p>To go beyond simple switching, we fit a <strong>Hidden Markov Model (HMM)</strong> to the choice sequences.<sup>2</sup> The HMM lets us classify each trial as a latent “explore” state or “exploit” state, and look at how often participants enter each state and how readily they switch between them.</p>
+<p>The same opposing pattern emerged at the state level. Apathy was negatively correlated with overall P(explore) (r = −0.16) and with P(explore|0) (r = −0.17). Anxiety was positively correlated with both. And the transition probabilities followed suit: apathetic participants were more likely to slip from explore back into exploit (r = 0.13), while anxious participants did the opposite, transitioning more readily from exploit into explore (r = 0.07).</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://psywalkeryanxy.github.io/posts/science/2025-01-03-bandit_psychiatry/figures/hmm_states.png" class="img-fluid figure-img"></p>
+<figcaption><strong>Hidden states reveal the same opposite pattern.</strong> Apathetic participants spend less time exploring and transition more readily back to exploitation; anxious participants do the reverse.</figcaption>
+</figure>
+</div>
+<p>So apathy and anxiety produce mirror-image exploration profiles. The next question is <em>why</em>.</p>
+</section>
+<section id="anxiety-and-apathy-weigh-volatility-and-stochasticity-differently" class="level2">
+<h2 class="anchored" data-anchor-id="anxiety-and-apathy-weigh-volatility-and-stochasticity-differently">Anxiety and apathy weigh volatility and stochasticity differently</h2>
+<p>We hypothesized that the two affective states correspond to different perceptions of the <em>source</em> of environmental uncertainty. To test this, we fit a <strong>Kalman filter</strong> model<sup>3</sup> that separates two sources of noise during inference: <strong>process noise</strong> (volatility, <em>v</em>) and <strong>observation noise</strong> (stochasticity, σ²).</p>
+<p>When stochasticity is high relative to volatility, the model’s learning rate is small — it trusts its priors and largely ignores noisy individual outcomes. When volatility is high relative to stochasticity, the learning rate is large — every new outcome is treated as a meaningful signal that the world has changed.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://psywalkeryanxy.github.io/posts/science/2025-01-03-bandit_psychiatry/figures/kalman_schematic.png" class="img-fluid figure-img"></p>
+<figcaption><strong>The Kalman filter dissociates volatility from stochasticity.</strong> Volatility (process noise) means the underlying state is changing; stochasticity (observation noise) means outcomes are randomly drawn around a stable state.</figcaption>
+</figure>
+</div>
+<p>The two affective states sat on opposite sides of this dissociation:</p>
+<ul>
+<li><strong>Apathy</strong> correlated <em>positively</em> with stochasticity (r = 0.08) and <em>negatively</em> with volatility (r = −0.08). Apathetic individuals viewed outcomes as random noise around a stable, uncontrollable state.</li>
+<li><strong>Anxiety</strong> showed the opposite: <em>negative</em> with stochasticity (r = −0.12) and <em>positive</em> with volatility (r = 0.11). Anxious individuals viewed the world as one whose underlying state is shifting beneath their feet.</li>
+</ul>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://psywalkeryanxy.github.io/posts/science/2025-01-03-bandit_psychiatry/figures/kalman_schematic_results.png" class="img-fluid figure-img"></p>
+<figcaption>** High anxious individuals perceived higher volatility, high apathetic individuals perceived higher stochasticity.**</figcaption>
+</figure>
+</div>
+</section>
+<section id="a-behavioral-manifold-unifies-exploration-uncertainty-and-affect" class="level2">
+<h2 class="anchored" data-anchor-id="a-behavioral-manifold-unifies-exploration-uncertainty-and-affect">A behavioral manifold unifies exploration, uncertainty, and affect</h2>
+<p>The HMM and the Kalman filter offer two complementary views of the same task — one describes <em>what state</em> a participant is in on any given trial, the other describes <em>how</em> they integrate uncertainty across trials. We wanted to know whether a single low-dimensional structure could capture both.</p>
+<p>We took each participant’s trial-by-trial choices and outcomes and built an eight-dimensional vector of {choice<sub>t-1</sub>, outcome<sub>t-1</sub>, choice<sub>t</sub>} sequence frequencies. Then we applied <strong>UMAP</strong> to find a two-dimensional manifold underlying the eight-dimensional behavioral space.<sup>4</sup></p>
+<p>The two UMAP dimensions split the behavior cleanly:</p>
+<ul>
+<li><strong>Dimension 1</strong> correlated almost perfectly with exploratory behavior (r = −0.90 with P(explore)) but was uncorrelated with <em>v</em>/<em>s</em> (r = 0.03).</li>
+<li><strong>Dimension 2</strong> correlated strongly with <em>v</em>/<em>s</em> (r = −0.72) and only weakly with P(explore) (r = −0.19).</li>
+</ul>
+<p>In other words, the <em>behavior</em> itself naturally separates into one axis for exploration and a second, independent axis for how uncertainty is perceived.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://psywalkeryanxy.github.io/posts/science/2025-01-03-bandit_psychiatry/figures/manifold1.png" class="img-fluid figure-img"></p>
+<figcaption><strong>A behavioral manifold.</strong> UMAP recovers two axes from raw behavior: one for exploration, one for the volatility-to-stochasticity ratio. Both axes track affective state.</figcaption>
+</figure>
+</div>
+<p>Both UMAP dimensions also tracked affect. Dimension 1 correlated positively with apathy (r = 0.14) and negatively with anxiety (r = −0.11). Dimension 2 showed the same directional pattern (apathy r = 0.10, anxiety r = −0.09). The manifold puts anxiety and apathy on opposite sides along <em>both</em> the exploration axis and the uncertainty-attribution axis.</p>
+<p>The manifold also revealed a non-linear interaction we’d missed in the simpler analyses. Splitting participants along the manifold identified two groups with <strong>opposing</strong> relationships between <em>v</em>/<em>s</em> and exploration. In the higher-anxiety / lower-apathy group, higher <em>v</em>/<em>s</em> was associated with <em>decreased</em> exploration. In the lower-anxiety / higher-apathy group, higher <em>v</em>/<em>s</em> was associated with <em>increased</em> exploration. Linear correlations in the full sample average over these two opposing patterns and would have missed them entirely.</p>
+</section>
+<section id="what-this-means" class="level2">
+<h2 class="anchored" data-anchor-id="what-this-means">What this means</h2>
+<p>Three things stand out for us.</p>
+<p><strong>Anxiety and apathy are not just “more” or “less” of the same thing.</strong> They produce mirror-image exploration in the same task, and they do so via mirror-image readings of the source of uncertainty. Anxiety reads surprise as change, and reaches for new information to manage it. Apathy reads surprise as randomness, and concludes there is nothing worth learning.</p>
+<p><strong>This computational signature reconciles a long-running disagreement in the anxiety literature.</strong> Some studies find anxious individuals explore <em>more</em>, others find they explore <em>less</em>. Our manifold suggests both can be true depending on where someone sits on the joint anxiety-apathy axis: moderate anxiety drives information-seeking, but as anxiety becomes severe (or co-occurs with high apathy), exploration can collapse into avoidance. The behavioral manifold makes the difference visible.</p>
+<p><strong>The clinical implication is that anxiety and apathy may need fundamentally different interventions.</strong> Anxiety treatments may benefit from helping people <em>recalibrate</em> their volatility estimates — recognizing that the world is more stable than it feels. Apathy treatments may benefit from the opposite: rebuilding a sense that the world is responsive to action rather than dominated by randomness, and that exploration is worth the energy. Behavioral activation and motivational interviewing already do something like this; our framework suggests <em>why</em> they work and where they might be sharpened.</p>
+<p>There are limits, of course. Our sample is non-clinical, the effect sizes are modest (r ≈ 0.10–0.16), and we have not yet tested whether clinical populations sit on the same manifold or somewhere off it. The effect sizes, while modest, are comparable to well-established phenomena like the effect of antihistamines on allergy symptoms (r = 0.11), and small effects on every choice can compound substantially over time. But the larger story we want to tell with this paper is methodological: <strong>complementary models capture complementary aspects of behavior</strong>, and a behavioral manifold built from raw choice sequences can integrate them in a way that neither model achieves alone.</p>
+</section>
+
+<section id="read-the-paper" class="level2">
+<h2 class="anchored" data-anchor-id="read-the-paper">Read the paper</h2>
+<p>Check our paper: <a href="https://www.sciencedirect.com/science/article/pii/S2451902225000278">Distinct computational mechanisms of uncertainty processing explain opposing exploratory behaviors in anxiety and apathy</a>.</p>
+<p>Code is available at <a href="https://github.com/hermandarrowlab/uncertainty_apathy_anxiety">github.com/hermandarrowlab/uncertainty_apathy_anxiety</a>.</p>
+
+
+</section>
+
+
+<a onclick="window.scrollTo(0, 0); return false;" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a><div id="quarto-appendix" class="default"><section id="acknowledgements" class="level2 appendix"><h2 class="anchored quarto-appendix-heading">Acknowledgements</h2><div class="quarto-appendix-contents">
+
+<p>This work was supported by NIMH (R21MH127607), NIDA (K23DA050909), the University of Minnesota’s MnDRIVE initiative, NSERC (Discovery Grant RGPIN-2020-05577), the Research Corporation for Science Advancement &amp; Frederick Gardner Cottrell Foundation (Project #29087), and a Jacobs Foundation Research Fellowship to R.B.E. We thank Iris D. Vilares, A. David Redish, Cathy Chen, Seth D. Koenig, and Brian Sweiss for helpful comments on the manuscript, and the 1,001 participants who took the time to play our task.</p>
+<p>Before published, this paper has been rejected by 6 different journals, thanks my dear friends/sisters in Christ, Hong, Mohan and Yu.</p>
+</div></section><section id="footnotes" class="footnotes footnotes-end-of-document"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
+
+<ol>
+<li id="fn1"><p>Recruited online via Prolific, with a non-clinical population. The final sample had a mean age of 28.4 years, with 493 female participants. We pre-registered our power analysis: detecting r = 0.10 effects (typical for individual differences research) with 80% power required at least 782 participants.↩︎</p></li>
+<li id="fn2"><p>The HMM treats each trial as belonging to a latent “explore” or “exploit” state. We fit it via expectation-maximization (Baum–Welch) and decoded states via the Viterbi algorithm. From the HMM we extracted P(explore), P(explore|0) (exploration after non-reward), and the transition probabilities between explore and exploit states.↩︎</p></li>
+<li id="fn3"><p>We compared the Kalman filter against several alternatives: a volatile Kalman filter (VKF), and Rescorla–Wagner models with single (RW1) or dual (RW2) learning rates. Hierarchical Bayesian Inference (HBI) and protected exceedance probability (PXP) selected the standard Kalman filter as the best-fitting model. Parameter recovery and split-half reliability checks both passed.↩︎</p></li>
+<li id="fn4"><p>We confirmed that the manifold structure was robust to the choice of dimensionality reduction method (PCA and t-SNE produced equivalent results) and to extending the sequence beyond two trials of history.↩︎</p></li>
+</ol>
+</section></div> ]]></description>
+  <category>computational psychiatry</category>
+  <category>decision-making</category>
+  <category>exploration-exploitation</category>
+  <category>anxiety</category>
+  <category>apathy</category>
+  <guid>https://psywalkeryanxy.github.io/posts/science/2025-01-03-bandit_psychiatry/</guid>
+  <pubDate>Fri, 03 Jan 2025 06:00:00 GMT</pubDate>
+  <media:content url="https://psywalkeryanxy.github.io/posts/science/2025-01-03-bandit_psychiatry/figures/hero_manifold.png" medium="image" type="image/png" height="93" width="144"/>
+</item>
 </channel>
 </rss>

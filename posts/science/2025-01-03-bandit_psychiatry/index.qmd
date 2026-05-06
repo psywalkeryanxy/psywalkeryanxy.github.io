@@ -1,0 +1,146 @@
+---
+title: "Distinct Computational Mechanisms of Uncertainty Processing in Anxiety and Apathy"
+description: "When faced with uncertainty, anxious and apathetic individuals explore in opposite directions — and they do so because they perceive the *source* of uncertainty differently."
+date: "2025-01-03"
+categories:
+  - computational psychiatry
+  - decision-making
+  - exploration-exploitation
+  - anxiety
+  - apathy
+image: figures/hero_manifold.png
+format:
+  html:
+    toc: true
+    toc-depth: 2
+    toc-location: right
+    include-before-body:
+      text: |
+        <a href="../" class="back-link">← Back to Science</a>
+    include-after-body:
+      text: |
+        <div class="view-counter" style="margin: 2rem 0 1rem 0; padding: 0.6rem 0; border-top: 1px solid #eee; border-bottom: 1px solid #eee; text-align: center; font-size: 0.9rem; color: #666;">
+          👁 <span class="gcvc-views-p"></span> views
+        </div>
+        <span id="busuanzi_container_page_pv" style="display:none">
+          <span id="busuanzi_value_page_pv"></span>
+        </span>
+        <script src="views.js"></script>
+---
+
+::: {.author-list}
+Xinyuan Yan^1^, R. Becket Ebitz^3^, Nicola Grissom^2^, David P. Darrow^\*†4^, and Alexander B. Herman^\*†1^
+:::
+
+::: {.affiliations}
+1. Department of Psychiatry and Behavioral Sciences, University of Minnesota
+2. Department of Psychology, University of Minnesota
+3. Department of Neuroscience, Université de Montréal
+4. Department of Neurosurgery, University of Minnesota
+
+::: {.footnote-symbols}
+\* Correspondence: [herma686@umn.edu](mailto:herma686@umn.edu)
+
+† These authors contributed equally
+:::
+:::
+
+::: {.blog-authors}
+**Blog post written by:** [Xinyuan Yan](https://scholar.google.com/citations?user=rdGDTMsAAAAJ)
+:::
+
+
+*For more details, see the [published paper](https://www.sciencedirect.com/science/article/pii/S2451902225000278).*
+
+
+
+![**Two ways to handle uncertainty.** Anxious individuals see a world that changes quickly and explore more; apathetic individuals see a world dominated by randomness and explore less.](figures/hero_manifold.png)
+
+When the world surprises us, we can read that surprise in two very different ways. Maybe the world has *changed* — yesterday's good restaurant has new management, last week's reliable route is now under construction. Or maybe the world is just *noisy* — the same restaurant simply has off nights, the same route happens to be slow today. The first reading invites you to update what you know and try something new. The second reading invites you to wait it out.
+
+These two readings have names in computational neuroscience. **Volatility** is the rate at which the underlying state of the world is changing. **Stochasticity** is the irreducible randomness layered on top of that state. The same surprising outcome can be attributed to either, and the attribution determines what you do next.
+
+We asked a simple question: do anxious and apathetic individuals weigh these two sources of uncertainty differently? And if so, does that explain why they make such different choices in uncertain environments?
+
+## A large online study of explore-exploit behavior
+
+We recruited 1,001 participants^[Recruited online via Prolific, with a non-clinical population. The final sample had a mean age of 28.4 years, with 493 female participants. We pre-registered our power analysis: detecting r = 0.10 effects (typical for individual differences research) with 80% power required at least 782 participants.] and had each of them play a 300-trial three-armed restless bandit task. On every trial, participants chose one of three options and received a reward or no reward. Critically, the underlying reward probabilities for each arm drifted independently throughout the task, so the only way to keep performing well was to occasionally check whether a previously bad option had become good.
+
+![**The task and the two affective measures.** Participants completed a three-armed restless bandit task while we measured trait anxiety (GAD-7) and apathy (Apathy-Motivation Index).](figures/restless_bandit_task.gif)
+
+Almost everyone played well: 985 of 1,001 participants earned more rewards than would be expected by chance. We measured trait anxiety with the GAD-7 and apathy with the Apathy-Motivation Index (AMI). As expected from prior work, anxiety and apathy were positively correlated in our sample (r = 0.35), reflecting their well-documented co-occurrence in clinical populations such as Alzheimer's, Parkinson's, and depression. But despite that correlation, anxiety and apathy did very different things to behavior.
+
+## Anxiety and apathy predict opposite exploratory behaviors
+
+The simplest behavioral measure is **P(switch)** — the proportion of trials on which a participant chose a different option from the previous trial. Apathy and anxiety pulled this measure in opposite directions: apathy was negatively correlated with P(switch) (r = −0.16), while anxiety was positively correlated (r = 0.13).
+
+The split was sharper after non-reward feedback. After receiving no reward on the previous trial, anxious participants were especially likely to switch (r = 0.16), whereas the same correlation was much weaker after rewarded trials (r = 0.07). Anxious individuals seem to be particularly sensitive to disappointing outcomes — those outcomes are what drives them to disengage from their current choice.
+
+![**Apathy and anxiety predict opposite exploratory behavior.** Apathy reduces switching; anxiety increases it, especially after reward omission.](figures/switching_behavior.png)
+
+To go beyond simple switching, we fit a **Hidden Markov Model (HMM)** to the choice sequences.^[The HMM treats each trial as belonging to a latent "explore" or "exploit" state. We fit it via expectation-maximization (Baum–Welch) and decoded states via the Viterbi algorithm. From the HMM we extracted P(explore), P(explore|0) (exploration after non-reward), and the transition probabilities between explore and exploit states.] The HMM lets us classify each trial as a latent "explore" state or "exploit" state, and look at how often participants enter each state and how readily they switch between them.
+
+The same opposing pattern emerged at the state level. Apathy was negatively correlated with overall P(explore) (r = −0.16) and with P(explore|0) (r = −0.17). Anxiety was positively correlated with both. And the transition probabilities followed suit: apathetic participants were more likely to slip from explore back into exploit (r = 0.13), while anxious participants did the opposite, transitioning more readily from exploit into explore (r = 0.07).
+
+![**Hidden states reveal the same opposite pattern.** Apathetic participants spend less time exploring and transition more readily back to exploitation; anxious participants do the reverse.](figures/hmm_states.png)
+
+So apathy and anxiety produce mirror-image exploration profiles. The next question is *why*.
+
+## Anxiety and apathy weigh volatility and stochasticity differently
+
+We hypothesized that the two affective states correspond to different perceptions of the *source* of environmental uncertainty. To test this, we fit a **Kalman filter** model^[We compared the Kalman filter against several alternatives: a volatile Kalman filter (VKF), and Rescorla–Wagner models with single (RW1) or dual (RW2) learning rates. Hierarchical Bayesian Inference (HBI) and protected exceedance probability (PXP) selected the standard Kalman filter as the best-fitting model. Parameter recovery and split-half reliability checks both passed.] that separates two sources of noise during inference: **process noise** (volatility, *v*) and **observation noise** (stochasticity, σ²).
+
+When stochasticity is high relative to volatility, the model's learning rate is small — it trusts its priors and largely ignores noisy individual outcomes. When volatility is high relative to stochasticity, the learning rate is large — every new outcome is treated as a meaningful signal that the world has changed.
+
+![**The Kalman filter dissociates volatility from stochasticity.** Volatility (process noise) means the underlying state is changing; stochasticity (observation noise) means outcomes are randomly drawn around a stable state.](figures/kalman_schematic.png)
+
+The two affective states sat on opposite sides of this dissociation:
+
+- **Apathy** correlated *positively* with stochasticity (r = 0.08) and *negatively* with volatility (r = −0.08). Apathetic individuals viewed outcomes as random noise around a stable, uncontrollable state.
+- **Anxiety** showed the opposite: *negative* with stochasticity (r = −0.12) and *positive* with volatility (r = 0.11). Anxious individuals viewed the world as one whose underlying state is shifting beneath their feet.
+
+![** High anxious individuals perceived higher volatility, high apathetic individuals perceived higher stochasticity.**](figures/kalman_schematic_results.png)
+
+
+## A behavioral manifold unifies exploration, uncertainty, and affect
+
+The HMM and the Kalman filter offer two complementary views of the same task — one describes *what state* a participant is in on any given trial, the other describes *how* they integrate uncertainty across trials. We wanted to know whether a single low-dimensional structure could capture both.
+
+We took each participant's trial-by-trial choices and outcomes and built an eight-dimensional vector of {choice~t-1~, outcome~t-1~, choice~t~} sequence frequencies. Then we applied **UMAP** to find a two-dimensional manifold underlying the eight-dimensional behavioral space.^[We confirmed that the manifold structure was robust to the choice of dimensionality reduction method (PCA and t-SNE produced equivalent results) and to extending the sequence beyond two trials of history.]
+
+The two UMAP dimensions split the behavior cleanly:
+
+- **Dimension 1** correlated almost perfectly with exploratory behavior (r = −0.90 with P(explore)) but was uncorrelated with *v*/*s* (r = 0.03).
+- **Dimension 2** correlated strongly with *v*/*s* (r = −0.72) and only weakly with P(explore) (r = −0.19).
+
+In other words, the *behavior* itself naturally separates into one axis for exploration and a second, independent axis for how uncertainty is perceived.
+
+![**A behavioral manifold.** UMAP recovers two axes from raw behavior: one for exploration, one for the volatility-to-stochasticity ratio. Both axes track affective state.](figures/manifold1.png)
+
+Both UMAP dimensions also tracked affect. Dimension 1 correlated positively with apathy (r = 0.14) and negatively with anxiety (r = −0.11). Dimension 2 showed the same directional pattern (apathy r = 0.10, anxiety r = −0.09). The manifold puts anxiety and apathy on opposite sides along *both* the exploration axis and the uncertainty-attribution axis.
+
+The manifold also revealed a non-linear interaction we'd missed in the simpler analyses. Splitting participants along the manifold identified two groups with **opposing** relationships between *v*/*s* and exploration. In the higher-anxiety / lower-apathy group, higher *v*/*s* was associated with *decreased* exploration. In the lower-anxiety / higher-apathy group, higher *v*/*s* was associated with *increased* exploration. Linear correlations in the full sample average over these two opposing patterns and would have missed them entirely.
+
+## What this means
+
+Three things stand out for us.
+
+**Anxiety and apathy are not just "more" or "less" of the same thing.** They produce mirror-image exploration in the same task, and they do so via mirror-image readings of the source of uncertainty. Anxiety reads surprise as change, and reaches for new information to manage it. Apathy reads surprise as randomness, and concludes there is nothing worth learning.
+
+**This computational signature reconciles a long-running disagreement in the anxiety literature.** Some studies find anxious individuals explore *more*, others find they explore *less*. Our manifold suggests both can be true depending on where someone sits on the joint anxiety-apathy axis: moderate anxiety drives information-seeking, but as anxiety becomes severe (or co-occurs with high apathy), exploration can collapse into avoidance. The behavioral manifold makes the difference visible.
+
+**The clinical implication is that anxiety and apathy may need fundamentally different interventions.** Anxiety treatments may benefit from helping people *recalibrate* their volatility estimates — recognizing that the world is more stable than it feels. Apathy treatments may benefit from the opposite: rebuilding a sense that the world is responsive to action rather than dominated by randomness, and that exploration is worth the energy. Behavioral activation and motivational interviewing already do something like this; our framework suggests *why* they work and where they might be sharpened.
+
+There are limits, of course. Our sample is non-clinical, the effect sizes are modest (r ≈ 0.10–0.16), and we have not yet tested whether clinical populations sit on the same manifold or somewhere off it. The effect sizes, while modest, are comparable to well-established phenomena like the effect of antihistamines on allergy symptoms (r = 0.11), and small effects on every choice can compound substantially over time. But the larger story we want to tell with this paper is methodological: **complementary models capture complementary aspects of behavior**, and a behavioral manifold built from raw choice sequences can integrate them in a way that neither model achieves alone.
+
+## Acknowledgements {.appendix}
+
+This work was supported by NIMH (R21MH127607), NIDA (K23DA050909), the University of Minnesota's MnDRIVE initiative, NSERC (Discovery Grant RGPIN-2020-05577), the Research Corporation for Science Advancement & Frederick Gardner Cottrell Foundation (Project #29087), and a Jacobs Foundation Research Fellowship to R.B.E. We thank Iris D. Vilares, A. David Redish, Cathy Chen, Seth D. Koenig, and Brian Sweiss for helpful comments on the manuscript, and the 1,001 participants who took the time to play our task.
+
+Before published, this paper has been rejected by 6 different journals, thanks my dear friends/sisters in Christ, Hong, Mohan and Yu.
+
+## Read the paper
+
+Check our paper: [Distinct computational mechanisms of uncertainty processing explain opposing exploratory behaviors in anxiety and apathy](https://www.sciencedirect.com/science/article/pii/S2451902225000278).
+
+Code is available at [github.com/hermandarrowlab/uncertainty_apathy_anxiety](https://github.com/hermandarrowlab/uncertainty_apathy_anxiety).
