@@ -1,6 +1,6 @@
 ---
 title: "Science"
-subtitle: "Notes on papers, methods, and ideas in neuroscience."
+subtitle: "exploring a new way to communicate in Science."
 page-layout: full
 title-block-banner: false
 listing:
