@@ -18,14 +18,27 @@ I keep this page because I genuinely cannot remember, in the moment, whether the
 
 - **2023** — 1 acceptance / 7 submissions · *14%*
 - **2024** — 1 acceptance / 6 submissions · *17%*
-- **2025 to date** — 1 acceptances / 7 submissions · *14%*
+- **2025 to date** — 1 acceptance / 7 submissions · *14%*
 
 **Total: 3 / 20 · 15%**
 :::
 
+### The full ledger
+
+| Years | Paper | What happened |
+|---|---|---|
+| 2020–2022 | Actively did science but zero 1st-authored paper | Cannot say the reasons |
+| 2023 | *A low-dimensional manifold of human exploratory behavior reveals opposing roles for apathy and anxiety* | Desk rejected by Current Biology; PNAS |
+| 2024 | *Distinct Computational Mechanisms of Uncertainty Processing in Anxiety and Apathy* | Rewrote and re-analyzed / re-framed the paper to this. Desk rejected by Nature Communications; Nature Human Behaviour; Nature Mental Health; PNAS; eLife; PLoS Biology. Major revision at BPCNNI |
+| 2024 | *Too smart for one's own good? Evolution favors individuals with a low-level theory of mind in a complex network* | Under review at PNAS, then rejected |
+| 2024 | *Cognitive flexibility and gut* | Under review at PNAS, then rejected |
+| 2024–2025 | *Distance and angle matter: unveiling the optimal seating positions for perceiving teacher's social cues in virtual reality learning environments* | Under review at Computers and Education; 2024.6–2024.10 major revisions ROUND1; 2025.1–2, two reviewers were convinced but new reviewer #4 said NO; under review at BJET, rejected by AI reviewer #1 |
+| 2025 | *Nonlinear modulation of human exploration by distinct sources of uncertainty* | Under review at PNAS, then rejected |
+| 2025–2026 | *Dynamic prefrontal coupling coordinates adaptive decision-making* | Desk rejected by Neuron; Nature Neuroscience. Under review at Nature Communications: 2025.5–2025.9 major revisions ROUND1; 2025.11–2025.12 major revisions ROUND2; 2026.2 rejected; 2026.5 appealed and major revision ROUND3; 2026.6 rejected |
+
 A few that stung in particular:
 
-- A two-round major revision at *Nature Communications* on the dmPFC/dlPFC restless bandit paper, ultimately rejected. (response to the reviewers goes up 170 pages)
+- The two-round (then three-round) major revision at *Nature Communications* on the dmPFC/dlPFC restless bandit paper, ultimately rejected. The response to reviewers ran to 170 pages.
 
 ---
 
@@ -41,6 +54,8 @@ A few that stung in particular:
 
 ::: {.failure-box}
 **2022 postdoc cycle** — 1 offer / 10 applications.
+
+**2024.9–2024.12** — YC China / MiraclePlus (venture capital). Last round failed, after the CEO interview and background investigation.
 :::
 
 ---
