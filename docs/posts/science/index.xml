@@ -10,7 +10,146 @@
 <atom:link href="https://psywalkeryanxy.github.io/posts/science/index.xml" rel="self" type="application/rss+xml"/>
 <description>Computational neuroscience · representations · decisions</description>
 <generator>quarto-1.9.37</generator>
-<lastBuildDate>Sun, 03 May 2026 05:00:00 GMT</lastBuildDate>
+<lastBuildDate>Wed, 24 Jun 2026 05:00:00 GMT</lastBuildDate>
+<item>
+  <title>The tower that never fell: how one brain holds two languages</title>
+  <link>https://psywalkeryanxy.github.io/posts/science/2026-06-24-bilingual_hippocampus/</link>
+  <description><![CDATA[ 
+<a href="../" class="back-link">← Back to Science</a>
+
+
+
+
+<div class="author-list">
+<p>Xinyuan Yan<sup>1†</sup>, Ana G. Chavez<sup>1</sup>, Melissa Franch<sup>1</sup>, Kalman A. Katlowitz<sup>1</sup>, Ivy Gautam<sup>1</sup>, Brian Kim<sup>1</sup>, Aaditya Krishna<sup>1</sup>, Aadit Shrivastava<sup>1</sup>, Katie Van Arsdel<sup>1</sup>, James Belanger<sup>1</sup>, Assia Chericoni<sup>1</sup>, Taha Ismail<sup>1</sup>, Elizabeth A. Mickiewicz<sup>1</sup>, Danika Paulo<sup>1</sup>, Hanlin Zhu<sup>1</sup>, Alica M. Goldman<sup>2</sup>, Vaishnav Krishnan<sup>2,3</sup>, Atul Maheshwari<sup>2</sup>, Eleonora Bartoli<sup>1,3</sup>, Nicole R. Provenza<sup>1,3,4</sup>, Seng Bum Michael Yoo<sup>5,6,7</sup>, Benjamin Y. Hayden<sup>*†1,3,8</sup>, and Sameer A. Sheth<sup>*†1,3</sup></p>
+</div>
+<div class="affiliations">
+<ol type="1">
+<li>Department of Neurosurgery, Baylor College of Medicine</li>
+<li>Department of Neurology, Baylor College of Medicine</li>
+<li>Neuroengineering Initiative, Rice University</li>
+<li>Department of Bioengineering, Rice University</li>
+<li>Department of Biomedical Engineering, Sungkyunkwan University</li>
+<li>Department of Intelligent Precision Health Convergence, Sungkyunkwan University</li>
+<li>Center for Neuroscience Imaging Research, Sungkyunkwan University</li>
+</ol>
+<div class="footnote-symbols">
+<p>* These authors contributed equally. † Correspondence: <a href="mailto:Benjamin.Hayden@bcm.edu">Benjamin.Hayden@bcm.edu</a></p>
+</div>
+</div>
+<div class="blog-authors">
+<p><strong>Blog post written by:</strong> <a href="https://scholar.google.com/citations?user=rdGDTMsAAAAJ">Xinyuan Yan</a></p>
+</div>
+<p><em>For more details, see the paper (Cell).</em></p>
+<p>There is an old story about why the world has so many languages.</p>
+<p>In the book of Genesis, chapter 11, everyone on Earth speaks the same tongue. United by it, they begin to build a city with a tower tall enough to reach the heavens. The project alarms the divine, and the response is not to topple the tower but to do something subtler: confuse their speech, so that no one can understand their neighbor. Unable to coordinate, the builders scatter across the Earth. The place is named <strong>Babel</strong>, from a word for <em>confusion</em>.</p>
+<p>For thousands of years, that story has been our metaphor for what languages do to us. They divide. A wall of unfamiliar sounds drops between you and another person, and meaning gets lost on the way across.</p>
+<p>But here is a fact the story does not account for. Right now, more than half the people on the planet speak two or more languages, and they move between them without confusion at all. A bilingual friend can hear a sentence in Spanish and answer in English without missing a beat. Somewhere inside one human head, <em>both</em> sides of Babel coexist peacefully.</p>
+<p>How? When you learn that a <em>dog</em> is also a <em>perro</em>, and “狗”, where does that connection live? Does your brain keep two separate dictionaries and look words up one at a time? Or is there something underneath the words — a single, shared idea of “dog-ness” that both languages simply point to?</p>
+<p>We went looking for the answer in the most direct way anyone has tried: by listening to individual brain cells, one at a time, in people who are fluent in two languages.</p>
+<section id="listening-to-single-neurons" class="level2">
+<h2 class="anchored" data-anchor-id="listening-to-single-neurons">Listening to single neurons</h2>
+<p>Most brain studies use scanners that watch blood flow across whole regions, like watching a stadium from a blimp — you can see which sections of the crowd are excited, but not what any single person is doing. We wanted to watch the individual people. That means recording from single <strong>neurons</strong>, the brain’s basic signaling cells, which “speak” by firing tiny electrical pulses.</p>
+<p>You cannot ethically open a healthy person’s skull just to satisfy scientific curiosity. But occasionally, patients with severe epilepsy have thin electrodes placed in their brains as part of their medical care, to find where their seizures begin. With their consent, while those electrodes are already in place, we can listen in.</p>
+<p>We worked with four people who were <em>balanced bilinguals</em> — they learned both English and Spanish as young children, around ages four to five, and use both every day with equal ease. Such patients are extraordinarily rare, which is part of why this study had not been done before. We focused on the <strong>hippocampus</strong>, a seahorse-shaped structure deep in the brain that is famous for memory but, as our lab has shown, also tracks the <em>meanings</em> of words as you hear and speak them.</p>
+<p>We recorded while our participants did three different things, in both languages:</p>
+<ul>
+<li><strong>Listened</strong> to matched stories and podcasts in English and Spanish (about two hours each).</li>
+<li><strong>Read aloud</strong> short matched phrases, switching between the two languages.</li>
+<li><strong>Held real conversations</strong>, unscripted, with native English and Spanish speakers.</li>
+</ul>
+<p>Altogether we captured the activity of hundreds of individual neurons. Then we asked a simple-sounding question: when a word and its translation mean the same thing, do the same brain cells respond the same way?</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://psywalkeryanxy.github.io/posts/science/2026-06-24-bilingual_hippocampus/figures/figure1_setup.png" class="img-fluid figure-img"></p>
+<figcaption><strong>How we listened in.</strong> Thin microelectrodes (and, in one patient, a high-density Neuropixels probe) recorded individual hippocampal neurons while bilingual participants listened, read aloud, and conversed in English and Spanish. Each tick mark is a single neuron firing.</figcaption>
+</figure>
+</div>
+</section>
+<section id="the-hunt-for-translation-cells" class="level2">
+<h2 class="anchored" data-anchor-id="the-hunt-for-translation-cells">The hunt for “translation cells”</h2>
+<p>The most intuitive guess is that the brain has special <strong>translation neurons</strong>: cells that don’t care which language you use, and fire the same way for <em>earth</em> and <em>tierra</em>, <em>friends</em> and <em>amigos</em>.</p>
+<p>We found a few. A small number of neurons really did respond similarly to a word and its translation — fire a lot for <em>friends</em>, and also fire a lot for <em>amigos</em>; stay quiet for <em>and</em>, and also for <em>y</em>. We called these <strong>cross-language neurons</strong>.</p>
+<p>But there was a catch. They were <em>rare</em> — usually only a handful out of every hundred neurons. Far too few to do all the heavy lifting of translation on their own. And when we looked more carefully at the rest of the cells, the intuitive picture fell apart completely.</p>
+<p>For almost every neuron, we measured its <strong>tuning</strong>, that is, the full profile of which kinds of features of words make it fire and which leave it cold, like mapping a person’s exact taste in music. Then we compared each neuron’s English taste to its Spanish taste.</p>
+<p>They mostly did not match. A given neuron might be picky about one set of meanings in English and an almost unrelated set in Spanish. At the level of single cells, English-brain and Spanish-brain looked like different machines.</p>
+<p>So how does a bilingual person ever feel that <em>dog</em> and <em>perro</em> are the same thought?</p>
+</section>
+<section id="the-shape-of-meaning" class="level2">
+<h2 class="anchored" data-anchor-id="the-shape-of-meaning">The shape of meaning</h2>
+<p>The answer turned out to live not in any single neuron, but in the <em>pattern across all of them at once</em>.</p>
+<p>Here is the key idea, and it is worth slowing down for, because it is the heart of the paper.</p>
+<p>Imagine you don’t track what each neuron does individually. Instead, for every word, you write down the activity of the <em>whole population</em> of neurons as a single point in space. Words that produce similar brain activity land close together; words that produce different activity land far apart. Do this for thousands of words and you get a kind of <strong>map of meaning</strong> — a landscape where <em>cat</em> and <em>dog</em> are neighbors, <em>door</em> sits off in another district, and <em>galaxy</em> is across town.</p>
+<p>We call the layout of that map its <strong>semantic geometry</strong>: not which neuron means what, but how all the meanings are arranged <em>relative to each other</em>.</p>
+<p>Now the crucial test. We built this map twice — once from the English words, once from the Spanish words — and laid them side by side.</p>
+<p>They had the same shape.</p>
+<p>If <em>cat</em> and <em>dog</em> were close in the English map, then <em>gato</em> and <em>perro</em> were close in the Spanish map. If <em>human</em> and <em>galaxy</em> were far apart in one, they were far apart in the other. The distances between meanings were preserved across the two languages, even though, as we just saw, the individual neurons building those distances behaved completely differently.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://psywalkeryanxy.github.io/posts/science/2026-06-24-bilingual_hippocampus/figures/figure3_geometry.png" class="img-fluid figure-img"></p>
+<figcaption><strong>Same map, two languages.</strong> Each point is a word. Words that sit close together in the English “meaning-map” (left) sit close together in the Spanish one (middle), so plotting English distances against Spanish distances (right) lines up along the diagonal. The arrangement of meanings is shared, even though single neurons are not.</figcaption>
+</figure>
+</div>
+<p>So translation does not happen word by word, neuron by neuron. It happens because both languages are drawn on the <em>same underlying map</em>. The tower of meaning never actually fell. Babel only scattered the labels.</p>
+</section>
+<section id="one-map-read-with-two-different-compasses" class="level2">
+<h2 class="anchored" data-anchor-id="one-map-read-with-two-different-compasses">One map, read with two different compasses</h2>
+<p>This raises a beautiful puzzle. If the same population of neurons holds one shared map, and English and Spanish both use it, why don’t the two languages constantly bleed into each other? Why doesn’t hearing <em>gato</em> make you blurt out <em>cat</em>?</p>
+<p>Our data point to an elegant trick. The two languages use the <strong>same neurons</strong> and the <strong>same map</strong>, but they read it along <strong>different directions</strong> — as if holding the identical map but orienting it with a rotated compass.</p>
+<p>In geometry, you can rotate a whole shape and every distance inside it stays exactly the same; a triangle is the same triangle whether it sits upright or tilted. The brain seems to exploit this. English reads the shared meaning-map along one set of directions (we call them <strong>readout axes</strong>); Spanish reads the very same map along directions that are rotated relative to English. Same landscape, different angle of approach.</p>
+<p>That rotation is the quiet hero of the story. It lets the two languages share <em>everything that matters</em> — the structure of meaning — while keeping their <em>access routes</em> separate enough that they don’t collide. Shared meaning, separate readout. It is exactly the scheme a system would need if it had to be deeply bilingual without ever getting confused.</p>
+<p>We confirmed this directly. When we looked at <em>which</em> neurons participated in building each language’s map, the answer was: nearly the same neurons, to nearly the same degree, in both languages. The cells are shared. Only the directions differ.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://psywalkeryanxy.github.io/posts/science/2026-06-24-bilingual_hippocampus/figures/figure4_rotation.png" class="img-fluid figure-img"></p>
+<figcaption><strong>The same population, rotated.</strong> English and Spanish recruit the same neurons to build their maps of meaning, but orient the “readout axes” differently — a rotation that preserves every distance while keeping the two languages from interfering.</figcaption>
+</figure>
+</div>
+</section>
+<section id="a-surprising-echo-in-artificial-intelligence" class="level2">
+<h2 class="anchored" data-anchor-id="a-surprising-echo-in-artificial-intelligence">A surprising echo in artificial intelligence</h2>
+<p>One more thread is worth pulling, because it connects brains to the AI systems now in everyone’s pocket.</p>
+<p>Modern multilingual language models — the machinery behind translation apps and chatbots — were not designed to copy the brain. Yet when we compared the brain’s meaning-map to the internal map of a multilingual AI model (a system called mBERT), they lined up. Words arranged a certain way in the brain were arranged similarly inside the machine, in both English and Spanish.</p>
+<p>The match is not perfect, and the differences are interesting in their own right: the AI leans more on the surface look of words (it notices that <em>universe</em> and <em>universo</em> share letters), while the brain seems to care more about pure meaning. But the broad agreement is striking. Two very different kinds of system — one made of cells, one of math — seem to have independently discovered that the smart way to be bilingual is to share a geometry of meaning and read it from different angles.</p>
+</section>
+<section id="rebuilding-babel" class="level2">
+<h2 class="anchored" data-anchor-id="rebuilding-babel">Rebuilding Babel</h2>
+<p>The Babel story imagines language as a punishment: a wall thrown up between people, scattering them apart. What we found inside the bilingual brain is almost the opposite. Beneath the two languages lies a single, quiet map of meaning that both of them point to. The surface words are scattered — different sounds, different spellings, even different neurons firing — but the deep structure, the relationships among ideas, is held in common.</p>
+<p>A bilingual person is not running two separate dictionaries. They are reading one shared world of meaning through two different windows. The hippocampus keeps a model of meaning that does not belong to any single language. Translation, in this view, is not the hard work of matching word to word. It is the natural consequence of two languages drawing on the same underlying geometry.</p>
+<p>The builders at Babel were scattered because they lost their common speech. But the bilingual brain suggests their common <em>meaning</em> was never really lost. It was just waiting, underneath, for two languages to find their way back to the same map.</p>
+</section>
+<section id="what-this-might-mean" class="level2">
+<h2 class="anchored" data-anchor-id="what-this-might-mean">What this might mean</h2>
+<p>A few implications stand out to us.</p>
+<p><strong>Meaning may be more fundamental than language.</strong> Our results suggest the brain stores concepts in a form that is not tied to any particular language, and lets each language reach that form along its own route. The thought comes first; the words are how you fetch it.</p>
+<p><strong>Sharing and separating can happen at once.</strong> The combination of a shared map with rotated readout directions is a general solution to a hard problem: how to keep two things deeply connected and cleanly distinct at the same time. The same principle may show up wherever the brain has to do both.</p>
+<p><strong>Brains and AI may be converging on the same idea.</strong> We don’t want to overclaim — cells and code differ in important ways — but the fact that a brain and a language model land on similar geometries hints that this might be a good general strategy for representing meaning, not a quirk of biology.</p>
+<p>And a caution: we studied only four people, and only two related languages. Future work with more participants, with unrelated languages, and with people <em>learning</em> a new language could reveal how this shared map is built in the first place — how, neuron by neuron, two scattered tongues come to share one world.</p>
+</section>
+
+<section id="read-the-paper" class="level2">
+<h2 class="anchored" data-anchor-id="read-the-paper">Read the paper</h2>
+</section>
+<section id="section" class="level1">
+<h1></h1>
+
+
+</section>
+
+<a onclick="window.scrollTo(0, 0); return false;" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a><div id="quarto-appendix" class="default"><section id="acknowledgements" class="level2 appendix"><h2 class="anchored quarto-appendix-heading">Acknowledgements</h2><div class="quarto-appendix-contents">
+
+<p>Funding details and acknowledgements are listed in the published paper. We are grateful, above all, to the patients who made this work possible.</p>
+</div></section></div> ]]></description>
+  <category>bilingualism</category>
+  <category>language</category>
+  <category>hippocampus</category>
+  <category>single-neuron recording</category>
+  <category>semantic geometry</category>
+  <category>neuroscience</category>
+  <guid>https://psywalkeryanxy.github.io/posts/science/2026-06-24-bilingual_hippocampus/</guid>
+  <pubDate>Wed, 24 Jun 2026 05:00:00 GMT</pubDate>
+  <media:content url="https://psywalkeryanxy.github.io/posts/science/2026-06-24-bilingual_hippocampus/figures/hero_babel.png" medium="image" type="image/png" height="192" width="144"/>
+</item>
 <item>
   <title>Polysemanticity in Human Hippocampal Neurons</title>
   <link>https://psywalkeryanxy.github.io/posts/science/2026-05-03-polysemanticity/</link>
