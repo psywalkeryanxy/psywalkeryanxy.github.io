@@ -40,7 +40,7 @@
 <div class="blog-authors">
 <p><strong>Blog post written by:</strong> <a href="https://scholar.google.com/citations?user=rdGDTMsAAAAJ">Xinyuan Yan</a></p>
 </div>
-<p><em>For more details, see the paper (Cell).</em></p>
+<p><em>For more details, see the paper (<a href="https://www.cell.com/cell/abstract/S0092-8674(26)00579-9">Cell</a>).</em></p>
 <p>There is an old story about why the world has so many languages.</p>
 <p>In the book of Genesis, chapter 11, everyone on Earth speaks the same tongue. United by it, they begin to build a city with a tower tall enough to reach the heavens. The project alarms the divine, and the response is not to topple the tower but to do something subtler: confuse their speech, so that no one can understand their neighbor. Unable to coordinate, the builders scatter across the Earth. The place is named <strong>Babel</strong>, from a word for <em>confusion</em>.</p>
 <p>For thousands of years, that story has been our metaphor for what languages do to us. They divide. A wall of unfamiliar sounds drops between you and another person, and meaning gets lost on the way across.</p>
@@ -129,9 +129,7 @@
 
 <section id="read-the-paper" class="level2">
 <h2 class="anchored" data-anchor-id="read-the-paper">Read the paper</h2>
-</section>
-<section id="section" class="level1">
-<h1></h1>
+<p><em><a href="https://www.cell.com/cell/abstract/S0092-8674(26)00579-9">Shared neural geometries for bilingual semantic representations in human hippocampal neurons</a></em></p>
 
 
 </section>

@@ -51,7 +51,7 @@ Xinyuan Yan^1†^, Ana G. Chavez^1^, Melissa Franch^1^, Kalman A. Katlowitz^1^, 
 **Blog post written by:** [Xinyuan Yan](https://scholar.google.com/citations?user=rdGDTMsAAAAJ)
 :::
 
-*For more details, see the paper ([Cell](#)).*
+*For more details, see the paper ([Cell](https://www.cell.com/cell/abstract/S0092-8674(26)00579-9)).*
 
 
 There is an old story about why the world has so many languages.
@@ -167,4 +167,4 @@ Funding details and acknowledgements are listed in the published paper. We are g
 
 ## Read the paper
 
-#
+*[Shared neural geometries for bilingual semantic representations in human hippocampal neurons](https://www.cell.com/cell/abstract/S0092-8674(26)00579-9)*
