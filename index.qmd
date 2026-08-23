@@ -49,7 +49,7 @@ My Light
 
 ---
 
-## Featured Publications
+## Featured Research
 ::: {.featured-pub}
 ![](published_papers/2026_cell_bilingual.png)
 
@@ -58,7 +58,7 @@ My Light
 Shared neural geometries for bilingual semantic representations in human hippocampal neurons
 :::
 ::: {.pub-authors}
-**Yan, X.**, [co-authors], Hayden, B. Y., & Sheth, S. A.
+**Yan, X.**, Chavez A, ..., Hayden, B. Y., & Sheth, S. A.
 :::
 ::: {.pub-venue}
 Cell · 2026
@@ -67,7 +67,32 @@ Cell · 2026
 Single-neuron recordings from the human hippocampus reveal that semantic representations in bilinguals occupy a shared population geometry across languages — individual neurons and population codes converge on a language-independent conceptual space.
 :::
 ::: {.pub-links}
-[Paper+SI](published_papers/2026_cell_bilingual.pdf.pdf){target="_blank"} · [Reviewer responses](published_papers/2026_cell_bilingual_RR.pdf){target="_blank"}
+[Paper+SI](published_papers/2026_cell_bilingual.pdf){target="_blank"} · [Reviewer responses](published_papers/2026_cell_bilingual_RR.pdf){target="_blank"}
+:::
+:::
+:::
+
+::: {.featured-pub}
+![](published_papers/2026_polysemanticity.png)
+
+::: {}
+::: {.pub-title}
+Polysemanticity in human hippocampal neurons
+:::
+::: {.pub-authors}
+**Yan, X.**, Li JA, ..., Hayden, B. Y., & Sheth, S. A.
+:::
+::: {.pub-venue}
+bioRxiv · 2026
+:::
+::: {.pub-summary}
+single neurons encode multiple semantic distant concepts (**polysemanticity**) with the computational principle of **superposition**.
+:::
+::: {.pub-links}
+[Paper+SI](published_papers/2026_polysemanticity.pdf){target="_blank"} 
+:::
+:::
+:::
 
 
 ::: {.featured-pub}
