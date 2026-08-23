@@ -50,6 +50,25 @@ My Light
 ---
 
 ## Featured Publications
+::: {.featured-pub}
+![](published_papers/2026_cell_bilingual.png)
+
+::: {}
+::: {.pub-title}
+Shared neural geometries for bilingual semantic representations in human hippocampal neurons
+:::
+::: {.pub-authors}
+**Yan, X.**, [co-authors], Hayden, B. Y., & Sheth, S. A.
+:::
+::: {.pub-venue}
+Cell · 2026
+:::
+::: {.pub-summary}
+Single-neuron recordings from the human hippocampus reveal that semantic representations in bilinguals occupy a shared population geometry across languages — individual neurons and population codes converge on a language-independent conceptual space.
+:::
+::: {.pub-links}
+[Paper+SI](published_papers/2026_cell_bilingual.pdf.pdf){target="_blank"} · [Reviewer responses](published_papers/2026_cell_bilingual_RR.pdf){target="_blank"}
+
 
 ::: {.featured-pub}
 ![](published_papers/2025_BPCNNI.png)
