@@ -19,7 +19,7 @@ toc: false
 
 | Years | Paper (first authored/corresponding authored) | What happened |
 |---|---|---|
-| 2019–2022 | Actively did science but zero 1st-authored paper | Cannot say the reasons |
+| 2019–2022 | Actively did science but zero 1st-authored paper | - |
 | 2023 | *A low-dimensional manifold of human exploratory behavior reveals opposing roles for apathy and anxiety* | Desk rejected by Current Biology; PNAS |
 | 2024 | *Distinct Computational Mechanisms of Uncertainty Processing in Anxiety and Apathy* | Rewrote and re-analyzed / re-framed the paper to this. Desk rejected by Nature Communications; Nature Human Behaviour; Nature Mental Health; PNAS; eLife; PLoS Biology. Major revision at BPCNNI |
 | 2024 | *Too smart for one's own good? Evolution favors individuals with a low-level theory of mind in a complex network* | Under review at PNAS, then rejected |

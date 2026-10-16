@@ -27,11 +27,16 @@ website:
         text: Life
       - href: photos/index.qmd
         text: Photos
+      - href: videos.qmd
+        text: Videos
       - href: failures.qmd
         text: Failures
       - href: cv.qmd
         text: CV
     right:
+      - icon: youtube
+        href: https://www.youtube.com/@xinyuanyan3717
+        aria-label: YouTube
       - icon: google-scholar
         href: https://scholar.google.com/citations?user=rdGDTMsAAAAJ
         aria-label: Google Scholar
