@@ -16,7 +16,7 @@ Videos
 
 # NeuroAI-XY
 
-I make science videos for fun and for a general audience — turning complex neuroscience papers into stories anyone can follow.
+I make science videos for fun and for a general audience.
 
 [Subscribe on YouTube →](https://www.youtube.com/@xinyuanyan3717){target="_blank"}
 
@@ -38,11 +38,8 @@ Inside the Brain of a Bilingual Person
 ::: {.pub-venue}
 NeuroAI-XY · 2026
 :::
-::: {.pub-summary}
-What happens when one brain holds two languages? Single neurons recorded from the human hippocampus reveal that bilinguals represent meaning in a shared conceptual space — the same geometry, whichever language is spoken.
-:::
 ::: {.pub-links}
-[Watch on YouTube](https://www.youtube.com/watch?v=ywhGMM80lt0){target="_blank"} · [Related paper](index.qmd#featured-research)
+[Watch on YouTube](https://www.youtube.com/watch?v=ywhGMM80lt0){target="_blank"} · [Paper+SI](published_papers/2026_cell_bilingual.pdf){target="_blank"}
 :::
 :::
 :::
