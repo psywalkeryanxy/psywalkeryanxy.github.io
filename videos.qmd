@@ -25,7 +25,11 @@ I make science videos for fun and for a general audience — turning complex neu
 ## Featured Video
 
 ::: {.featured-pub}
-{{< video https://www.youtube.com/embed/ywhGMM80lt0 title="Inside the Brain of a Bilingual Person" >}}
+```{=html}
+<div class="video-embed">
+<iframe src="https://www.youtube.com/embed/ywhGMM80lt0" title="Inside the Brain of a Bilingual Person" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+</div>
+```
 
 ::: {}
 ::: {.pub-title}
@@ -45,7 +49,7 @@ What happens when one brain holds two languages? Single neurons recorded from th
 
 <!--
 To add another video, copy the block above and change:
-  - the video ID in the {{< video >}} shortcode (the part after watch?v=)
+  - the video ID in the iframe src (the part after watch?v=)
   - the title, year, summary, and links
 -->
 
